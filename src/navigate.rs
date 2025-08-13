@@ -312,14 +312,14 @@ pub fn context_get_variable<'c>(context: &Context<'c>, var_name: &str, mathml: E
         Some(value) => match value {
             Value::String(s) => Ok((Some(s.clone()), None)),
             Value::Number(f) => Ok((None, Some(*f))),
-            Value::Boolean(b) => Ok((Some(format!("{}", b)), None)),
+            Value::Boolean(b) => Ok((Some(format!("{b}")), None)),
             Value::Nodeset(nodes) => {
                 if nodes.size() == 1 {
                     if let Some(attr) = nodes.document_order_first().unwrap().attribute() {
                         return Ok( (Some(attr.value().to_string()), None) );
                     }
                 };
-                let mut error_message = format!("Variable '{}' set somewhere in navigate.yaml is nodeset and not an attribute: ", var_name);
+                let mut error_message = format!("Variable '{var_name}' set somewhere in navigate.yaml is nodeset and not an attribute: ");
                 if nodes.size() == 0 {
                     error_message += &format!("0 nodes (false) -- {} set to non-existent node in\n{}",
                                               var_name, mml_to_string(mathml));
@@ -336,7 +336,7 @@ pub fn context_get_variable<'c>(context: &Context<'c>, var_name: &str, mathml: E
                             match node {
                                 sxd_xpath::nodeset::Node::Element(mathml) =>
                                     error_message += &format!("#{}:\n{}",i, mml_to_string(*mathml)),
-                                _ => error_message += &format!("'{:?}'", node),
+                                _ => error_message += &format!("'{node:?}'"),
                             }   
                         })    
                 };
@@ -478,7 +478,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                 add_literal = false;
             } else {
                 mathml.set_attribute_value("data-intent-property", (":literal:".to_string() + properties).as_str());
-            }
+            };
         }
         // we should always find the start node.
         // however, if were were navigating by character, then switched the NavMode, the intent tree might not have that node in it
@@ -599,6 +599,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                 return Ok( (speech + " " + &node_speech, true) );
             }
         } else {
+            remove_literal_property(mathml, add_literal, properties);
             pop_stack(nav_state, loop_count, nav_command);
             return Ok( (speech, true) );
         };
@@ -619,7 +620,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
     fn pop_stack(nav_state: &mut NavigationState, count: usize, nav_command: &'static str) {
         // save the final state and pop the intermediate states that did nothing
         let push_command_on_stack = (nav_command.starts_with("Move") && nav_command != "MoveLastLocation") || nav_command.starts_with("Zoom");
-        debug!("pop_stack: nav_command={}, count={}, push? {} stack=\n{}", nav_command, count, push_command_on_stack, nav_state);
+        // debug!("pop_stack: nav_command={}, count={}, push? {} stack=\n{}", nav_command, count, push_command_on_stack, nav_state);
         if count == 0 {
             if !push_command_on_stack && nav_command == nav_state.top().unwrap().1 {
                 nav_state.pop();    // remove ReadXXX, SetPlacemarker, etc. commands that don't change the state
@@ -653,9 +654,9 @@ fn speak(mathml: Element, intent: Element, nav_node_id: &str, literal_speak: boo
         // We are probably safer in terms of getting the same speech if we retry intent starting at the nav node,
         //  but the node to speak is almost certainly trivial.
         // By speaking the non-intent tree, we are certain to speak on the next try
-        if !literal_speak && get_node_by_id(intent, &nav_node_id).is_some() {
+        if !literal_speak && get_node_by_id(intent, nav_node_id).is_some() {
             // debug!("speak: nav_node_id={}, intent=\n{}", nav_node_id, mml_to_string(intent));
-            match crate::speech::speak_mathml(intent, &nav_node_id) {
+            match crate::speech::speak_mathml(intent, nav_node_id) {
                 Ok(speech) => return Ok(speech),
                 Err(e) => {
                     if e.to_string() != crate::speech::NAV_NODE_SPEECH_NOT_FOUND {
@@ -666,11 +667,11 @@ fn speak(mathml: Element, intent: Element, nav_node_id: &str, literal_speak: boo
             }
         }
         // debug!("speak (literal): nav_node_id={}, mathml=\n{}", nav_node_id, mml_to_string(mathml));
-        let speech = crate::speech::speak_mathml(mathml, &nav_node_id);
+        let speech = crate::speech::speak_mathml(mathml, nav_node_id);
         // debug!("speech from speak: {:?}", speech);
         return speech;
     } else {
-        return crate::speech::overview_mathml(mathml, &nav_node_id);
+        return crate::speech::overview_mathml(mathml, nav_node_id);
     }
 }
 
@@ -1850,7 +1851,6 @@ mod tests {
     
     #[test]
     fn placemarker() -> Result<()> {
-        init_logger();
         let mathml_str = "<math display='block' id='math'>
         <mrow displaystyle='true' id='mrow'>
           <mi id='a'>a</mi>
