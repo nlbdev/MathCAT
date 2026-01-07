@@ -127,5 +127,3 @@ Legg til `mod nn;` i `tests/languages.rs` etter `mod nb;` linjen.
 - SimpleSpeak/geometry.rs
 - SimpleSpeak/large_ops.rs
 - SimpleSpeak/linear_algebra.rs
-- SimpleSpeak/mfrac.rs
-- SimpleSpeak/msup.rs
