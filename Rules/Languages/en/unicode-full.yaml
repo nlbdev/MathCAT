@@ -3122,18 +3122,30 @@
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
     
  - "𝕬-𝖅":    # 0x1D56C - 0x1D585
-    - t: "fraktur bold"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                          # 0xf040 - 0xf059
-    - t: "fraktur bold"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝖆-𝖟":    # 0x1d586 - 0x1d59f
-    - t: "fraktur bold"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf05a - 0xf073
-    - t: "fraktur bold"
+    - t: "fraktur"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  # double struck (blackboard bold) chars in math alphabetic block and also MathType private use area
@@ -3180,18 +3192,30 @@
 
  # bold script chars in math alphabetic block and also MathType private use area
  - "𝓐-𝓩":    # 0x1d4d0 - 0x1d4e9
-    - t: "script bold"
+    - t: "script"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":                                          # 0xf140 - 0xf159
-    - t: "script bold"
+    - t: "script"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝓪-𝔃":    # 0x1d4ea - 0x1d503
-    - t: "script bold"
+    - t: "script"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃', 'abcdefghijklmnopqrstuvwxyz')"
  - "-":    # 0xf15a - 0xf173
-    - t: "script bold"
+    - t: "script"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":                                          # 0xf180 - 0xf199
@@ -3265,19 +3289,27 @@
  - "": [t: "double struck rho"]                   # 0xf250
  - "": [t: "double struck phi"]                   # 0xf251
  - "𝐀-𝐙":    # 0x1d400 - 0x1d419
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf260 - 0xf279
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝐚-𝐳":    # 0x1d41a - 0x1d433
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf27a - 0xf293
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝐴-𝑍":    # 0x1d434 - 0x1d44d
@@ -3294,22 +3326,30 @@
 
  - "𝑨-𝒁":    # 0x1d468 - 0x1d481
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf2c8 - 0xf2e1
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf2e2 - 0xf2fb
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝖠-𝖹":    # 0x1d5a0 - 0x1d5b9
@@ -3325,19 +3365,27 @@
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  
  - "𝗔-𝗭":    # 0x1d5d4 - 0x1d5ed
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf334 - 0xf34d
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝗮-𝘇":    # 0x1d5ee - 0x1d607
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf34e - 0xf367
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
  - "𝘈-𝘡":    # 0x1d608 - 0x1d621
     # - t: "italic"
@@ -3356,22 +3404,30 @@
 
  - "𝘼-𝙕":    # 0x1d63c - 0x1d655
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "-":    # 0xf39c - 0xf3b5
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
  - "𝙖-𝙯":    # 0x1d656 - 0x1d66f
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "-":    # 0xf3b6 - 0xf3cf
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝙰-𝚉":    # 0x1d670 - 0x1d689
@@ -3391,30 +3447,42 @@
  - "𝚥": [t: "dotless j"]                           # 0x1d6a5
 
  - "𝚨-𝛀":    # 0x1d6a8 - 0x1d6c0
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝚨𝚩𝚪𝚫𝚬𝚭𝚮𝚯𝚰𝚱𝚲𝚳𝚴𝚵𝚶𝚷𝚸𝚹𝚺𝚻𝚼𝚽𝚾𝚿𝛀', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf408 - 0xf420
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝛂-𝛚":    # 0x1d6c2 - 0x1d6da
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝛂𝛃𝛄𝛅𝛆𝛇𝛈𝛉𝛊𝛋𝛌𝛍𝛎𝛏𝛐𝛑𝛒𝛓𝛔𝛕𝛖𝛗𝛘𝛙𝛚', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf422 - 0xf43a
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "": [t: "bold nahblah"]                          # 0xf421
  - "𝛁": [t: "bold nahblah"]                          # 0x1d6c1
 
  - "𝛛𝛜𝛝𝛞𝛟𝛠𝛡":    # 0x1D6DB - 0x1D6E1
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝛛𝛜𝛝𝛞𝛟𝛠𝛡', '∂εθκφρπ')"
 
  - "":    # 0xF43C - 0xF441
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝛢-𝛺":    # 0x1d6e2 - 0x1d6fa
@@ -3446,58 +3514,82 @@
 
  - "𝜜-𝜴":    # 0x1d71c - 0x1d734
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝜜𝜝𝜞𝜟𝜠𝜡𝜢𝜣𝜤𝜥𝜦𝜧𝜨𝜩𝜪𝜫𝜬𝜭𝜮𝜯𝜰𝜱𝜲𝜳𝜴', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf47c - 0xf494
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝜶-𝝎":    # 0x1d736 - 0x1d74e
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝜶𝜷𝜸𝜹𝜺𝜻𝜼𝜽𝜾𝜿𝝀𝝁𝝂𝝃𝝄𝝅𝝆𝝇𝝈𝝉𝝊𝝋𝝌𝝍𝝎', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf496 - 0xf4ae
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝝏𝝐𝝑𝝒𝝓𝝔𝝕":    # 0x1d74f - 0x1d755
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝝏𝝐𝝑𝝒𝝓𝝔𝝕', '∂εθκφρπ')"
 
  - "":    # 0xf422 - 0xf43a
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "𝜵": [t: "bold italic nahblah"]                  # 0x1d735
  - "": [t: "bold italic nahblah"]                  # 0xf495
 
  - "𝝖-𝝮":    # 0x1d756 - 0x1d76e
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝝖𝝗𝝘𝝙𝝚𝝛𝝜𝝝𝝞𝝟𝝠𝝡𝝢𝝣𝝤𝝥𝝦𝝧𝝨𝝩𝝪𝝫𝝬𝝭𝝮', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
  - "-":    # 0xf4b6 - 0xf4ce
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝝰-𝞈":    # 0x1d770 - 0x1d788
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝝰𝝱𝝲𝝳𝝴𝝵𝝶𝝷𝝸𝝹𝝺𝝻𝝼𝝽𝝾𝝿𝞀𝞁𝞂𝞃𝞄𝞅𝞆𝞇𝞈', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf4d0 - 0xf4e8
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝞉𝞊𝞋𝞌𝞍𝞎𝞏":    # 0x1d789 - 0x1d78f
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝞉𝞊𝞋𝞌𝞍𝞎𝞏', '∂εθκφρπ')"
 
  - "":    # 0xf4e9 - 0xf4ef
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "": [t: "bold nahblah"]                          # 0xf4cf
@@ -3505,51 +3597,71 @@
 
  - "𝞐-𝞨":    # 0x1d790 - 0x1d7a8
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝞐𝞑𝞒𝞓𝞔𝞕𝞖𝞗𝞘𝞙𝞚𝞛𝞜𝞝𝞞𝞟𝞠𝞡𝞢𝞣𝞤𝞥𝞦𝞧𝞨', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "-":    # 0xf4f0 - 0xf508
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ')"
 
  - "𝞪-𝟂":    # 0x1d7aa - 0x1d7c2
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝞪𝞫𝞬𝞭𝞮𝞯𝞰𝞱𝞲𝞳𝞴𝞵𝞶𝞷𝞸𝞹𝞺𝞻𝞼𝞽𝞾𝞿𝟀𝟁𝟂', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "-":    # 0xf50a - 0xf522
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', 'αβγδεζηθικλμνξοπρςστυφχψω')"
 
  - "𝟃𝟄𝟅𝟆𝟇𝟈𝟉":    # 0x1d7c3 - 0x1d7c9
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝟃𝟄𝟅𝟆𝟇𝟈𝟉', '∂εθκφρπ')"
 
  - "":    # 0xf523 - 0xf529
     # - t: "bold italic"
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', '∂εθκφρπ')"
 
  - "": [t: "bold nahblah"]                          # 0xf509
  - "𝞩": [t: "bold nahblah"]                          # 0x1d7a9
 
  - "-":    # 0xf52e - 0xf537  (old MathType)
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟎-𝟗":    # 0x1d7ce - 0x1d7d7  
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗', '0123456789')"
 
  - "-":    # 0xf52e - 0xf537  (old MathType)
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '', '0123456789')"
 
  - "𝟬-𝟵":    # 0x1D7EC - 0x1D7F5  
-    - t: "bold"
+    - test:
+        if: "not($IgnoreBold)"
+        then: [t: "bold"]
     - spell: "translate('.', '𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵', '0123456789')"
 
  - "-":    # 0xf556 - 0xf55f  (old MathType)
@@ -3620,7 +3732,7 @@
  - "﹤": [t: "small less than"]                     # 0xfe64
  - "﹥": [t: "small greater than"]                  # 0xfe65
  - "﹦": [t: "small equals"]                        # 0xfe66
- - "＋": [t: "equals sign"]                         # 0xff0b
+ - "＋": [t: "fullwidth plus sign"]                 # 0xff0b
  - "＜": [t: "less than"]                           # 0xff1c
  - "＝": [t: "equals"]                              # 0xff1d
  - "＞": [t: "greater than"]                        # 0xff1e

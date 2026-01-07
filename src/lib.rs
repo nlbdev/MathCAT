@@ -1,3 +1,5 @@
+#![allow(clippy::needless_return)]
+
 //! A library for generating speech and braille from MathML
 //! 
 //! Typical usage is:
@@ -14,22 +16,11 @@
 //! 
 //! To get the MathML associated with the current navigation node, call [`get_navigation_mathml`].
 //! To just get the `id` and offset from the id of the current navigation node, call [`get_navigation_mathml_id`].
-#![recursion_limit = "1024"]
-
-#[macro_use]
-extern crate error_chain;
-
-// We'll put our errors in an `errors` module, and other modules in
-// this crate will `use errors::*;` to get access to everything
-// `error_chain!` creates.
+///
+/// This module re-exports anyhow types. Use `bail!` for early returns and
+/// `context()`/`with_context()` on Result to add context (replacing old `chain_err()`).
 pub mod errors {
-    // Create the Error, ErrorKind, ResultExt, and Result types
-    error_chain! {
-        // foreign_links {
-        //     Io(std::io::Error);
-        //     HttpRequest(reqwest::Error);
-        // }
-    }
+    pub use anyhow::{anyhow, bail, Error, Result, Context};
 }
 
 #[macro_use]
@@ -75,7 +66,6 @@ pub fn init_logger() {
         .init();
 }
 
-#[cfg(test)]
 /// Build Absolute path to rules dir for testing
 pub fn abs_rules_dir_path() -> String {
     cfg_if::cfg_if! {
@@ -89,17 +79,16 @@ pub fn abs_rules_dir_path() -> String {
     }
 }
 
-#[cfg(test)]
-pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, block_separators: &str, decimal_separators: &str) -> bool {
+pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_attrs: &[&str], block_separators: &str, decimal_separators: &str) -> bool {
     use crate::{interface::*, pretty_print::mml_to_string};
     use sxd_document::parser;
     use crate::canonicalize::canonicalize;
     // this forces initialization
     crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
     crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
-    set_preference("Language".to_string(), "en".to_string()).unwrap();
-    set_preference("BlockSeparators".to_string(), block_separators.to_string()).unwrap();
-    set_preference("DecimalSeparators".to_string(), decimal_separators.to_string()).unwrap();
+    set_preference("Language", "en").unwrap();
+    set_preference("BlockSeparators", block_separators).unwrap();
+    set_preference("DecimalSeparators", decimal_separators).unwrap();
     
     let package1 = &parser::parse(test).expect("Failed to parse test input");
     let mathml = get_element(package1);
@@ -112,15 +101,13 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, block_se
     trim_element(mathml_target, false);
     // debug!("target:\n{}", mml_to_string(mathml_target));
 
-    match is_same_element(mathml_test, mathml_target) {
+    match is_same_element(mathml_test, mathml_target, ignore_attrs) {
         Ok(_) => return true,
         Err(e) => panic!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target)),
     }
 }
 
-#[cfg(test)]
-// sets locale to be US standard
-pub fn are_strs_canonically_equal(test: &str, target: &str) -> bool {
-    return are_strs_canonically_equal_with_locale(test, target, ", \u{00A0}\u{202F}", ".");
+/// sets locale to be US standard
+pub fn are_strs_canonically_equal(test: &str, target: &str, ignore_attrs: &[&str]) -> bool {
+    return are_strs_canonically_equal_with_locale(test, target, ignore_attrs, ", \u{00A0}\u{202F}", ".");
 }
-
