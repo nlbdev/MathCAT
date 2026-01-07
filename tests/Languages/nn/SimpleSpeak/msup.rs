@@ -139,7 +139,7 @@ fn nested_cubed_power() {
       </msup>
     </msup>
   </math>";
-  test("nn", "SimpleSpeak", expr, "y opphøyd i 4 femtedeler i tredje");
+  test("nn", "SimpleSpeak", expr, "y opphøyd i 4 femtedelar i tredje");
 }
 
 #[test]
@@ -156,7 +156,7 @@ fn nested_cubed_power_with_neg_base() {
         </mrow>
     </msup>
     </math>";
-  test("nn", "SimpleSpeak", expr, "y opphøyd i minus 4 femtedeler i tredje");
+  test("nn", "SimpleSpeak", expr, "y opphøyd i minus 4 femtedelar i tredje");
 }
 
 #[test]
@@ -255,7 +255,7 @@ fn nested_simple_power() {
       </msup>
     </msup>
   </math>";
-  test("nn", "SimpleSpeak", expr, "t opphøyd i 4 femtedeler opphøyd i n");
+  test("nn", "SimpleSpeak", expr, "t opphøyd i 4 femtedelar opphøyd i n");
 }
 
 #[test]
@@ -269,9 +269,9 @@ fn nested_end_exponent_power() {
       </msup>
     </msup>
   </math>";
-  test("nn", "SimpleSpeak", expr, "t opphøyd i 4 femtedeler opphøyd i n pluss 1, slutt eksponent");
+  test("nn", "SimpleSpeak", expr, "t opphøyd i 4 femtedelar opphøyd i n pluss 1, slutt eksponent");
   test_prefs("nn", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-  "t opphøyd i 4 femtedeler opphøyd i n pluss 1, slutt eksponent");
+  "t opphøyd i 4 femtedelar opphøyd i n pluss 1, slutt eksponent");
 }
 
 #[test]
@@ -285,7 +285,7 @@ fn nested_end_exponent_neg_power() {
       </msup>
     </msup>
   </math>";
-  test("nn", "SimpleSpeak", expr, "t opphøyd i 4 femtedeler opphøyd i minus 3; slutt eksponent");
+  test("nn", "SimpleSpeak", expr, "t opphøyd i 4 femtedelar opphøyd i minus 3; slutt eksponent");
 }
 
 #[test]

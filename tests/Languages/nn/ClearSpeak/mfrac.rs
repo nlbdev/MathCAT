@@ -16,7 +16,7 @@ fn common_fraction_thirds() {
     let expr = "<math>
                     <mfrac> <mn>2</mn> <mn>3</mn> </mfrac>
                 </math>";
-    test("nn", "ClearSpeak", expr, "2 tredjedeler");
+    test("nn", "ClearSpeak", expr, "2 tredjedelar");
 }
 
 #[test]
@@ -24,8 +24,8 @@ fn common_fraction_tenths() {
     let expr = "<math>
                     <mfrac> <mn>17</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "17 tideler");
-    test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "17 tideler");
+    test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "17 tidelar");
+    test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "17 tidelar");
 }
 
 #[test]
@@ -35,7 +35,7 @@ fn not_ClearSpeak_common_fraction_tenths() {
                     <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
                 </math>";
     test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "89 over 10");
-    test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "89 tideler");
+    test_prefs("nn", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "89 tidelar");
 }
 
 #[test]
@@ -149,14 +149,14 @@ fn nested_simple_fractions() {
                 </mfrac>
                 </mrow>
             </math>";
-    test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 halv over 2 tredjedeler");
-    test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 halv over 2 tredjedeler");
+    test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 halv over 2 tredjedelar");
+    test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 halv over 2 tredjedelar");
     test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 over 2 over 2 over 3");
     test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
             "brøken brøken 1 over 2 over brøken 2 over 3");
     test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
             "brøken med teljar brøken med teljar 1; og nemnar 2; og nemnar brøken med teljar 2; og nemnar 3");
-    test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 halv over 2 tredjedeler");
+    test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 halv over 2 tredjedelar");
     test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "GeneralEndFrac")], expr,
             "brøken med teljar brøken med teljar 1; og nemnar 2; slutt brøk; og nemnar brøken med teljar 2; og nemnar 3; slutt brøk; slutt brøk");
     test_prefs("nn", "ClearSpeak", vec![("ClearSpeak_Fractions", "OverEndFrac")], expr,
@@ -180,7 +180,7 @@ fn semi_nested_fraction() {
                     </mfrac>
                 </mrow>
                 </math>";
-    test("nn", "ClearSpeak", expr, "2 tredjedeler x over 6");
+    test("nn", "ClearSpeak", expr, "2 tredjedelar x over 6");
 }
 
 #[test]

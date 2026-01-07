@@ -140,12 +140,12 @@
   # SWEDISH/NORWEGIAN: The translate function doesn't work for non-English. Used the solution below instead.
   - test:
      - if: "self::m:open-interval"
-       then: [T: "det åpne intervallet"]
+       then: [T: "det opne intervallet"]
      - else_if: "self::m:open-closed-interval"
-       then: [T: "det halvåpne intervallet"]
+       then: [T: "det halvopne intervallet"]
      - else_if: "self::m:closed-interval"
-       then: [T: "det lukkede intervallet"]
-       else: [T: "det halvåpne intervallet"]
+       then: [T: "det lukka intervallet"]
+       else: [T: "det halvopne intervallet"]
   - T: "fra"      # phrase(subtracting 5 'from' 10 gives 5)
   - test:
     - if: "self::m:closed-open-interval"

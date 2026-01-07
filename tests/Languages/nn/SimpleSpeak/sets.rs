@@ -186,7 +186,7 @@ fn element_alone() {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("nn", "SimpleSpeak", expr, "3 pluss 2 i, er ikke et element i, de reelle tallene");
+    test("nn", "SimpleSpeak", expr, "3 pluss 2 i, er ikkje et element i, de reelle tallene");
 }
 
 #[test]

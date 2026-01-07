@@ -10,7 +10,7 @@
  - "¨": [T: "trema"]                          #  0xa8    (en: 'double dot', MathPlayer: 'trema', google: 'dubbel prick') 
  - "©": [T: "opphavsrett"]                            #  0xa9    (en: 'copyright')
  - "ª": [T: "feminin ordenstallindikator"]           #  0xaa    (en: 'feminine ordinal indicator', MathPlayer: 'feminine ordinal indicator', google: 'feminin ordinär indikator')
- - "¬": [T: "ikke"]                                 #  0xac    (en: 'not')
+ - "¬": [T: "ikkje"]                                 #  0xac    (en: 'not')
  - "«": [T: "venstre sitattegn"]    #  0xab    (en: 'left-pointing double angle quote mark')
  - "¯":                                             #  0xaf
      - test:
@@ -117,7 +117,7 @@
  #---------------------------
  #IPA modifiers OK
  - "ˬ": [T: "lavt tonende tegn"]                  #  0x2ec    (en: 'modifier voicing', google translation)
- - "˭": [T: "ikke aspirert tegn"]               #  0x2ed    (en: 'modifier unaspirated', google translation)
+ - "˭": [T: "ikkje aspirert tegn"]               #  0x2ed    (en: 'modifier unaspirated', google translation)
  #-------------------------
  #Other modifier letter OK
  - "ˮ": [T: "dobbel apostrof"]          #  0x2ee    (en: 'modifier double apostrophe', google translation)
@@ -138,7 +138,7 @@
  - "˻": [T: "start lav tone"]           #  0x2fb    (en: 'modifier begin low tone', google translation)
  - "˼": [T: "slutt lav tone"]             #  0x2fc    (en: 'modifier end low tone', google translation)
  - "˽": [T: "lav hylle"]                        #  0x2fd    (en: 'modifier shelf', google translation)
- - "˾": [T: "lav åpen hylle"]              #  0x2fe    (en: 'modifier open shelf', google translation)
+ - "˾": [T: "lav open hylle"]              #  0x2fe    (en: 'modifier open shelf', google translation)
  - "˿": [T: "lav venstrepil"]             #  0x2ff    (en: 'modifier low left arrow', google translation)
  #---------------------------------------------------------------------------------------------------------
  #Combining Diacritical Marks 
@@ -427,13 +427,13 @@
  - "⃑": [T: "høyre-harpun"]       #  0x20d1    (en: 'right harpoon above embellishment', google: 'höger harpoon ovanför utsmyckning')
  - "⃒": [T: "lang vertikal strek"]       #  0x20d2    (en: 'long vertical line overlay embellishment', google translation)
  - "⃓": [T: "kort vertikal strek"]       #  0x20d3    (en: 'short vertical line overlay embellishment', google translation)
- - "⃔": [T: "pil mot klokken"]      #  0x20d4    (en: 'anticlockwise arrow above embellishment', google translation)
- - "⃕": [T: "pil med klokken"]          #  0x20d5    (en: 'clockwise arrow above embellishment', google translation)
+ - "⃔": [T: "pil mot klokka"]      #  0x20d4    (en: 'anticlockwise arrow above embellishment', google translation)
+ - "⃕": [T: "pil med klokka"]          #  0x20d5    (en: 'clockwise arrow above embellishment', google translation)
  - "⃖": [T: "venstrepil"]          #  0x20d6    (en: 'left arrow above embellishment', google: 'vänster pil över utsmyckningen')
  - "⃗": [T: "høyrepil"]            #  0x20d7    (en: 'right arrow above embellishment', google: 'höger-pil över utsmyckning')
  - "⃘": [T: "ring"]            #  0x20d8    (en: 'ring overlay embellishment', google translation)
- - "⃙": [T: "ring med klokken"]    #  0x20d9    (en: 'clockwise ring overlay embellishment', google translation)
- - "⃚": [T: "ring mot klokken"]    #  0x20da    (en: 'anticlockwise ring overlay embellishment', google translation)
+ - "⃙": [T: "ring med klokka"]    #  0x20d9    (en: 'clockwise ring overlay embellishment', google translation)
+ - "⃚": [T: "ring mot klokka"]    #  0x20da    (en: 'anticlockwise ring overlay embellishment', google translation)
  - "⃛": [T: "trippel prikk"]       #  0x20db    (en: 'triple dot', google: 'triple dot')
  - "⃜": [T: "fire prikker"]      #  0x20dc    (en: 'quadruple dot', google: 'fyrdubbla prick')
  - "⃝": [T: "i sirkel"]       #  0x20dd    (en: 'enclosing circle embellishment', google translation)
@@ -441,8 +441,8 @@
  - "⃟": [T: "i diamant"]     #  0x20df    (en: 'enclosing diamond embellishment', google translation)
  - "⃠": [T: "i sirkel med omvendt skråstrek"]    #  0x20e0    (en: 'enclosing circle backslash embellishment', google translation)
  - "⃡": [T: "venstre-høyre-pil"]    #  0x20e1    (en: 'left right arrow above embellishment', google: 'vänster höger pil över utsmyckningen')
- - "⃢": [T: "omsluttende skjerm"]       #  0x20e2    (en: 'enclosing screen embellishment', google translation)
- - "⃣": [T: "omsluttende tastehette"]    #  0x20e3    (en: 'enclosing keycap embellishment', google translation)
+ - "⃢": [T: "omsluttande skjerm"]       #  0x20e2    (en: 'enclosing screen embellishment', google translation)
+ - "⃣": [T: "omsluttande tastehette"]    #  0x20e3    (en: 'enclosing keycap embellishment', google translation)
  - "⃤": [T: "i oppoverpekende trekant"]    #  0x20e4    (en: 'enclosing upward pointing triangle embellishment', google translation)
  - "⃥": [T: "omvendt skråstrek"]    #  0x20e5    (en: 'reverse solidus overlay embellishment', google translation)
  - "⃦": [T: "dobbel loddrett strek"]      #  0x20e6    (en: 'double verticle stroke embellishment', google translation)
@@ -521,17 +521,17 @@
  - "⅑": [T: "én nidel"]                           #  0x2151    (en: 'one ninth', google: 'en nionde')
  - "⅒": [T: "én tidel"]                           #  0x2152    (en: 'one tenth')
  - "⅓": [T: "én tredjedel"]            #  0x2153    (en: 'one third')
- - "⅔": [T: "to tredjedeler"]           #  0x2154    (en: 'two thirds')
+ - "⅔": [T: "to tredjedelar"]           #  0x2154    (en: 'two thirds')
  - "⅕": [T: "én femtedel"]            #  0x2155    (en: 'one fifth')
- - "⅖": [T: "to femtedeler"]           #  0x2156    (en: 'two fifths')
- - "⅗": [T: "tre femtedeler"]         #  0x2157    (en: 'three fifths')
- - "⅘": [T: "fire femtedeler"]          #  0x2158    (en: 'four fifths')
+ - "⅖": [T: "to femtedelar"]           #  0x2156    (en: 'two fifths')
+ - "⅗": [T: "tre femtedelar"]         #  0x2157    (en: 'three fifths')
+ - "⅘": [T: "fire femtedelar"]          #  0x2158    (en: 'four fifths')
  - "⅙": [T: "én sjettedel"]            #  0x2159    (en: 'one sixth')
- - "⅚": [T: "fem sjettedeler"]          #  0x215a    (en: 'five sixths')
+ - "⅚": [T: "fem sjettedelar"]          #  0x215a    (en: 'five sixths')
  - "⅛": [T: "én åttedel"]           #  0x215b    (en: 'one eighth')
- - "⅜": [T: "tre åttedeler"]        #  0x215c    (en: 'three eighths')
- - "⅝": [T: "fem åttedeler"]         #  0x215d    (en: 'five eighths')
- - "⅞": [T: "sju åttedeler"]        #  0x215e    (en: 'seven eighths')
+ - "⅜": [T: "tre åttedelar"]        #  0x215c    (en: 'three eighths')
+ - "⅝": [T: "fem åttedelar"]         #  0x215d    (en: 'five eighths')
+ - "⅞": [T: "sju åttedelar"]        #  0x215e    (en: 'seven eighths')
  - "⅟": [T: "én over"]                          #  0x215f    (en: 'one over', google: 'en över')
  - "Ⅰ": [T: "i"]                                    #  0x2160    (en: 'I', google translation)     
  - "Ⅱ": [T: "i i"]                                  #  0x2161    (en: 'I I', google translation)
@@ -565,7 +565,7 @@
  - "ⅽ": [T: "c"]                                    #  0x217d    (en: 'C', google translation)      
  - "ⅾ": [T: "d"]                                    #  0x217e    (en: 'D', google translation)     
  - "ⅿ": [T: "m"]                                    #  0x217f    (en: 'M', google translation)     
- - "↉": [T: "null tredjedeler"]                     #  0x2189    (en: 'zero thirds')
+ - "↉": [T: "null tredjedelar"]                     #  0x2189    (en: 'zero thirds')
  #-----------------------------------------------------------------------------------------------------
  #Arrows OK
  - "←": [T: "venstrepil"]                       #  0x2190    (en: 'leftwards arrow')
@@ -616,12 +616,12 @@
  - "↳": [T: "nedoverpil med spissen mot høyre"]        #  0x21b3    (en: 'downwards arrow with tip rightwards')
  - "↴": [T: "høyrepil med hjørnet ned"]          #  0x21b4    (en: 'rightwards arrow with corner downwards')
  - "↵": [T: "nedoverpil med hjørnet mot venstre"]        #  0x21b5    (en: 'downwards arrow with corner leftwards')
- - "↶": [T: "øvre halvsirkelpil mot klokken"]         #  0x21b6    (en: 'anticlockwise top semicircle arrow')
- - "↷": [T: "øvre halvsirkelpil med klokken"]         #  0x21b7    (en: 'clockwise top semicircle arrow')
+ - "↶": [T: "øvre halvsirkelpil mot klokka"]         #  0x21b6    (en: 'anticlockwise top semicircle arrow')
+ - "↷": [T: "øvre halvsirkelpil med klokka"]         #  0x21b7    (en: 'clockwise top semicircle arrow')
  - "↸": [T: "nordvest-pil mot strek"]     #  0x21b8    (en: 'north west arrow to long bar')
  - "↹": [T: "venstrepil mot strek over høyrepil mot strek"]    #  0x21b9    (en: 'leftwards arrow to bar over rightwards arrow to bar')
- - "↺": [T: "åpen sirkelpil mot klokken"]            #  0x21ba    (en: 'anticlockwise open circle arrow')
- - "↻": [T: "åpen sirkelpil med klokken"]            #  0x21bb    (en: 'clockwise open circle arrow')
+ - "↺": [T: "open sirkelpil mot klokka"]            #  0x21ba    (en: 'anticlockwise open circle arrow')
+ - "↻": [T: "open sirkelpil med klokka"]            #  0x21bb    (en: 'clockwise open circle arrow')
  - "↼": [T: "venstre-harpun mothake opp"]                   #  0x21bc    (en: 'left harpoon up')
  - "↽": [T: "venstre-harpun mothake ned"]                  #  0x21bd    (en: 'left harpoon down')
  - "↾": [T: "opp-harpun mothake høyre"]                     #  0x21be    (en: 'up harpoon right')
@@ -687,9 +687,9 @@
  - "⇺": [T: "venstrepil med dobbel vertikal strek"]    #  0x21fa    (en: 'leftwards arrow with double vertical stroke', google: 'vänster pil med dubbel vertikal stroke')
  - "⇻": [T: "høyrepil med dobbel vertikal strek"]    #  0x21fb    (en: 'rightwards arrow with double vertical stroke', google: 'åtgärdspil med dubbel vertikal stroke')
  - "⇼": [T: "venstre-høyre-pil med dobbel vertikal strek"]    #  0x21fc    (en: 'left right arrow with double vertical stroke', google: 'vänster höger pil med dubbel vertikal stroke')
- - "⇽": [T: "venstrepil med åpen spiss"]       #  0x21fd    (en: 'leftwards open headed arrow')
- - "⇾": [T: "høyrepil med åpen spiss"]         #  0x21fe    (en: 'rightwards open headed arrow')
- - "⇿": [T: "venstre-høyre-pil med åpen spiss"]    #  0x21ff    (en: 'left right open headed arrow')
+ - "⇽": [T: "venstrepil med open spiss"]       #  0x21fd    (en: 'leftwards open headed arrow')
+ - "⇾": [T: "høyrepil med open spiss"]         #  0x21fe    (en: 'rightwards open headed arrow')
+ - "⇿": [T: "venstre-høyre-pil med open spiss"]    #  0x21ff    (en: 'left right open headed arrow')
  #----------------------------------------------------------------------------------------------------------------
  #Mathematical operators OK
  - "∀": [T: "for alle"]                             #  0x2200    (en: 'for all')
@@ -698,7 +698,7 @@
  - "∂":                                             #  0x2202
      - T: "partiell derivert"
  - "∃": [T: "det eksisterer"]                        #  0x2203    (en: 'there exists')
- - "∄": [T: "det eksisterer ikke"]                   #  0x2204    (en: 'there does not exist')
+ - "∄": [T: "det eksisterer ikkje"]                   #  0x2204    (en: 'there does not exist')
  - "∅": [T: "den tomme mengden"]                        #  0x2205    (en: 'empty set')
  - "∆":                                             #  0x2206
      - T: "laplace av"                               #     (en: 'laplacian of')
@@ -718,13 +718,13 @@
                 then: [T: "i"]                   #  (en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "element i"]          #  (en: 'element of', google translation)
-              - else: [T: "tilhørende"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
+              - else: [T: "tilhøyrande"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "i"] # NORWEGIAN: Set the "auto" case to be "i"
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "er et element i"]                #  (en: 'is in', google translation)
-              - else: [T: "tilhører"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
+              - else: [T: "tilhøyrer"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
  - "∉":                                          #  0x2209
     # rule is identical to 0x2208
      - test:
@@ -733,23 +733,23 @@
         - test:
             if: "not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
             then: [T: "er"]
-        - T: "ikke et element i"
+        - T: "ikkje et element i"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         # SWEDISH/NORWEGIAN: The word "medlem" is not commonly used in set theory, so we removed that rule. If the parsing has set the parameter to "Member" it will fall under the "else" case.
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "ikke i"]              #  (en: 'not in', google translation)
+                then: [T: "ikkje i"]              #  (en: 'not in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "ikke element i"]     #  (en: 'not element of', google translation)
-              - else: [T: "ikke tilhørende"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
+                then: [T: "ikkje element i"]     #  (en: 'not element of', google translation)
+              - else: [T: "ikkje tilhøyrande"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "er ikke et element i"]    #  (en: 'is not an element of', google translation)
+                then: [T: "er ikkje et element i"]    #  (en: 'is not an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "er ikke i"]           #  (en: 'is not in', google translation)
-              - else: [T: "tilhører ikke"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'does not belong to')
+                then: [T: "er ikkje i"]           #  (en: 'is not in', google translation)
+              - else: [T: "tilhøyrer ikkje"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'does not belong to')
  - "∊":                                          #  0x220a
    - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -765,16 +765,16 @@
                 then: [T: "i"]                   #  (en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "element i"]          #  (en: 'element of', google translation)
-              - else: [T: "tilhørende"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
+              - else: [T: "tilhøyrande"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "i"]         #  (en: 'is an element of', google translation) #NORWEGIAN: Set the "auto" case to be "i"
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "er et element i"]                #  (en: 'is in', google translation)
-              - else: [T: "tilhører"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
- - "∋": [T: "inneholder elementet"]               #  0x220b    (en: 'contains the member')
- - "∌": [T: "inneholder ikke elementet"]          #  0x220c    (en: 'does not contain the member')
- - "∍": [T: "inneholder elementet"]               #  0x220d    (en: 'contains the member')
+              - else: [T: "tilhøyrer"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
+ - "∋": [T: "inneheld elementet"]               #  0x220b    (en: 'contains the member')
+ - "∌": [T: "inneheld ikkje elementet"]          #  0x220c    (en: 'does not contain the member')
+ - "∍": [T: "inneheld elementet"]               #  0x220d    (en: 'contains the member')
  - "∎": [T: "som skulle bevises"]                #  0x220e    (en: 'end of proof')
  - "∏": [T: "produktet"]                              #  0x220f    (en: 'product')
  - "∐": [T: "koproduktet"]                      #  0x2210    (en: 'coproduct', MathPlayer: 'coproduct', google: 'coprodukt')
@@ -809,7 +809,7 @@
  - "∡": [T: "målt vinkel"]                          #  0x2221    (en: 'measured angle')
  - "∢": [T: "sfærisk vinkel"]                       #  0x2222    (en: 'spherical angle')
  - "∣": [T: "deler"]                                #  0x2223    (en: 'divides')
- - "∤": [T: "deler ikke"]                           #  0x2224    (en: 'does not divide')
+ - "∤": [T: "deler ikkje"]                           #  0x2224    (en: 'does not divide')
  - "∧": [T: "og"]                                  #  0x2227    (en: 'and')
  - "∨": [T: "eller"]                                #  0x2228    (en: 'or')
  - "∩": [T: "snitt"]                                #  0x2229    (en: 'intersection')
@@ -820,9 +820,9 @@
  - "∮": [T: "kurveintegralet"]                         #  0x222e    (en: 'contour integral')
  - "∯": [T: "flateintegralet"]                           #  0x222f    (en: 'surface integral')
  - "∰": [T: "volumintegralet"]                        #  0x2230    (en: 'volume integral')
- - "∱": [T: "integralet med klokken"]                  #  0x2231    (en: 'clockwise integral', MathPlayer: 'clockwise integral', google: 'medurs integrerad')
- - "∲": [T: "kurveintegralet med klokken"]    #  0x2232    (en: 'clockwise contour integral', MathPlayer: 'clockwise contour integral (arrow on höger)', google: 'medurs konturintegral')
- - "∳": [T: "kurveintegralet mot klokken"]    #  0x2233    (en: 'anticlockwise contour integral', MathPlayer: 'anticlockwise contour integral', google: 'antikvis konturintegral')
+ - "∱": [T: "integralet med klokka"]                  #  0x2231    (en: 'clockwise integral', MathPlayer: 'clockwise integral', google: 'medurs integrerad')
+ - "∲": [T: "kurveintegralet med klokka"]    #  0x2232    (en: 'clockwise contour integral', MathPlayer: 'clockwise contour integral (arrow on höger)', google: 'medurs konturintegral')
+ - "∳": [T: "kurveintegralet mot klokka"]    #  0x2233    (en: 'anticlockwise contour integral', MathPlayer: 'anticlockwise contour integral', google: 'antikvis konturintegral')
  - "∴": [T: "derfor"]                               #  0x2234    (en: 'therefore')
  - "∵": [T: "ettersom"]                         #  0x2235    (en: 'because')
  - "∶":                                             #  0x2236
@@ -854,7 +854,7 @@
      - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "er"]
-     - T: "ikke proporsjonal med"
+     - T: "ikkje proporsjonal med"
  - "≂": [T: "minus tilde"]                          #  0x2242    (SRE: 'minus och tilde')
  - "≃":                                             #  0x2243
      - test: 
@@ -865,7 +865,7 @@
      - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "er"]
-     - T: "ikke asymptotisk lik"         #     (en: 'not asymptotically equal to', MathPlayer: 'inte asymptotically lika med', google: 'ikke asymptotisk lik')
+     - T: "ikkje asymptotisk lik"         #     (en: 'not asymptotically equal to', MathPlayer: 'inte asymptotically lika med', google: 'ikke asymptotisk lik')
  - "≅":                                             #  0x2245
      - test: 
         if: "$Verbosity!='Terse'"
@@ -875,7 +875,7 @@
      - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "er"]
-     - T: "tilnærmet men faktisk ikke lik"    #     (en: 'approximately but not actually equal to', MathPlayer: 'approximativt men inte faktiskt lika med', google: 'omtrentlig men faktisk ikke lik')
+     - T: "tilnærmet men faktisk ikkje lik"    #     (en: 'approximately but not actually equal to', MathPlayer: 'approximativt men inte faktiskt lika med', google: 'omtrentlig men faktisk ikke lik')
  - "≇":                                             #  0x2247
      - test: 
         if: "$Verbosity!='Terse'"
@@ -890,7 +890,7 @@
      - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "er"]
-     - T: "ikke tilnærmet lik"                    #     (en: 'not almost equal to', SRE: 'är inte nästan lika med')
+     - T: "ikkje tilnærmet lik"                    #     (en: 'not almost equal to', SRE: 'är inte nästan lika med')
  - "≊":                                             #  0x224a
      - test: 
         if: "$Verbosity!='Terse'"
@@ -910,7 +910,7 @@
      - T: "geometrisk ekvivalent med"                 #     (en: 'geometrically equivalent to', MathPlayer: 'geometriskt lika med', google: 'geometriskt motsvarande')
  - "≏":                                             #  0x224f
      - T: "differansen mellom"                      #     (en: 'difference between')
- - "≐": [T: "nærmer seg grenseverdien"]                   #  0x2250    (en: 'approaches the limit')
+ - "≐": [T: "nærmar seg grenseverdien"]                   #  0x2250    (en: 'approaches the limit')
  - "≑":                                             #  0x2251
      - T: "geometrisk lik"                    #     (en: 'geometrically equal to', SRE: 'är geometriskt lika med')
  - "≒":                                             #  0x2252
@@ -940,7 +940,7 @@
      - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "er"]
-     - T: "ikke lik"                           #     (en: 'not equal to')
+     - T: "ikkje lik"                           #     (en: 'not equal to')
  - "≡":                                             #  0x2261
  # SWEDISH: This symbol can mean different things. Can MathML differ between them? If so, build a test?
      - test: 
@@ -951,7 +951,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke identisk med"                       #     (en: 'not identical to')
+     - T: "ikkje identisk med"                       #     (en: 'not identical to')
  - "≣":                                             #  0x2263
      - test: 
          if: "$Verbosity!='Terse'"
@@ -971,12 +971,12 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "mindre enn men ikke lik"             #     (en: 'less than but not equal to')
+     - T: "mindre enn men ikkje lik"             #     (en: 'less than but not equal to')
  - "≩":                                             #  0x2269
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "større enn men ikke lik"             #     (en: 'greater than but not equal to')
+     - T: "større enn men ikkje lik"             #     (en: 'greater than but not equal to')
  - "≪":                                             #  0x226a
      - test: 
          if: "$Verbosity!='Terse'"
@@ -996,17 +996,17 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke ekvivalent med"                      #     (en: 'not equivalent to')
+     - T: "ikkje ekvivalent med"                      #     (en: 'not equivalent to')
  - "≮":                                             #  0x226e
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke mindre enn"                          #     (en: 'not less than')
+     - T: "ikkje mindre enn"                          #     (en: 'not less than')
  - "≯":                                             #  0x226f
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke større enn"                          #     (en: 'not greater than')
+     - T: "ikkje større enn"                          #     (en: 'not greater than')
  - "≰":                                             #  0x2270
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1058,13 +1058,13 @@
          then: [T: "er"]                            #     (en: 'is', google translation)
      - T: "verken større enn eller mindre enn"        #     (en: 'neither greater than nor less than')
  - "≺": [T: "foregår"]                          #  0x227a    (en: 'precedes')
- - "≻": [T: "følger"]                         #  0x227b    (en: 'succeeds')
+ - "≻": [T: "følgjer"]                         #  0x227b    (en: 'succeeds')
  - "≼": [T: "foregår eller er lik"]        #  0x227c    (en: 'precedes or is equal to')
- - "≽": [T: "følger eller er lik"]       #  0x227d    (en: 'succeeds or is equal to')
+ - "≽": [T: "følgjer eller er lik"]       #  0x227d    (en: 'succeeds or is equal to')
  - "≾": [T: "foregår eller er ekvivalent med"]    #  0x227e    (en: 'precedes or is equivalent to')
- - "≿": [T: "følger eller er ekvivalent med"]    #  0x227f    (en: 'succeeds or is equivalent to')
- - "⊀": [T: "foregår ikke"]                     #  0x2280    (en: 'does not precede')
- - "⊁": [T: "følger ikke"]                    #  0x2281    (en: 'does not succeed')
+ - "≿": [T: "følgjer eller er ekvivalent med"]    #  0x227f    (en: 'succeeds or is equivalent to')
+ - "⊀": [T: "foregår ikkje"]                     #  0x2280    (en: 'does not precede')
+ - "⊁": [T: "følgjer ikkje"]                    #  0x2281    (en: 'does not succeed')
  - "⊂":                                             #  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1079,12 +1079,12 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke en ekte delmengde av"                     #     (en: 'not a subset of')
+     - T: "ikkje en ekte delmengde av"                     #     (en: 'not a subset of')
  - "⊅":                                             #  0x2285
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke en ekte overmengde av"                     #     (en: 'not a superset of')
+     - T: "ikkje en ekte overmengde av"                     #     (en: 'not a superset of')
  - "⊆":                                             #  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1140,8 +1140,8 @@
  - "⊟": [T: "minustegn i kvadrat"]                         #  0x229f    (en: 'squared minus')
  - "⊠": [T: "multiplikasjonstegn i kvadrat"]                         #  0x22a0    (en: 'squared times')
  - "⊡": [T: "dot-operator i kvadrat"]                           #  0x22a1    (en: 'squared dot operator') 
- - "⊢": [T: "beviser"]                           #  0x22a2    (en: 'proves')
- - "⊣": [T: "beviser ikke"]                         #  0x22a3    (en: 'does not yield')
+ - "⊢": [T: "provar"]                           #  0x22a2    (en: 'proves')
+ - "⊣": [T: "provar ikkje"]                         #  0x22a3    (en: 'does not yield')
  - "⊤": [T: "topp"]                             #  0x22a4    (en: 'top')
  - "⊥":                                             #  0x22a5
      - T: "bunn"                       #     (en: 'bottom', MathPlayer: 'up tack', google: 'botten')
@@ -1152,31 +1152,31 @@
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
      - T: "sant"                                    #     (en: 'true')
- - "⊩": [T: "tvinger"]                              #  0x22a9    (en: 'forces')
+ - "⊩": [T: "tvingar"]                              #  0x22a9    (en: 'forces')
  - "⊪": [T: "tre vertikale streker høyre dreiekors"]    #  0x22aa    (en: 'triple vertical bar right turnstile')
  - "⊫": [T: "dobbel vertikal strek dobbelt høyre dreiekors"]    #  0x22ab    (en: 'double vertical bar double right turnstile')
- - "⊬": [T: "beviser ikke"]                         #  0x22ac    (en: 'does not prove')
+ - "⊬": [T: "provar ikkje"]                         #  0x22ac    (en: 'does not prove')
  - "⊭":                                             #  0x22ad
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke sant"                               #     (en: 'not true')
- - "⊮": [T: "tvinger ikke"]                         #  0x22ae    (en: 'does not force')
+     - T: "ikkje sant"                               #     (en: 'not true')
+ - "⊮": [T: "tvingar ikkje"]                         #  0x22ae    (en: 'does not force')
  - "⊯": [T: "overstrøket dobbel vertikal strek dobbelt høyre dreiekors"]    #  0x22af    (en: 'negated double vertical bar double right turnstile')
  - "⊰": [T: "foregår under relasjon"]                    #  0x22b0    (en: 'precedes under relation', MathPlayer: 'precedes under relation', google: 'går foran under relasjon')
- - "⊱": [T: "følger under relasjon"]                  #  0x22b1    (en: 'succeeds under relation', MathPlayer: 'succeeds under relation', google: 'lyckas under relation')
+ - "⊱": [T: "følgjer under relasjon"]                  #  0x22b1    (en: 'succeeds under relation', MathPlayer: 'succeeds under relation', google: 'lyckas under relation')
  - "⊲":                                             #  0x22b2
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er en"]                            #     (en: 'is', google translation)
      - T: "normal undergruppe av"                      #     (en: 'a normal subgroup of')
- - "⊳": [T: "inneholder som normal undergruppe"]         #  0x22b3    (en: 'contains as a normal subgroup')
+ - "⊳": [T: "inneheld som normal undergruppe"]         #  0x22b3    (en: 'contains as a normal subgroup')
  - "⊴":                                             #  0x22b4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er en"]                            #     (en: 'is', google translation)
      - T: "normal undergruppe av eller lik"       #     (en: 'a normal subgroup of or equal to')
- - "⊵": [T: "inneholder som normal undergruppe eller lik"]    #  0x22b5    (en: 'contains as a normal subgroup or equal to')
+ - "⊵": [T: "inneheld som normal undergruppe eller lik"]    #  0x22b5    (en: 'contains as a normal subgroup or equal to')
  - "⊶":                                             #  0x22b6
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1191,8 +1191,8 @@
  - "⊹": [T: "hermitisk matrise"]           #  0x22b9    (SRE: 'hermetisk konjugatmatris')
  - "⊺": [T: "innskudd"]                          #  0x22ba    (en: 'intercalate', MathPlayer: 'intercalate', google: 'interkalat')
  - "⊻": [T: "eksklusiv eller"]                                 #  0x22bb    (en: 'xor')
- - "⊼": [T: "ikke-og"]                                #  0x22bc    (en: 'nand')
- - "⊽": [T: "ikke-eller"]                                 #  0x22bd    (en: 'nor')
+ - "⊼": [T: "ikkje-og"]                                #  0x22bc    (en: 'nand')
+ - "⊽": [T: "ikkje-eller"]                                 #  0x22bd    (en: 'nor')
  - "⊾": [T: "rett vinkel med bue"]                #  0x22be    (en: 'right angle with arc')
  - "⊿": [T: "rettvinklet trekant"]                       #  0x22bf    (en: 'right triangle')
  - "⋀": [T: "logisk og"]                          #  0x22c0    (en: 'logical and')
@@ -1285,26 +1285,26 @@
  - "⋡": [T: "verken følger eller er lik"]    #  0x22e1    (en: 'does not succeed nor is equal to')
  - "⋢": [T: "verken et kvadratisk bilde av eller lik"]      #  0x22e2 
  - "⋣": [T: "verken kvadratisk original av eller lik"]    #  0x22e3
- - "⋤": [T: "kvadratisk bilde av eller ikke lik"]      #  0x22e4
- - "⋥": [T: "kvadratisk original av eller ikke lik"]    #  0x22e5
+ - "⋤": [T: "kvadratisk bilde av eller ikkje lik"]      #  0x22e4
+ - "⋥": [T: "kvadratisk original av eller ikkje lik"]    #  0x22e5
  - "⋦":                                             #  0x22e6
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "mindre enn men ikke ekvivalent med"       #     (en: 'less than but not equivalent to')
+     - T: "mindre enn men ikkje ekvivalent med"       #     (en: 'less than but not equivalent to')
  - "⋧":                                             #  0x22e7
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "større enn men ikke ekvivalent med"       #     (en: 'greater than but not equivalent to')
- - "⋨": [T: "foregår men er ikke ekvivalent med"]    #  0x22e8    (en: 'precedes but is not equivalent to')
- - "⋩": [T: "følger men er ikke ekvivalent med"]    #  0x22e9    (en: 'succeeds but is not equivalent to')
+     - T: "større enn men ikkje ekvivalent med"       #     (en: 'greater than but not equivalent to')
+ - "⋨": [T: "foregår men er ikkje ekvivalent med"]    #  0x22e8    (en: 'precedes but is not equivalent to')
+ - "⋩": [T: "følgjer men er ikkje ekvivalent med"]    #  0x22e9    (en: 'succeeds but is not equivalent to')
  - "⋪":                                             #  0x22ea
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke en normal undergruppe av"                 #     (en: 'not a normal subgroup of')
- - "⋫": [T: "inneholder ikke som normal undergruppe"]    #  0x22eb    (en: 'does not contain as a normal subgroup')
+     - T: "ikkje en normal undergruppe av"                 #     (en: 'not a normal subgroup of')
+ - "⋫": [T: "inneheld ikkje som normal undergruppe"]    #  0x22eb    (en: 'does not contain as a normal subgroup')
  - "⋬":                                             #  0x22ec
      - test: 
          if: "$Verbosity!='Terse'"
@@ -1315,20 +1315,20 @@
  - "⋯": [T: "halvhøy horisontal ellipse"]           #  0x22ef    (en: 'dot dot dot')
  - "⋰": [T: "diagonal ellipse oppover"]            #  0x22f0    (en: 'upwards diagonal ellipsis')
  - "⋱": [T: "diagonal ellipse nedover"]            #  0x22f1    (en: 'diagonal ellipsis')
- - "⋲": [T: "tilhører med lang horisontal strek"]    #  0x22f2    (en: 'element of with long horizontal stroke')
- - "⋳": [T: "tilhører med vertikal strek på slutten av horisontal strek"]    #  0x22f3    (en: 'element of with vertical bar at end of horizontal stroke')
- - "⋴": [T: "tilhører med vertikal strek på slutten av horisontal strek"]    #  0x22f4    (en: 'element of with vertical bar at end of horizontal stroke')
- - "⋵": [T: "tilhører med prikk over"]            #  0x22f5    (en: 'element of with dot above')
- - "⋶": [T: "tilhører med strek over"]           #  0x22f6    (en: 'element of with overbar')
- - "⋷": [T: "tilhører med strek over"]     #  0x22f7    (en: 'element of with overbar', MathPlayer: 'element of or equal to', google: 'element av med överbar')
- - "⋸": [T: "tilhører med strek under"]          #  0x22f8    (en: 'element of with underbar')
- - "⋹": [T: "tilhører med to horisontale streker"]    #  0x22f9    (en: 'element of with two horizontal strokes')
- - "⋺": [T: "inneholder med lang horisontal strek"]    #  0x22fa    (en: 'contains with long horizontal stroke')
- - "⋻": [T: "inneholder med vertikal strek på slutten av horisontal strek"]    #  0x22fb    (en: 'contains with vertical bar at end of horizontal stroke')
- - "⋼": [T: "inneholder med vertikal strek på slutten av horisontal strek"]    #  0x22fc    (en: 'contains with vertical bar at end of horizontal stroke')
- - "⋽": [T: "inneholder med strek over"]           #  0x22fd    (en: 'contains with overbar', MathPlayer: 'contains or equal to', google: 'innehåller med overbar')
- - "⋾": [T: "inneholder med strek over"]     #  0x22fe    (en: 'contains with overbar')
- - "⋿": [T: "tilhører ifølge z-notation"]    #  0x22ff    (en: 'z notation bag membership', MathPlayer: 'z notation bag membership', google: 'z medlemskap för notation bag')
+ - "⋲": [T: "tilhøyrer med lang horisontal strek"]    #  0x22f2    (en: 'element of with long horizontal stroke')
+ - "⋳": [T: "tilhøyrer med vertikal strek på slutten av horisontal strek"]    #  0x22f3    (en: 'element of with vertical bar at end of horizontal stroke')
+ - "⋴": [T: "tilhøyrer med vertikal strek på slutten av horisontal strek"]    #  0x22f4    (en: 'element of with vertical bar at end of horizontal stroke')
+ - "⋵": [T: "tilhøyrer med prikk over"]            #  0x22f5    (en: 'element of with dot above')
+ - "⋶": [T: "tilhøyrer med strek over"]           #  0x22f6    (en: 'element of with overbar')
+ - "⋷": [T: "tilhøyrer med strek over"]     #  0x22f7    (en: 'element of with overbar', MathPlayer: 'element of or equal to', google: 'element av med överbar')
+ - "⋸": [T: "tilhøyrer med strek under"]          #  0x22f8    (en: 'element of with underbar')
+ - "⋹": [T: "tilhøyrer med to horisontale streker"]    #  0x22f9    (en: 'element of with two horizontal strokes')
+ - "⋺": [T: "inneheld med lang horisontal strek"]    #  0x22fa    (en: 'contains with long horizontal stroke')
+ - "⋻": [T: "inneheld med vertikal strek på slutten av horisontal strek"]    #  0x22fb    (en: 'contains with vertical bar at end of horizontal stroke')
+ - "⋼": [T: "inneheld med vertikal strek på slutten av horisontal strek"]    #  0x22fc    (en: 'contains with vertical bar at end of horizontal stroke')
+ - "⋽": [T: "inneheld med strek over"]           #  0x22fd    (en: 'contains with overbar', MathPlayer: 'contains or equal to', google: 'innehåller med overbar')
+ - "⋾": [T: "inneheld med strek over"]     #  0x22fe    (en: 'contains with overbar')
+ - "⋿": [T: "tilhøyrer ifølge z-notation"]    #  0x22ff    (en: 'z notation bag membership', MathPlayer: 'z notation bag membership', google: 'z medlemskap för notation bag')
  #-------------------------------------------------------------------------------------------------------------
  #Miscellaneous Technical OK
  - "⌀": [T: "diameter"]                             #  0x2300
@@ -1347,7 +1347,7 @@
  - "⌍": [T: "nedre venstre utsnitt"]                  #  0x230d    (en: 'bottom left crop')
  - "⌎": [T: "øvre høyre utsnitt"]                       #  0x230e    (en: 'top right crop')
  - "⌏": [T: "øvre venstre utsnitt"]                     #  0x230f    (en: 'top left crop')
- - "⌐": [T: "omvendt ikke"]                         #  0x2310    (en: 'reversed not sign')
+ - "⌐": [T: "omvendt ikkje"]                         #  0x2310    (en: 'reversed not sign')
  - "⌑": [T: "kvadratisk rombe"]                      #  0x2311    (en: 'square lozenge', google: 'square pastill')
  - "⌒": [T: "bue"]                                 #  0x2312    (en: 'arc')
  - "⌓": [T: "segment"]                              #  0x2313
@@ -1356,7 +1356,7 @@
  - "⌖": [T: "trådkors"]         #  0x2316    (en: 'position indicator crosshairs', google: 'positionindikator korsstolar')
  - "⌗": [T: "firkant"]                      #  0x2317    (google translation)
  - "⌘": [T: "severdighet"]                      #  0x2318    (en: 'place of interest sign', google: 'plats för räntetecken')
- - "⌙": [T: "rotert ikke"]                    #  0x2319    (en: 'turned not sign', google translation)
+ - "⌙": [T: "rotert ikkje"]                    #  0x2319    (en: 'turned not sign', google translation)
  - "⌚": [T: "klokke"]                               #  0x231a    (en: 'watch', google: 'kolla på')
  - "⌛": [T: "timeglass"]                              #  0x231b    (en: 'hourglass', google translation)
  - "⌜": [T: "øvre venstre hjørne"]                    #  0x231c    (en: 'top left corner')
@@ -1661,7 +1661,7 @@
  - "➻": [T: "tåreformet høyrepil"]    #  0x27bb    (en: 'heavy teardrop-shanked rightwards arrow', google: 'tung teardrop-shanked höger-pil')
  - "➼": [T: "høyrepil med kileformet hale"]         #  0x27bc    (en: 'wedge-tailed rightwards arrow', google: 'wedge-tailed åt höger pil')
  - "➽": [T: "fet høyrepil med kileformet hale"]    #  0x27bd    (en: 'heavy wedge-tailed rightwards arrow', google: 'tung kil-tailed höger-pil')
- - "➾": [T: "høyrepil med åpne konturer"]          #  0x27be    (en: 'open-outlined rightwards arrow', google: 'öppen-outlinerad höger-pil')
+ - "➾": [T: "høyrepil med opne konturer"]          #  0x27be    (en: 'open-outlined rightwards arrow', google: 'öppen-outlinerad höger-pil')
  #----------------------------------------------------------------------------------------------------------------------------------
  #Miscellaneous mathematical symbols-A OK
  - "⟀": [T: "tredimensjonal vinkel"]               #  0x27c0    (en: 'three dimensional angle')
@@ -1675,12 +1675,12 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er en"]                            #     (en: 'is', google translation)
-     - T: "åpen delmengde av"                          #     (en: 'an open subset of')
+     - T: "open delmengde av"                          #     (en: 'an open subset of')
  - "⟄":                                             #  0x27c4
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er en"]                            #     (en: 'is', google translation)
-     - T: "åpen overmengde av"                          #     (en: 'an open superset of')
+     - T: "open overmengde av"                          #     (en: 'an open superset of')
  - "⟅": [T: "venstre s-formet bag delimiter"]       #  0x27c5    (en: 'left s-shaped bag delimiter')
  - "⟆": [T: "høyre s-formet bag delimiter"]         #  0x27c6    (en: 'right s-shaped bag delimiter')
  - "⟇": [T: "eller med prikk"]                #  0x27c7    (en: 'or with dot inside')
@@ -1694,7 +1694,7 @@
  - "⟏": [T: "logisk eller i kvadrat"]       #  0x27cf    (en: 'squared logical or', google: 'kvadratiska logiska eller')
  - "⟐": [T: "hvit diamant med prikk i midten"]       #  0x27d0    (en: 'white diamond with centered dot', google: 'vit diamant med centrerad prick')
  - "⟑": [T: "og med prikk"]                  #  0x27d1    (en: 'and with dot')
- - "⟒": [T: "tilhører med åpning oppover"]         #  0x27d2    (en: 'element of opening upwards')
+ - "⟒": [T: "tilhøyrer med åpning oppover"]         #  0x27d2    (en: 'element of opening upwards')
  - "⟓": [T: "nedre høyre hjørne med prikk"]           #  0x27d3    (en: 'lower right corner with dot')
  - "⟔": [T: "øvre venstre hjørne med prikk"]         #  0x27d4    (en: 'upper left corner with dot')
  - "⟕": [T: "venstre outer join"]                  #  0x27d5    (en: 'left outer join')
@@ -1728,8 +1728,8 @@
  # Supplemental arrows-A OK
  - "⟰": [T: "kvadrupel-streket oppoverpil"]             #  0x27f0    (en: 'upwards quadruple arrow', google: 'uppåt fyrdubbla pilen')
  - "⟱": [T: "kvadrupel-streket nedoverpil"]             #  0x27f1    (en: 'downwards quadruple arrow', google: 'nedåt fyrdubbla pilen')
- - "⟲": [T: "åpen sirkelpil mot klokken"]      #  0x27f2    (en: 'anticlockwise gapped circle arrow', google: 'antikvis gappad cirkelpil')
- - "⟳": [T: "åpen sirkelpil med klokken"]      #  0x27f3    (en: 'clockwise gapped circle arrow', google: 'medurs gappad cirkelpil')
+ - "⟲": [T: "open sirkelpil mot klokka"]      #  0x27f2    (en: 'anticlockwise gapped circle arrow', google: 'antikvis gappad cirkelpil')
+ - "⟳": [T: "open sirkelpil med klokka"]      #  0x27f3    (en: 'clockwise gapped circle arrow', google: 'medurs gappad cirkelpil')
  - "⟴": [T: "høyrepil med pluss i sirkel"]           #  0x27f4    (en: 'right arrow with circled plus', google: 'höger-pil med circled plus')
  - "⟵": [T: "lang venstrepil"]                  #  0x27f5    (en: 'long leftwards arrow')
  - "⟶": [T: "lang høyrepil"]                    #  0x27f6    (en: 'long rightwards arrow')
@@ -1800,16 +1800,16 @@
  - "⤵": [T: "høyrepil med vinkel nedover"]       #  0x2935    (en: 'arrow pointing rightwards then curving downwards')
  - "⤶": [T: "nedoverpil med vinkel til venstre"]     #  0x2936    (en: 'arrow pointing downwards then curving leftwards')
  - "⤷": [T: "nedoverpil med vinkel til høyre"]       #  0x2937    (en: 'arrow pointing downwards then curving rightwards')
- - "⤸": [T: "halvsirkelpil med klokken"]     #  0x2938    (en: 'right side arc clockwise arrow')
- - "⤹": [T: "halvsirkelpil mot klokken"]    #  0x2939    (en: 'left side arc anticlockwise arrow')
- - "⤺": [T: "øvre halvsirkelpil mot klokken"]           #  0x293a    (en: 'top arc anticlockwise arrow', google: 'toppbåge moturs pil')
- - "⤻": [T: "nedre halvsirkelpil mot klokken"]          #  0x293b    (en: 'bottom arc anticlockwise arrow', google: 'nedre båge anticurs pil')
- - "⤼": [T: "øvre halvsirkelpil med klokken med minus"]    #  0x293c    (en: 'top arc clockwise arrow with minus')
- - "⤽": [T: "øvre halvsirkelpil mot klokken med pluss"]    #  0x293d    (en: 'top arc anticlockwise arrow with plus')
- - "⤾": [T: "halvsirkelpil med klokken"]    #  0x293e    (en: 'lower right semicircular clockwise arrow', google: 'nedre högra halvcirkelformade medurs pil')
- - "⤿": [T: "halvsirkelpil mot klokken"]    #  0x293f    (en: 'lower left semicircular anticlockwise arrow', google: 'nedre vänstra halvcirkelformade pil moturs')
- - "⥀": [T: "sirkel-pil mot klokken"]       #  0x2940    (en: 'anticlockwise closed circle arrow', google: 'antikvis stängd cirkelpil')
- - "⥁": [T: "sirkel-pil med klokken"]       #  0x2941    (en: 'clockwise closed circle arrow', google: 'medurs stängd cirkelpil')
+ - "⤸": [T: "halvsirkelpil med klokka"]     #  0x2938    (en: 'right side arc clockwise arrow')
+ - "⤹": [T: "halvsirkelpil mot klokka"]    #  0x2939    (en: 'left side arc anticlockwise arrow')
+ - "⤺": [T: "øvre halvsirkelpil mot klokka"]           #  0x293a    (en: 'top arc anticlockwise arrow', google: 'toppbåge moturs pil')
+ - "⤻": [T: "nedre halvsirkelpil mot klokka"]          #  0x293b    (en: 'bottom arc anticlockwise arrow', google: 'nedre båge anticurs pil')
+ - "⤼": [T: "øvre halvsirkelpil med klokka med minus"]    #  0x293c    (en: 'top arc clockwise arrow with minus')
+ - "⤽": [T: "øvre halvsirkelpil mot klokka med pluss"]    #  0x293d    (en: 'top arc anticlockwise arrow with plus')
+ - "⤾": [T: "halvsirkelpil med klokka"]    #  0x293e    (en: 'lower right semicircular clockwise arrow', google: 'nedre högra halvcirkelformade medurs pil')
+ - "⤿": [T: "halvsirkelpil mot klokka"]    #  0x293f    (en: 'lower left semicircular anticlockwise arrow', google: 'nedre vänstra halvcirkelformade pil moturs')
+ - "⥀": [T: "sirkel-pil mot klokka"]       #  0x2940    (en: 'anticlockwise closed circle arrow', google: 'antikvis stängd cirkelpil')
+ - "⥁": [T: "sirkel-pil med klokka"]       #  0x2941    (en: 'clockwise closed circle arrow', google: 'medurs stängd cirkelpil')
  - "⥂": [T: "høyrepil over kort venstrepil"]     #  0x2942    (en: 'rightwards arrow above short leftwards arrow', google: 'åtgärdspil över kort vänster pil')
  - "⥃": [T: "venstrepil over kort høyrepil"]     #  0x2943    (en: 'leftwards arrow above short rightwards arrow', google: 'vänster pil ovanför kort höger-pil')
  - "⥄": [T: "kort høyrepil over venstrepil"]     #  0x2944    (en: 'short rightwards arrow above leftwards arrow', google: 'kort höger-pil ovanför vänster pil')
@@ -1934,7 +1934,7 @@
  - "⦹": [T: "vinkelrett i sirkel"]                 #  0x29b9    (en: 'circled perpendicular')
  - "⦺": [T: "sirkel delt med horisontal strek og øvre del delt med vertikal strek"]    #  0x29ba    (en: 'circled divided by horizontal bar and top half divided by vertical bar', google: 'cirklade dividerat med horisontell stång och den övre halvan dividerad med vertikal stång')
  - "⦻": [T: "sirkel med x"]              #  0x29bb    (en: 'circle with superimposed x')
- - "⦼": [T: "sirkel med divisjon rotert mot klokken"]    #  0x29bc    (en: 'circled anticlockwise rotated division sign')
+ - "⦼": [T: "sirkel med divisjon rotert mot klokka"]    #  0x29bc    (en: 'circled anticlockwise rotated division sign')
  - "⦽": [T: "oppoverpil gjennom sirkel"]                #  0x29bd    (en: 'up arrow through circle', google: 'upp pilen genom cirkeln')
  - "⦾": [T: "hvitt punkt i sirkel"]                 #  0x29be    (en: 'circled white bullet')
  - "⦿": [T: "punkt i sirkel"]                     #  0x29bf    (en: 'circled bullet')
@@ -1958,8 +1958,8 @@
  - "⧑": [T: "sløyfe med venstre halvdel fylt"]         #  0x29d1    (en: 'bowtie with left half black', google: 'bowtie med vänster halva svart')
  - "⧒": [T: "sløyfe med høyre halvdel fylt"]           #  0x29d2    (en: 'bowtie with right half black', google: 'bowtie med höger halv svart')
  - "⧓": [T: "fylt sløyfe"]                          #  0x29d3    (en: 'black bowtie', google: 'svart bowtie')
- - "⧔": [T: "sløyfe med venstre halvdel fylt og høyre halvdel åpen"]    #  0x29d4    (en: 'times with left half black', google: 'gånger med vänster halva svart')
- - "⧕": [T: "sløyfe med venstre halvdel åpen og høyre halvdel fylt"]    #  0x29d5    (en: 'times with right half black', google: 'gånger med höger halv svart')
+ - "⧔": [T: "sløyfe med venstre halvdel fylt og høyre halvdel open"]    #  0x29d4    (en: 'times with left half black', google: 'gånger med vänster halva svart')
+ - "⧕": [T: "sløyfe med venstre halvdel open og høyre halvdel fylt"]    #  0x29d5    (en: 'times with right half black', google: 'gånger med höger halv svart')
  - "⧖": [T: "hvitt timeglass"]                         #  0x29d6    (en: 'white hourglass', google: 'vit timglas')
  - "⧗": [T: "fylt timeglass"]                        #  0x29d7    (en: 'black hourglass')
  - "⧘": [T: "venstre sikksakk gjerde"]            #  0x29d8    (en: 'left wiggly fence', google: 'vänster wiggly staket')
@@ -2055,7 +2055,7 @@
  - "⨯": [T: "kryssprodukt"]             #  0x2a2f    (en: 'cross product')
  - "⨰": [T: "multiplikasjon med prikk over"]    #  0x2a30    (en: 'multiplication sign with dot above')
  - "⨱": [T: "multiplikasjon med strek under"]    #  0x2a31    (en: 'multiplication sign with underbar')
- - "⨲": [T: "semi-direkte produkt med lukket bunn"]    #  0x2a32    (en: 'semidirect product with bottom closed', google: 'semidirect -produkt med botten stängd')
+ - "⨲": [T: "semi-direkte produkt med lukka bunn"]    #  0x2a32    (en: 'semidirect product with bottom closed', google: 'semidirect -produkt med botten stängd')
  - "⨳": [T: "smash-produkt"]                        #  0x2a33    (en: 'smash product', MathPlayer: 'smash product', google: 'krossa produkten')
  - "⨴": [T: "multiplikasjon i venstre halvsirkel"]    #  0x2a34    (en: 'multiplication sign in left half circle')
  - "⨵": [T: "multiplikasjon i høyre halvsirkel"]    #  0x2a35    (en: 'multiplication sign in right half circle')
@@ -2080,11 +2080,11 @@
  - "⩉": [T: "snitt over strek over union"]         #  0x2a49    (en: 'intersection above bar above union')
  - "⩊": [T: "union ved siden av og sammensatt med union"]    #  0x2a4a    (en: 'union beside and joined with union')
  - "⩋": [T: "snitt ved siden av og sammensatt med snitt"]    #  0x2a4b    (en: 'intersection beside and joined with intersection')
- - "⩌": [T: "lukket union med seriffer"]             #  0x2a4c    (en: 'closed union with serifs')
- - "⩍": [T: "lukket snitt med seriffer"]             #  0x2a4d    (en: 'closed intersection with serifs')
+ - "⩌": [T: "lukka union med seriffer"]             #  0x2a4c    (en: 'closed union with serifs')
+ - "⩍": [T: "lukka snitt med seriffer"]             #  0x2a4d    (en: 'closed intersection with serifs')
  - "⩎": [T: "dobbelt kvadratisk snitt"]             #  0x2a4e    (en: 'double square intersection', google: 'korsning av dubbel kvadrat')
  - "⩏": [T: "dobbel kvadratisk union"]            #  0x2a4f    (en: 'double square union', google: 'double square union')
- - "⩐": [T: "lukket union med seriffer og smash-produkt"]    #  0x2a50    (en: 'closed union with serifs and smash product')
+ - "⩐": [T: "lukka union med seriffer og smash-produkt"]    #  0x2a50    (en: 'closed union with serifs and smash product')
  - "⩑": [T: "logisk og med prikk over"]    #  0x2a51    (en: 'logical and with dot above', google: 'logisk och med punkt ovan')
  - "⩒": [T: "logisk eller med prikk over"]    #  0x2a52    (en: 'logical or with dot above', google: 'logisk eller med punkt ovan')
  - "⩓": [T: "dobbel logisk og"]                   #  0x2a53    (en: 'double logical and')
@@ -2139,10 +2139,10 @@
  - "⪄": [T: "større enn eller lik med prikk over til venstre"]    #  0x2a84    (en: 'greater than or slanted equal to with dot above left')
  - "⪅": [T: "mindre enn eller tilnærmet lik"]       #  0x2a85    (en: 'less than or approximate', google: 'mindre än eller ungefärligt')
  - "⪆": [T: "større enn eller tilnærmet lik"]       #  0x2a86    (en: 'greater than or approximate', google: 'större än eller ungefärligt')
- - "⪇": [T: "mindre enn men ikke lik"]    #  0x2a87    (en: 'less than and single line not equal to', google: 'mindre än och enstaka linjer inte lika med')
- - "⪈": [T: "større enn men ikke lik"]    #  0x2a88    (en: 'greater than and single line not equal to', google: 'större än och enstaka linjer inte lika med')
- - "⪉": [T: "mindre enn men ikke tilnærmet lik"]    #  0x2a89    (en: 'less than and not approximate')
- - "⪊": [T: "større enn men ikke tilnærmet lik"]    #  0x2a8a    (en: 'greater than and not approximate')
+ - "⪇": [T: "mindre enn men ikkje lik"]    #  0x2a87    (en: 'less than and single line not equal to', google: 'mindre än och enstaka linjer inte lika med')
+ - "⪈": [T: "større enn men ikkje lik"]    #  0x2a88    (en: 'greater than and single line not equal to', google: 'större än och enstaka linjer inte lika med')
+ - "⪉": [T: "mindre enn men ikkje tilnærmet lik"]    #  0x2a89    (en: 'less than and not approximate')
+ - "⪊": [T: "større enn men ikkje tilnærmet lik"]    #  0x2a8a    (en: 'greater than and not approximate')
  - "⪋": [T: "mindre enn over lik over større enn"]    #  0x2a8b    (en: 'less than above double line equal above greater than', google: 'mindre än över dubbel linje lika över större än')
  - "⪌": [T: "større enn over lik over mindre enn"]    #  0x2a8c    (en: 'greater than above double line equal above less than', google: 'större än över dubbel linje lika över mindre än')
  - "⪍": [T: "mindre enn over asymptotisk lik"]    #  0x2a8d    (en: 'less than above similar or equal')
@@ -2170,27 +2170,27 @@
  - "⪣": [T: "dobbel mindre enn med strek under"]    #  0x2aa3    (en: 'double nested less than with underbar', google: 'dubbel kapslad mindre än med underbar')
  - "⪤": [T: "større enn overlapper mindre enn"]       #  0x2aa4    (en: 'greater than overlapping less than')
  - "⪥": [T: "større enn ved siden av mindre enn"]          #  0x2aa5    (en: 'greater than beside less than')
- - "⪦": [T: "mindre enn lukket av kurve"]            #  0x2aa6    (en: 'less than closed by curve')
- - "⪧": [T: "større enn lukket av kurve"]            #  0x2aa7    (en: 'greater than closed by curve')
- - "⪨": [T: "mindre enn lukket av kurve over lik"]    #  0x2aa8    (en: 'less than closed by curve above slanted equal')
- - "⪩": [T: "større enn lukket av kurve over lik"]    #  0x2aa9    (en: 'greater than closed by curve above slanted equal')
+ - "⪦": [T: "mindre enn lukka av kurve"]            #  0x2aa6    (en: 'less than closed by curve')
+ - "⪧": [T: "større enn lukka av kurve"]            #  0x2aa7    (en: 'greater than closed by curve')
+ - "⪨": [T: "mindre enn lukka av kurve over lik"]    #  0x2aa8    (en: 'less than closed by curve above slanted equal')
+ - "⪩": [T: "større enn lukka av kurve over lik"]    #  0x2aa9    (en: 'greater than closed by curve above slanted equal')
  - "⪪": [T: "mindre enn"]                            #  0x2aaa    (en: 'smaller than')
  - "⪫": [T: "større enn"]                            #  0x2aab    (en: 'larger than')
  - "⪬": [T: "mindre enn eller lik"]             #  0x2aac    (en: 'smaller than or equal to')
  - "⪭": [T: "større enn eller lik"]             #  0x2aad    (en: 'larger than or equal to')
  - "⪮": [T: "lik med hump over"]    #  0x2aae    (en: 'equals sign with bumpy above', MathPlayer: 'difference between (grav accentnt)', google: 'är lika med tecken med ojämn ovan')
  - "⪯": [T: "foregår over likhetsstrek"]    #  0x2aaf    (en: 'precedes above single line equals sign')
- - "⪰": [T: "følger over likhetsstrek"]    #  0x2ab0    (en: 'succeeds above single line equals sign', google: 'lyckas över enstaka linjen är lika med tecken')
+ - "⪰": [T: "følgjer over likhetsstrek"]    #  0x2ab0    (en: 'succeeds above single line equals sign', google: 'lyckas över enstaka linjen är lika med tecken')
  - "⪱": [T: "foregår over utstrøket likhetsstrek"]    #  0x2ab1    (en: 'precedes above single line not equal to', google: 'föregår över enstaka linjer som inte är lika med')
- - "⪲": [T: "følger over utstrøket likhetsstrek"]    #  0x2ab2    (en: 'succeeds above single line not equal to', google: 'lyckas över enstaka linjer som inte är lika med')
+ - "⪲": [T: "følgjer over utstrøket likhetsstrek"]    #  0x2ab2    (en: 'succeeds above single line not equal to', google: 'lyckas över enstaka linjer som inte är lika med')
  - "⪳": [T: "foregår over lik"]    #  0x2ab3    (en: 'precedes above equals sign', google: 'föregår över lika tecken')
- - "⪴": [T: "følger over lik"]    #  0x2ab4    (en: 'succeeds above equals sign', google: 'lyckas över lika tecken')
- - "⪵": [T: "foregår over ikke lik"]            #  0x2ab5    (en: 'precedes above not equal to')
- - "⪶": [T: "følger over ikke lik"]            #  0x2ab6    (en: 'succeeds above not equal to')
+ - "⪴": [T: "følgjer over lik"]    #  0x2ab4    (en: 'succeeds above equals sign', google: 'lyckas över lika tecken')
+ - "⪵": [T: "foregår over ikkje lik"]            #  0x2ab5    (en: 'precedes above not equal to')
+ - "⪶": [T: "følgjer over ikkje lik"]            #  0x2ab6    (en: 'succeeds above not equal to')
  - "⪷": [T: "foregår over tilnærmet lik"]    #  0x2ab7    (en: 'precedes above almost equal to', google: 'föregår över nästan lika med')
- - "⪸": [T: "følger over tilnærmet lik"]    #  0x2ab8    (en: 'succeeds above almost equal to', google: 'lyckas över nästan lika med')
- - "⪹": [T: "foregår over ikke tilnærmet lik"]    #  0x2ab9    (en: 'precedes above not almost equal to', google: 'föregår ovan inte nästan lika med')
- - "⪺": [T: "følger over ikke tilnærmet lik"]    #  0x2aba    (en: 'succeeds above not almost equal to', google: 'lyckas ovan inte nästan lika med')
+ - "⪸": [T: "følgjer over tilnærmet lik"]    #  0x2ab8    (en: 'succeeds above almost equal to', google: 'lyckas över nästan lika med')
+ - "⪹": [T: "foregår over ikkje tilnærmet lik"]    #  0x2ab9    (en: 'precedes above not almost equal to', google: 'föregår ovan inte nästan lika med')
+ - "⪺": [T: "følgjer over ikkje tilnærmet lik"]    #  0x2aba    (en: 'succeeds above not almost equal to', google: 'lyckas ovan inte nästan lika med')
  - "⪻": [T: "dobbel foregår"]                       #  0x2abb    (en: 'double precedes')
  - "⪼": [T: "dobbel følger"]                     #  0x2abc    (en: 'double succeeds')
  - "⪽": [T: "delmengde med prikk"]    #  0x2abd    (en: 'subset with dot')
@@ -2207,21 +2207,21 @@
  - "⫈": [T: "overmengde av over tilde"]              #  0x2ac8    (en: 'superset of above tilde operator')
  - "⫉": [T: "delmengde av over tilnærmet lik"]       #  0x2ac9    (en: 'subset of above almost equal to', google: 'delmängd över nästan lika med')
  - "⫊": [T: "overmengde av over tilnærmet lik"]      #  0x2aca    (en: 'superset of above almost equal to', google: 'superset över nästan lika med')
- - "⫋": [T: "delmengde av over ikke lik"]             #  0x2acb    (en: 'subset above not equal to', google: 'delmängd ovan inte lika med')
- - "⫌": [T: "overmengde av over ikke lik"]            #  0x2acc    (en: 'superset of above not equal to', google: 'superset av ovan inte lika med')
- - "⫍": [T: "venstre kvadratisk åpen boks"]        #  0x2acd    (en: 'square left open box operator', google: 'square left open box operator')
- - "⫎": [T: "høyre kvadratisk åpen boks"]          #  0x2ace    (en: 'square right open box operator', google: 'square right open box operator')
- - "⫏": [T: "lukket delmengde"]                      #  0x2acf    (en: 'closed subset')
- - "⫐": [T: "lukket overmengde"]                      #  0x2ad0    (en: 'closed superset')
- - "⫑": [T: "lukket delmengde eller lik"]       #  0x2ad1    (en: 'closed subset or equal to')
- - "⫒": [T: "lukket overmengde eller lik"]       #  0x2ad2    (en: 'closed superset or equal to')
+ - "⫋": [T: "delmengde av over ikkje lik"]             #  0x2acb    (en: 'subset above not equal to', google: 'delmängd ovan inte lika med')
+ - "⫌": [T: "overmengde av over ikkje lik"]            #  0x2acc    (en: 'superset of above not equal to', google: 'superset av ovan inte lika med')
+ - "⫍": [T: "venstre kvadratisk open boks"]        #  0x2acd    (en: 'square left open box operator', google: 'square left open box operator')
+ - "⫎": [T: "høyre kvadratisk open boks"]          #  0x2ace    (en: 'square right open box operator', google: 'square right open box operator')
+ - "⫏": [T: "lukka delmengde"]                      #  0x2acf    (en: 'closed subset')
+ - "⫐": [T: "lukka overmengde"]                      #  0x2ad0    (en: 'closed superset')
+ - "⫑": [T: "lukka delmengde eller lik"]       #  0x2ad1    (en: 'closed subset or equal to')
+ - "⫒": [T: "lukka overmengde eller lik"]       #  0x2ad2    (en: 'closed superset or equal to')
  - "⫓": [T: "delmengde over overmengde"]                 #  0x2ad3    (en: 'subset above superset')
  - "⫔": [T: "overmengde over delmengde"]                 #  0x2ad4    (en: 'superset above subset')
  - "⫕": [T: "delmengde over delmengde"]                   #  0x2ad5    (en: 'subset above subset')
  - "⫖": [T: "overmengde over overmengde"]               #  0x2ad6    (en: 'superset above superset')
  - "⫗": [T: "overmengde ved siden av delmengde"]            #  0x2ad7    (en: 'superset beside subset')
  - "⫘": [T: "overmengde ved siden av og sammenføyd med delmengde"]    #  0x2ad8    (en: 'superset beside and joined by dash with subset')
- - "⫙": [T: "tilhører med åpning nedover"]         #  0x2ad9    (en: 'element of opening downwards')
+ - "⫙": [T: "tilhøyrer med åpning nedover"]         #  0x2ad9    (en: 'element of opening downwards')
  - "⫚": [T: "høygaffel med t øverst"]                #  0x2ada    (en: 'pitchfork with tee top')
  - "⫛": [T: "tverrgående snitt"]                     #  0x2adb    (en: 'transversal intersection')
  - "⫝̸": [T: "avhengig"]                          #  0x2adc    (en: 'forking', google: 'gaffel')
@@ -2240,9 +2240,9 @@
  - "⫩": [T: "oppoverrotert kort dreiekors over nedoverrotert kort dreiekors"]    #  0x2ae9    (en: 'short up tack above short down tack')
  - "⫪": [T: "nedoverrotert dobbelt dreiekors"]              #  0x2aea    (en: 'double down tack', google: 'dubbel down tack')
  - "⫫": [T: "oppoverrotert dobbelt dreiekors"]                       #  0x2aeb    (en: 'double up tack')
- - "⫬": [T: "dobbeltstreket ikke"]         #  0x2aec    (en: 'double stroke not sign')
- - "⫭": [T: "omvendt dobbeltstreket ikke"]    #  0x2aed    (en: 'reversed double stroke not sign')
- - "⫮": [T: "deler ikke med omvendt skråstrek"]    #  0x2aee    (en: 'does not divide with reversed negation slash')
+ - "⫬": [T: "dobbeltstreket ikkje"]         #  0x2aec    (en: 'double stroke not sign')
+ - "⫭": [T: "omvendt dobbeltstreket ikkje"]    #  0x2aed    (en: 'reversed double stroke not sign')
+ - "⫮": [T: "deler ikkje med omvendt skråstrek"]    #  0x2aee    (en: 'does not divide with reversed negation slash')
  - "⫯": [T: "vertikal strek med sirkel over"]       #  0x2aef    (en: 'vertical line with circle above')
  - "⫰": [T: "vertikal strek med sirkel under"]      #  0x2af0    (en: 'vertical line with circle below')
  - "⫱": [T: "nedoverrotert dreiekors med sirkel under"]            #  0x2af1    (en: 'down tack with circle below')
@@ -2565,7 +2565,7 @@
  - "㏖": [T: "mol"]                            #  0x33d6    (en: 'moles', google translation)
  - "㏗": [T: "p h"]                                  #  0x33d7    (google translation)
  - "㏘": [T: "piko-meter"]                           #  0x33d8    (en: 'picometers', google translation) #NORWEGIAN: More likely to be pronounced correctly with a hyphen
- - "㏙": [T: "milliondeler"]                     #  0x33d9    (en: 'parts per million', google translation)
+ - "㏙": [T: "milliondelar"]                     #  0x33d9    (en: 'parts per million', google translation)
  - "㏚": [T: "petarøntgen"]                        #  0x33da    (google translation)
  - "㏛": [T: "steradianer"]                           #  0x33db    (google translation)
  - "㏜": [T: "sievert"]                             #  0x33dc    (google translation)
@@ -2582,11 +2582,11 @@
  - "": [T: "tilde med pluss under"]                 #  0xe904    (en: 'tilde with plus below', google translation)
  - "": [T: "dobbel lik over større enn"]           #  0xe908    (en: 'equal double over greater than', google translation)
  - "": [T: "dobbel lik over mindre enn"]           #  0xe909    (en: 'equal double over less than', google translation)
- - "": [T: "inneholder eller er lik"]            #  0xe90a    (en: 'contains or equal to', google translation)
+ - "": [T: "inneheld eller er lik"]            #  0xe90a    (en: 'contains or equal to', google translation)
  - "": [T: "overmengde av eller lik"]           #  0xe90b    (en: 'superset of or equal to', google translation)
  - "": [T: "delmengde av eller lik"]              #  0xe90c    (en: 'subset of or equal to', google translation)
  - "": [T: "lik over mindre enn"]                  #  0xe90d    (en: 'equal over less than', google translation)
- - "": [T: "tilhører eller lik"]            #  0xe912    (en: 'element of or equal to', google translation)
+ - "": [T: "tilhøyrer eller lik"]            #  0xe912    (en: 'element of or equal to', google translation)
  - "": [T: "lik eller større enn"]             #  0xe913    (en: 'equal to or greater than', google translation)
  - "": [T: "tilnærmet overmengde av"]               #  0xe914    (en: 'approximate superset of', google translation)
  - "": [T: "tilnærmet delmengde av"]               #  0xe915    (en: 'approximate subset of', google translation)
@@ -2605,8 +2605,8 @@
  - "": [T: "større enn mindre enn eller lik"]    #  0xe927    (en: 'greater than less than or equal to', google translation)
  - "": [T: "ekvivalent med eller mindre enn"]          #  0xe928    (en: 'equivalent to or less than', google translation)
  - "": [T: "ekvivalent med eller større enn"]          #  0xe929    (en: 'equivalent to or greater than', google translation)
- - "": [T: "venstre åpen boks"]            #  0xe92a    (en: 'left open box operator', google translation)
- - "": [T: "høyre åpen boks"]              #  0xe92b    (en: 'right open box operator', google translation)
+ - "": [T: "venstre open boks"]            #  0xe92a    (en: 'left open box operator', google translation)
+ - "": [T: "høyre open boks"]              #  0xe92b    (en: 'right open box operator', google translation)
  - "": [T: "identisk med med prikk"]               #  0xe92c    (en: 'identical to with dot', google translation)
  - "": [T: "større enn lik eller mindre enn"]    #  0xe92d    (en: 'greater than equal to or less than', google translation)
  - "": [T: "bar"]                          #  0xe92e    (en: 'bar operator', google translation)
@@ -2617,20 +2617,20 @@
  - "": [T: "nøstet mindre enn"]                   #  0xe936    (en: 'nested less than', google translation)
  - "": [T: "nøstet større enn"]                   #  0xe937    (en: 'nested greater than', google translation)
  - "": [T: "foregår eller ekvivalent med"]              #  0xe93a    (en: 'precedes or equivalent to', google translation)
- - "": [T: "følger eller ekvivalent med"]             #  0xe93b    (en: 'succeeds or equivalent to', google translation)
+ - "": [T: "følgjer eller ekvivalent med"]             #  0xe93b    (en: 'succeeds or equivalent to', google translation)
  - "": [T: "foregår over lik"]                    #  0xe940    (en: 'precedes over equal', google translation)
- - "": [T: "følger over lik"]                     #  0xe941    (en: 'succeeds over equal', google translation)
+ - "": [T: "følgjer over lik"]                     #  0xe941    (en: 'succeeds over equal', google translation)
  - "": [T: "mindre enn eller lik"]           #  0xe942    (en: 'less equal slanted greater', google translation)
  - "": [T: "større enn eller lik"]             #  0xe943    (en: 'greater equal slanted less', google translation)
  - "": [T: "oppfylles av"]                              #  0xe948    (en: 'satisfied by', google translation)
  - "": [T: "langstrakt s"]                                #  0xe949    (en: 'lazy s', google translation)
- - "": [T: "ikke påstand"]                       #  0xe94a    (en: 'not assertion', google translation)
+ - "": [T: "ikkje påstand"]                       #  0xe94a    (en: 'not assertion', google translation)
  - "": [T: "dobbel lik"]                          #  0xe94b    (en: 'double equal', google translation)
  - "": [T: "trippel lik"]                         #  0xe94c    (en: 'triple equal', google translation)
  - "": [T: "regel forsinket"]                       #  0xe94d    (en: 'rule delayed', google translation)
  - "": [T: "alias skilletegn"]                     #  0xe94e    (en: 'alias delimiter', google translation)
  - "": [T: "normal undergruppe av med strek"]            #  0xe950    (en: 'normal subgroup of with bar', google translation)
- - "": [T: "inneholder som normal undergruppe med strek"]    #  0xe951    (en: 'contains as normal subgroup with bar', google translation)
+ - "": [T: "inneheld som normal undergruppe med strek"]    #  0xe951    (en: 'contains as normal subgroup with bar', google translation)
  - "": [T: "rund impliserer"]                         #  0xe954    (en: 'round implies', google translation)
  - "": [T: "smil under strek"]                         #  0xe955    (en: 'smile under bar', google translation)
  - "": [T: "rynke over strek"]                     #  0xe956    (en: 'frown over bar', google translation)
@@ -2647,7 +2647,7 @@
  - "": [T: "høyre trekant med midtstrek"]    #  0xe965    (en: 'right pointing triangle with bisecting bar', google translation)
  - "": [T: "lik med prikket øvre linje"]        #  0xe966    (en: 'equals with dotted top line', google translation)
  - "": [T: "foregår med kolon"]                    #  0xe967    (en: 'precedes with colon', google translation)
- - "": [T: "følger med kolon"]                     #  0xe968    (en: 'succeeds with colon', google translation)
+ - "": [T: "følgjer med kolon"]                     #  0xe968    (en: 'succeeds with colon', google translation)
  - "": [T: "mindre enn eller lik"]           #  0xe969    (en: 'smaller than or equal slanted', google translation)
  - "": [T: "større enn eller lik"]           #  0xe96a    (en: 'larger than or equal slanted', google translation)
  - "": [T: "nøstet veldig mye mindre enn"]            #  0xe96b    (en: 'nested very much less than', google translation)
@@ -2704,92 +2704,92 @@
  - "": [T: "kvadratisk snitt"]              #  0xe9b2    (en: 'square intersection serifs', google translation)
  - "": [T: "kvadratisk union"]                  #  0xe9b3    (google translation)
  - "": [T: "foregår ekvivalent med eller følger"]     #  0xe9e0    (en: 'precedes equivalent to or succeeds', google translation)
- - "": [T: "følger ekvivalent med eller foregår"]     #  0xe9e1    (en: 'succeeds equivalent to or precedes', google translation)
+ - "": [T: "følgjer ekvivalent med eller foregår"]     #  0xe9e1    (en: 'succeeds equivalent to or precedes', google translation)
  - "": [T: "foregår tilnærmet lik eller følger"]    #  0xe9e2    (en: 'precedes almost equal to or succeeds', google translation)
- - "": [T: "følger tilnærmet lik eller foregår"]    #  0xe9e3    (en: 'succeeds almost equal to or precedes', google translation)
+ - "": [T: "følgjer tilnærmet lik eller foregår"]    #  0xe9e3    (en: 'succeeds almost equal to or precedes', google translation)
  - "": [T: "mindre enn ekvivalent med eller større enn"]    #  0xe9f0    (en: 'less than equivalent to or greater than', google translation)
  - "": [T: "større enn ekvivalent med eller mindre enn"]    #  0xe9f1    (en: 'greater than equivalent to or less than', google translation)
- - "": [T: "ikke mye mindre enn"]           #  0xea00    (en: 'not vert much less than', google translation)
- - "": [T: "ikke mye større enn"]           #  0xea01    (en: 'not vert much greater than', google translation)
- - "": [T: "ikke mye mindre enn"]        #  0xea02    (en: 'not much less than variant', google translation)
- - "": [T: "ikke mye større enn"]        #  0xea03    (en: 'not much greater than variant', google translation)
+ - "": [T: "ikkje mye mindre enn"]           #  0xea00    (en: 'not vert much less than', google translation)
+ - "": [T: "ikkje mye større enn"]           #  0xea01    (en: 'not vert much greater than', google translation)
+ - "": [T: "ikkje mye mindre enn"]        #  0xea02    (en: 'not much less than variant', google translation)
+ - "": [T: "ikkje mye større enn"]        #  0xea03    (en: 'not much greater than variant', google translation)
  - "": [T: "mindre enn vertikal ikke dobbel lik"]         #  0xea04    (en: 'less vert not double equals', google translation)
  - "": [T: "større enn vertikal ikke dobbel lik"]             #  0xea05    (en: 'gt vert not double equals', google translation)
- - "": [T: "ikke mindre enn eller lik"]        #  0xea06    (en: 'not less than or equal to', google translation)
- - "": [T: "ikke større enn eller lik"]        #  0xea07    (en: 'not greater than or equal to', google translation)
+ - "": [T: "ikkje mindre enn eller lik"]        #  0xea06    (en: 'not less than or equal to', google translation)
+ - "": [T: "ikkje større enn eller lik"]        #  0xea07    (en: 'not greater than or equal to', google translation)
  - "": [T: "verken lik eller mindre enn"]      #  0xea09    (en: 'neither equal to nor less than', google translation)
- - "": [T: "inneholder ikke eller er lik"]       #  0xea0a    (en: 'does not contain or equal to', google translation)
+ - "": [T: "inneheld ikke eller er lik"]       #  0xea0a    (en: 'does not contain or equal to', google translation)
  - "": [T: "verken overmengde av eller lik"]    #  0xea0b    (en: 'neither superset of nor equal to', google translation)
  - "": [T: "verken delmengde av eller lik"]       #  0xea0c    (en: 'neither subset of nor equal to', google translation)
  - "": [T: "omvendt skråstrek delmengde"]           #  0xea0d    (en: 'reverse solidus subset', google translation)
  - "": [T: "verken lik eller større enn"]      #  0xea0e    (en: 'neither equal to nor greater than', google translation)
- - "": [T: "ikke minus tilde"]           #  0xea0f    (en: 'not minus tilde operator', google translation)
+ - "": [T: "ikkje minus tilde"]           #  0xea0f    (en: 'not minus tilde operator', google translation)
  - "": [T: "verken lik eller mindre enn"]      #  0xea10    (en: 'neither equal to nor less than', google translation)
- - "": [T: "ikke tilde"]                 #  0xea11    (en: 'not tilde operator', google translation)
- - "": [T: "ikke element i eller lik"]       #  0xea12    (en: 'not element of or equal to', google translation)
+ - "": [T: "ikkje tilde"]                 #  0xea11    (en: 'not tilde operator', google translation)
+ - "": [T: "ikkje element i eller lik"]       #  0xea12    (en: 'not element of or equal to', google translation)
  - "": [T: "verken lik eller større enn"]      #  0xea13    (en: 'neither equal to nor greater than', google translation)
- - "": [T: "ikke tilnærmet lik"]                     #  0xea14    (en: 'not almost equal', google translation)
- - "": [T: "ikke følger tilnærmet lik"]                 #  0xea15    (en: 'not succeeds similar', google translation)
+ - "": [T: "ikkje tilnærmet lik"]                     #  0xea14    (en: 'not almost equal', google translation)
+ - "": [T: "ikkje følger tilnærmet lik"]                 #  0xea15    (en: 'not succeeds similar', google translation)
  - "": [T: "mindre enn eller lik med skråstrek"]    #  0xea16    (en: 'less than or slanted equal to with slash', google translation)
  - "": [T: "større enn eller lik med skråstrek"]    #  0xea17    (en: 'greater than or slanted equal to with slash', google translation)
  - "": [T: "overmengde skråstrek"]                     #  0xea1a    (google translation)
- - "": [T: "inneholder ikke"]                      #  0xea1b    (en: 'does not contain', google translation)
- - "": [T: "ikke mindre enn eller lik"]        #  0xea1d    (en: 'not less than or equal to', google translation)
- - "": [T: "ikke større enn eller lik"]        #  0xea1e    (en: 'not greater than or equal to', google translation)
- - "": [T: "ikke nesten lik minus"]           #  0xea1f    (en: 'not almost equal to minus', google translation)
- - "": [T: "tilhører ikke mengde med prikk"]      #  0xea22    (en: 'negated set membership dot above', google translation)
- - "": [T: "ikke rett vinkel"]                      #  0xea2c    (en: 'not vert angle', google translation)
- - "": [T: "ikke parallell"]                  #  0xea2d    (en: 'not parallel slanted', google translation)
- - "": [T: "ikke strek"]                     #  0xea2e    (en: 'not bar operator', google translation)
- - "": [T: "ikke dobbel strek"]              #  0xea2f    (en: 'not double bar operator', google translation)
- - "": [T: "ikke trippel strek"]           #  0xea30    (en: 'not triple bar operator', google translation)
+ - "": [T: "inneheld ikke"]                      #  0xea1b    (en: 'does not contain', google translation)
+ - "": [T: "ikkje mindre enn eller lik"]        #  0xea1d    (en: 'not less than or equal to', google translation)
+ - "": [T: "ikkje større enn eller lik"]        #  0xea1e    (en: 'not greater than or equal to', google translation)
+ - "": [T: "ikkje nesten lik minus"]           #  0xea1f    (en: 'not almost equal to minus', google translation)
+ - "": [T: "tilhøyrer ikke mengde med prikk"]      #  0xea22    (en: 'negated set membership dot above', google translation)
+ - "": [T: "ikkje rett vinkel"]                      #  0xea2c    (en: 'not vert angle', google translation)
+ - "": [T: "ikkje parallell"]                  #  0xea2d    (en: 'not parallel slanted', google translation)
+ - "": [T: "ikkje strek"]                     #  0xea2e    (en: 'not bar operator', google translation)
+ - "": [T: "ikkje dobbel strek"]              #  0xea2f    (en: 'not double bar operator', google translation)
+ - "": [T: "ikkje trippel strek"]           #  0xea30    (en: 'not triple bar operator', google translation)
  - "": [T: "mindre enn men ikke tilnærmet lik"]    #  0xea32    (en: 'less than but not approximately equal to', google translation)
  - "": [T: "større enn men ikke tilnærmet lik"]    #  0xea33    (en: 'greater than but not approximately equal to', google translation)
  - "": [T: "mindre enn eller ikke lik"]        #  0xea34    (en: 'less than or not equal to', google translation)
  - "": [T: "større enn eller ikke lik"]        #  0xea35    (en: 'greater than or not equal to', google translation)
- - "": [T: "ikke nøstet mindre enn"]              #  0xea36    (en: 'not nested less than', google translation)
- - "": [T: "ikke nøstet større enn"]               #  0xea37    (en: 'not nested greater than', google translation)
- - "": [T: "ikke mye mindre enn"]                #  0xea38    (en: 'not much less than', google translation)
- - "": [T: "ikke mye større enn"]                #  0xea39    (en: 'not much greater than', google translation)
+ - "": [T: "ikkje nøstet mindre enn"]              #  0xea36    (en: 'not nested less than', google translation)
+ - "": [T: "ikkje nøstet større enn"]               #  0xea37    (en: 'not nested greater than', google translation)
+ - "": [T: "ikkje mye mindre enn"]                #  0xea38    (en: 'not much less than', google translation)
+ - "": [T: "ikkje mye større enn"]                #  0xea39    (en: 'not much greater than', google translation)
  - "": [T: "foregår men ikke ekvivalent med"]         #  0xea3a    (en: 'precedes but not equivalent to', google translation)
- - "": [T: "følger men ikke ekvivalent med"]          #  0xea3b    (en: 'succeeds but not equivalent to', google translation)
+ - "": [T: "følgjer men ikke ekvivalent med"]          #  0xea3b    (en: 'succeeds but not equivalent to', google translation)
  - "": [T: "foregår men ikke lik"]            #  0xea3c    (en: 'precedes but not equal to', google translation)
- - "": [T: "følger men ikke lik"]             #  0xea3d    (en: 'succeeds but not equal to', google translation)
- - "": [T: "ikke lik eller foregår"]               #  0xea3e    (en: 'does not equal or precede', google translation)
- - "": [T: "ikke lik eller følger"]               #  0xea3f    (en: 'does not equal or succeed', google translation)
+ - "": [T: "følgjer men ikke lik"]             #  0xea3d    (en: 'succeeds but not equal to', google translation)
+ - "": [T: "ikkje lik eller foregår"]               #  0xea3e    (en: 'does not equal or precede', google translation)
+ - "": [T: "ikkje lik eller følger"]               #  0xea3f    (en: 'does not equal or succeed', google translation)
  - "": [T: "foregår men ikke lik"]            #  0xea40    (en: 'precedes but not equal to', google translation)
- - "": [T: "følger men ikke lik"]             #  0xea41    (en: 'succeeds but not equal to', google translation)
- - "": [T: "ikke delmengde av eller lik"]      #  0xea42    (en: 'not subset of nor equal to', google translation)
- - "": [T: "ikke overmengde av eller lik"]      #  0xea43    (en: 'not superset of nor equal to', google translation)
+ - "": [T: "følgjer men ikke lik"]             #  0xea41    (en: 'succeeds but not equal to', google translation)
+ - "": [T: "ikkje delmengde av eller lik"]      #  0xea42    (en: 'not subset of nor equal to', google translation)
+ - "": [T: "ikkje overmengde av eller lik"]      #  0xea43    (en: 'not superset of nor equal to', google translation)
  - "": [T: "delmengde av eller ikke lik"]         #  0xea44    (en: 'subset of or not equal to', google translation)
  - "": [T: "overmengde av eller ikke lik"]      #  0xea45    (en: 'superset of or not equal to', google translation)
- - "": [T: "ikke delmengde av eller lik"]      #  0xea46    (en: 'not subset of nor equal to', google translation)
- - "": [T: "ikke overmengde av eller lik"]      #  0xea47    (en: 'not superset of nor equal to', google translation)
- - "": [T: "ikke trippel mindre enn"]             #  0xea48    (en: 'not triple less than', google translation)
- - "": [T: "ikke trippel større enn"]               #  0xea49    (en: 'not triple greater than', google translation)
- - "": [T: "ikke foregår lik"]                    #  0xea4c    (en: 'not precedes equals', google translation)
- - "": [T: "ikke følger lik"]                     #  0xea4d    (en: 'not succeeds equals', google translation)
- - "": [T: "ikke normal undergruppe av med strek"]       #  0xea50    (en: 'not normal subgroup of with bar', google translation)
- - "": [T: "inneholder ikke som normal undergruppe med strek"]    #  0xea51    (en: 'does not contain as normal subgroup with bar', google translation)
- - "": [T: "ikke forskjell mellom"]                 #  0xea52    (en: 'not difference between', google translation)
- - "": [T: "ikke geometrisk ekvivalent med"]         #  0xea53    (en: 'not geometrically equivalent to', google translation)
- - "": [T: "ikke vertikal tilnærmet lik"]                   #  0xea54    (en: 'not vert similar', google translation)
- - "": [T: "ikke lik eller tilnærmet lik"]             #  0xea55    (en: 'not equal or similar', google translation)
- - "": [T: "ikke vertikal tilnærmet lik"]                #  0xea56    (en: 'not vert approximate', google translation)
- - "": [T: "ikke tilnærmet identisk med"]           #  0xea57    (en: 'not approximately identical to', google translation)
- - "": [T: "ikke differansen mellom"]                      #  0xea58    (en: 'not bumpy equals', google translation)
- - "": [T: "ikke differansen mellom"]              #  0xea59    (en: 'not bumpy single equals', google translation)
- - "": [T: "ikke lik prikk"]                      #  0xea5a    (en: 'not equal dot', google translation)
+ - "": [T: "ikkje delmengde av eller lik"]      #  0xea46    (en: 'not subset of nor equal to', google translation)
+ - "": [T: "ikkje overmengde av eller lik"]      #  0xea47    (en: 'not superset of nor equal to', google translation)
+ - "": [T: "ikkje trippel mindre enn"]             #  0xea48    (en: 'not triple less than', google translation)
+ - "": [T: "ikkje trippel større enn"]               #  0xea49    (en: 'not triple greater than', google translation)
+ - "": [T: "ikkje foregår lik"]                    #  0xea4c    (en: 'not precedes equals', google translation)
+ - "": [T: "ikkje følger lik"]                     #  0xea4d    (en: 'not succeeds equals', google translation)
+ - "": [T: "ikkje normal undergruppe av med strek"]       #  0xea50    (en: 'not normal subgroup of with bar', google translation)
+ - "": [T: "inneheld ikke som normal undergruppe med strek"]    #  0xea51    (en: 'does not contain as normal subgroup with bar', google translation)
+ - "": [T: "ikkje forskjell mellom"]                 #  0xea52    (en: 'not difference between', google translation)
+ - "": [T: "ikkje geometrisk ekvivalent med"]         #  0xea53    (en: 'not geometrically equivalent to', google translation)
+ - "": [T: "ikkje vertikal tilnærmet lik"]                   #  0xea54    (en: 'not vert similar', google translation)
+ - "": [T: "ikkje lik eller tilnærmet lik"]             #  0xea55    (en: 'not equal or similar', google translation)
+ - "": [T: "ikkje vertikal tilnærmet lik"]                #  0xea56    (en: 'not vert approximate', google translation)
+ - "": [T: "ikkje tilnærmet identisk med"]           #  0xea57    (en: 'not approximately identical to', google translation)
+ - "": [T: "ikkje differansen mellom"]                      #  0xea58    (en: 'not bumpy equals', google translation)
+ - "": [T: "ikkje differansen mellom"]              #  0xea59    (en: 'not bumpy single equals', google translation)
+ - "": [T: "ikkje lik prikk"]                      #  0xea5a    (en: 'not equal dot', google translation)
  - "": [T: "speilvendt ikke ekvivalent med"]              #  0xea5b    (en: 'reverse not equivalent', google translation)
- - "": [T: "ikke kvadratisk delmengde"]              #  0xea60    (en: 'not square subset', google translation)
- - "": [T: "ikke kvadratisk overmengde"]              #  0xea61    (en: 'not square superset', google translation)
- - "": [T: "ikke tilnærmet lik over lik"]           #  0xea62    (en: 'not almost equal over equal', google translation)
- - "": [T: "ikke strengt ekvivalent med"]              #  0xea63    (en: 'not strictly equivalent to', google translation)
- - "": [T: "ikke kongruent prikk"]                 #  0xea64    (en: 'not congruent dot', google translation)
+ - "": [T: "ikkje kvadratisk delmengde"]              #  0xea60    (en: 'not square subset', google translation)
+ - "": [T: "ikkje kvadratisk overmengde"]              #  0xea61    (en: 'not square superset', google translation)
+ - "": [T: "ikkje tilnærmet lik over lik"]           #  0xea62    (en: 'not almost equal over equal', google translation)
+ - "": [T: "ikkje strengt ekvivalent med"]              #  0xea63    (en: 'not strictly equivalent to', google translation)
+ - "": [T: "ikkje kongruent prikk"]                 #  0xea64    (en: 'not congruent dot', google translation)
  - "": [T: "speilvendt ikke lik"]                     #  0xea65    (en: 'reverse not equal', google translation)
- - "": [T: "ikke vertikal venstre trekant lik"]     #  0xea70    (en: 'not vert left triangle equals', google translation)
- - "": [T: "ikke vertikal høyre trekant lik"]    #  0xea71    (en: 'not vert right triangle equals', google translation)
- - "": [T: "ikke partiell"]                        #  0xea80    (en: 'not partial', google translation)
+ - "": [T: "ikkje vertikal venstre trekant lik"]     #  0xea70    (en: 'not vert left triangle equals', google translation)
+ - "": [T: "ikkje vertikal høyre trekant lik"]    #  0xea71    (en: 'not vert right triangle equals', google translation)
+ - "": [T: "ikkje partiell"]                        #  0xea80    (en: 'not partial', google translation)
  - "": [T: "pilforlenger"]             #  0xeb00    (en: 'arrow embellishment extender', google translation)
  - "": [T: "høyrepil over venstrepil"]    #  0xeb01    (en: 'arrow rightwards over arrow leftwards', google translation)
  - "": [T: "høyrepil over venstrepil"]    #  0xeb02    (en: 'arrow rightwards over arrow leftwards', google translation)
@@ -2853,7 +2853,7 @@
  - "": [T: "dobbel-pil nordøst sørøst"]             #  0xeb3f    (en: 'double arrow northeast southeast', google translation)
  - "": [T: "venstre halvsirkel-pil mot klokka"]       #  0xeb40    (en: 'anticlockwise left semicircle arrow', google translation)
  - "": [T: "venstre halvsirkel-pil med klokka"]         #  0xeb41    (en: 'clockwise left semicircle arrow', google translation)
- - "": [T: "venstre-høyre-pil i venstre åpen sirkel"]    #  0xeb42    (en: 'left open circle left right arrow', google translation)
+ - "": [T: "venstre-høyre-pil i venstre open sirkel"]    #  0xeb42    (en: 'left open circle left right arrow', google translation)
  - "": [T: "høyrepil over tilde"]                #  0xeb44    (en: 'rightwards arrow over tilde', google translation)
  - "": [T: "venstrepil over tilde"]               #  0xeb45    (en: 'leftwards arrow over tilde', google translation)
  - "": [T: "venstre-harpun over strek"]             #  0xeb48    (en: 'leftwards harpoon over bar', google translation)
@@ -2863,7 +2863,7 @@
  - "": [T: "sammenpresset venstrepil"]              #  0xeb4c    (en: 'squat black leftwards arrow', google translation)
  - "": [T: "høyre halvsirkel-pil med klokka"]           #  0xeb50    (en: 'clockwise right semicircle arrow', google translation)
  - "": [T: "høyre halvsirkel-pil mot klokka"]         #  0xeb51    (en: 'anticlockwise right semicircle arrow', google translation)
- - "": [T: "venstre-høyre-harpun i venstre åpen sirkel"]    #  0xeb52    (en: 'left open circle left right harpoon', google translation)
+ - "": [T: "venstre-høyre-harpun i venstre open sirkel"]    #  0xeb52    (en: 'left open circle left right harpoon', google translation)
  - "": [T: "oppoverpil til venstre for vertikal strek"]    #  0xeb58    (en: 'upwards arrow leftwards of vertical bar', google translation)
  - "": [T: "nedoverpil til venstre for vertikal strek"]    #  0xeb59    (en: 'downwards arrow leftwards of vertical bar', google translation)
  - "": [T: "oppoverpil til høyre for vertikal strek"]    #  0xeb5a    (en: 'upwards arrow rightwards of vertical bar', google translation)
@@ -2872,8 +2872,8 @@
  - "": [T: "venstrepil med krok"]          #  0xeb5d    (en: 'leftwards arrow with extended hook', google translation)
  - "": [T: "venstrepil med krok ned"]    #  0xeb5e    (en: 'leftwards arrow with extended downwards hook', google translation)
  - "": [T: "høyrepil med krok"]           #  0xeb5f    (en: 'rightwards arrow with extended hook', google translation)
- - "": [T: "ikke bølgete høyrepil"]                 #  0xeb60    (en: 'not right arrow wavy', google translation)
- - "": [T: "ikke buet høyrepil"]                 #  0xeb61    (en: 'not right arrow curved', google translation)
+ - "": [T: "ikkje bølgete høyrepil"]                 #  0xeb60    (en: 'not right arrow wavy', google translation)
+ - "": [T: "ikkje buet høyrepil"]                 #  0xeb61    (en: 'not right arrow curved', google translation)
  - "": [T: "opp-harpun til venstre for vertikal strek"]    #  0xeb68    (en: 'upwards harpoon leftwards of vertical bar', google translation)
  - "": [T: "ned-harpun til venstre for vertikal strek"]    #  0xeb69    (en: 'downwards harpoon leftwards of vertical bar', google translation)
  - "": [T: "opp-harpun til høyre for vertikal strek"]    #  0xeb6a    (en: 'upwards harpoon rightwards of vertical bar', google translation)
@@ -3034,16 +3034,16 @@
  - "": [T: "asymptotisk lik"]         #  0xee17    (en: 'asymptotically equal to accent', google translation)
  - "": [T: "lik"]                   #  0xee18    (en: 'equal sign accent', google translation)
  - "": [T: "kvadrupelt primtegn"]                      #  0xee19    (en: 'quadruple prime', google translation)
- - "": [T: "strek med åpen sirkel venstre"]    #  0xee1a    (en: 'bar accent with open circle left', google translation)
- - "": [T: "strek med lukket sirkel venstre"]    #  0xee1b    (en: 'bar accent with closed circle left', google translation)
- - "": [T: "strek med åpen sirkel høyre"]    #  0xee1c    (en: 'bar accent with open circle right', google translation)
+ - "": [T: "strek med open sirkel venstre"]    #  0xee1a    (en: 'bar accent with open circle left', google translation)
+ - "": [T: "strek med lukka sirkel venstre"]    #  0xee1b    (en: 'bar accent with closed circle left', google translation)
+ - "": [T: "strek med open sirkel høyre"]    #  0xee1c    (en: 'bar accent with open circle right', google translation)
  - "": [T: "strek med prikk"]              #  0xee1d    (en: 'bar accent with over dot', google translation)
  - "": [T: "strek over prikk"]           #  0xee1e    (en: 'bar accent with under dot', google translation)
  - "": [T: "strek med dobbel prikk over"]     #  0xee1f    (en: 'bar accent with double over dot', google translation)
  - "": [T: "strek over dobbel prikk"]    #  0xee20    (en: 'bar accent with double under dot', google translation)
  - "": [T: "strek med hatt"]                 #  0xee21    (en: 'bar accent with caret', google translation)
  - "": [T: "fet understrek"]               #  0xee22    (en: 'thick under bar accent', google translation)
- - "": [T: "strek med lukket sirkel høyre"]    #  0xee23    (en: 'bar accent with closed circle right', google translation)
+ - "": [T: "strek med lukka sirkel høyre"]    #  0xee23    (en: 'bar accent with closed circle right', google translation)
  - "": [T: "stor prikk"]                      #  0xee24    (en: 'large dot above', google translation)
  - "": [T: "justeringsmerke"]                      #  0xef00    (en: 'alignment mark', google translation)
  - "": [T: ""]                                     #  0xef01
@@ -3650,7 +3650,7 @@
               then: [{pause: short}, {T: "gitt"}] 
             - else: [T: "deler"]                   
  - "～": [T: "tilde"]                               # 0xff5e
- - "￢": [T: "ikke"]                                 # 0xffe2
+ - "￢": [T: "ikkje"]                                 # 0xffe2
  - "￩": [T: "venstrepil"]                           # 0xffe9
  - "￪": [T: "oppoverpil"]                             # 0xffea
  - "￫": [T: "høyrepil"]                          # 0xffeb

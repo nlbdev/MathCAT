@@ -16,7 +16,7 @@ fn common_fraction_thirds() {
     let expr = "<math>
                     <mfrac> <mn>2</mn> <mn>3</mn> </mfrac>
                 </math>";
-    test("nn", "SimpleSpeak", expr, "2 tredjedeler");
+    test("nn", "SimpleSpeak", expr, "2 tredjedelar");
 }
 
 #[test]
@@ -24,7 +24,7 @@ fn common_fraction_tenths() {
     let expr = "<math>
                     <mfrac> <mn>17</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test("nn", "SimpleSpeak", expr, "17 tideler");
+    test("nn", "SimpleSpeak", expr, "17 tidelar");
 }
 
 #[test]
@@ -259,7 +259,7 @@ fn nested_simple_fractions() {
                 </mfrac>
                 </mrow>
             </math>";
-    test("nn", "SimpleSpeak", expr, "brøk, 1 halv, over, 2 tredjedeler, slutt brøk");
+    test("nn", "SimpleSpeak", expr, "brøk, 1 halv, over, 2 tredjedelar, slutt brøk");
 }
 
 #[test]

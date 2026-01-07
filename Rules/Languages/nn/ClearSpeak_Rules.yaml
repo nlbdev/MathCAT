@@ -555,11 +555,11 @@
   replace:
   - test:
     - if: "name(.)='open-interval'"
-      then: [T: "det åpne"]
+      then: [T: "det opne"]
     - else_if: "name(.)='open-closed-interval' or name(.)='closed-open-interval'"
-      then: [T: "det halvåpne"]
+      then: [T: "det halvopne"]
     - else_if: "name(.)='closed-interval'"
-      then: [T: "det lukkede"]
+      then: [T: "det lukka"]
   - T: "intervallet fra"      # phrase('the interval from' a to b)
   - test:
     - if: "name(.)='closed-open-interval'"

@@ -159,7 +159,7 @@ fn nested_cubed_power() {
       </msup>
     </msup>
   </math>";
-  test("nn", "ClearSpeak", expr, "y opphøyd i 4 femtedeler i tredje");
+  test("nn", "ClearSpeak", expr, "y opphøyd i 4 femtedelar i tredje");
 }
 
 #[test]
@@ -176,7 +176,7 @@ fn nested_cubed_power_with_neg_base() {
         </mrow>
     </msup>
     </math>";
-  test("nn", "ClearSpeak", expr, "y opphøyd i minus 4 femtedeler i tredje");
+  test("nn", "ClearSpeak", expr, "y opphøyd i minus 4 femtedelar i tredje");
 }
 
 #[test]
@@ -285,7 +285,7 @@ fn nested_default_power() {
     </msup>
   </msup>
 </math>";
-  test("nn", "ClearSpeak", expr, "t opphøyd i eksponenten, 4 femtedeler opphøyd i n; slutt eksponent");
+  test("nn", "ClearSpeak", expr, "t opphøyd i eksponenten, 4 femtedelar opphøyd i n; slutt eksponent");
 }
 
 #[test]

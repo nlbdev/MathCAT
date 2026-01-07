@@ -372,7 +372,7 @@
          "syttende", "attende", "nittende"
     ]
 
-# NORWEGIAN: Should be changed to "", "endeler", "todeler"...Then, for example, the fraction 2/24 will be "2 tjue firedeler"
+# NORWEGIAN: Should be changed to "", "endelar", "todelar"...Then, for example, the fraction 2/24 will be "2 tjue firedelar"
 - NumbersOrdinalPluralOnes: [
          "nullte", "første", "andre", "tredje", "fjerde", "femte", "sjette", "sjuende", "åttende", "niende",
          "tiende", "ellevte", "tolvte", "trettende", "fjortende", "femtende", "sekstende",
@@ -387,9 +387,9 @@
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-         "nulldeler", "hele", "halve", "tredjedeler", "fjerdedeler", "femtedeler", "sjettedeler", "sjudeler", "åttedeler", "nideler",
-         "tideler", "ellevedeler", "tolvdeler", "trettendeler", "fjortendeler", "femtendeler", "sekstendeler",
-         "syttendeler", "attendeler", "nittendeler"
+         "nulldelar", "heile", "halve", "tredjedelar", "fjerdedelar", "femtedelar", "sjettedelar", "sjudelar", "åttedelar", "nidelar",
+         "tidelar", "ellevedelar", "tolvdelar", "trettendelar", "fjortendelar", "femtendelar", "sekstendelar",
+         "syttendelar", "attendelar", "nittendelar"
     ]
     
     # What to use for multiples of 10
@@ -402,7 +402,19 @@
     ]
 
 - NumbersOrdinalPluralTens: [
-         "", "tideler", "tjuedeler", "trettideler", "førtideler", "femtideler", "sekstideler", "syttideler", "åttideler", "nittideler"
+         "", "tidelar", "tjuedelar", "trettidelar", "førtidelar", "femtidelar", "sekstidelar", "syttidelar", "åttidelar", "nittidelar"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalTens: [
+         "", "tidel", "tjuedel", "trettidel", "førtidel", "femtidel", 
+         "sekstidel", "syttidel", "åttidel", "nittidel"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralTens: [
+         "", "tidelar", "tjuedelar", "trettidelar", "førtidelar", "femtidelar",
+         "sekstidelar", "syttidelar", "åttidelar", "nittidelar"
     ]
 
 - NumbersHundreds: [
@@ -416,8 +428,20 @@
     ]
 
 - NumbersOrdinalPluralHundreds: [
-       "", "hundredeler", "to hundredeler", "tre hundredeler", "fire hundredeler", "fem hundredeler",
-         "seks hundredeler", "sju hundredeler", "åtte hundredeler", "ni hundredeler"
+       "", "hundredelar", "to hundredelar", "tre hundredelar", "fire hundredelar", "fem hundredelar",
+         "seks hundredelar", "sju hundredelar", "åtte hundredelar", "ni hundredelar"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalHundreds: [
+         "", "hundredel", "to hundredel", "tre hundredel", "fire hundredel", 
+         "fem hundredel", "seks hundredel", "sju hundredel", "åtte hundredel", "ni hundredel"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralHundreds: [
+         "", "hundredelar", "to hundredelar", "tre hundredelar", "fire hundredelar",
+         "fem hundredelar", "seks hundredelar", "sju hundredelar", "åtte hundredelar", "ni hundredelar"
     ]
       
     # At this point, hopefully the language is regular. If not, code needs to be written
@@ -450,10 +474,10 @@
     #]
       
 - NumbersOrdinalPluralLarge: [
-         "", "tusendeler", "milliondeler", "milliarddeler", "billiondeler", "billiarddeler",
-         "trilliondeler", "trilliarddeler", "kvadrilliondeler", "kvadrilliarddeler", "kvintilliondeler",
-         "kvintilliarddeler","sekstilliondeler","sekstilliarddeler","septilliondeler","septilliarddeler",
-         "oktilliondeler","oktilliarddeler","nonilliondeler","nonilliarddeler","desilliondeler"
+         "", "tusendelar", "milliondelar", "milliarddelar", "billiondelar", "billiarddelar",
+         "trilliondelar", "trilliarddelar", "kvadrilliondelar", "kvadrilliarddelar", "kvintilliondelar",
+         "kvintilliarddelar","sekstilliondelar","sekstilliarddelar","septilliondelar","septilliarddelar",
+         "oktilliondelar","oktilliarddelar","nonilliondelar","nonilliarddelar","desilliondelar"
     ]
          
          #"desilliarddeler","undesilliondeler","undesilliarddeler","duodesilliondeler","tredesilliondeler",
@@ -462,3 +486,19 @@
          #"oktodesilliondeler","oktodesilliarddeler","novemdesilliondeler","novemdesilliarddeler","vigintilliondeler",
          #"vigintilliarddeler","unvigintilliondeler","unvigintilliarddeler","centilliondeler","centilliarddeler"
     #]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalLargeNumbers: [
+         "", "tusendel", "milliondel", "milliarddel", "billiondel", "billiarddel",
+         "trilliondel", "trilliarddel", "kvadrilliondel", "kvadrilliarddel", "kvintilliondel",
+         "kvintilliarddel", "sekstilliondel", "sekstilliarddel", "septilliondel", "septilliarddel",
+         "oktilliondel", "oktilliarddel", "nonilliondel", "nonilliarddel", "desilliondel"
+    ]
+
+    # stop when regularity begins
+- NumbersOrdinalFractionalPluralLargeNumbers: [
+         "", "tusendelar", "milliondelar", "milliarddelar", "billiondelar", "billiarddelar",
+         "trilliondelar", "trilliarddelar", "kvadrilliondelar", "kvadrilliarddelar", "kvintilliondelar",
+         "kvintilliarddelar", "sekstilliondelar", "sekstilliarddelar", "septilliondelar", "septilliarddelar",
+         "oktilliondelar", "oktilliarddelar", "nonilliondelar", "nonilliarddelar", "desilliondelar"
+    ]

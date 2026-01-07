@@ -186,7 +186,7 @@ fn element_alone() {
     let expr = "<math>
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
-    test("nn", "ClearSpeak", expr, "3 pluss 2 i, er ikke et element i, de reelle tallene");
+    test("nn", "ClearSpeak", expr, "3 pluss 2 i, er ikkje et element i, de reelle tallene");
 }
 
 #[test]
@@ -261,7 +261,7 @@ fn element_alone_member() {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("nn", "ClearSpeak_SetMemberSymbol", "Member",
-                expr, "3 pluss 2 i, tilhører ikke de reelle tallene");
+                expr, "3 pluss 2 i, tilhøyrer ikkje de reelle tallene");
 }
 
 #[test]
@@ -304,7 +304,7 @@ fn element_alone_element() {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("nn", "ClearSpeak_SetMemberSymbol", "Element",
-                expr, "3 pluss 2 i, er ikke et element i, de reelle tallene");
+                expr, "3 pluss 2 i, er ikkje et element i, de reelle tallene");
 }
 
 #[test]
@@ -346,7 +346,7 @@ fn element_alone_in() {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("nn", "ClearSpeak_SetMemberSymbol", "In",
-                expr, "3 pluss 2 i, er ikke i de reelle tallene");
+                expr, "3 pluss 2 i, er ikkje i de reelle tallene");
 }
 
 #[test]
@@ -388,7 +388,7 @@ fn element_alone_belongs() {
             <mn>3</mn><mo>+</mo><mn>2</mn><mi>i</mi><mo>∉</mo><mi>ℝ</mi>
         </math>";
     test_ClearSpeak("nn", "ClearSpeak_SetMemberSymbol", "Belongs",
-                expr, "3 pluss 2 i, tilhører ikke de reelle tallene");
+                expr, "3 pluss 2 i, tilhøyrer ikkje de reelle tallene");
 }
 
 #[test]
