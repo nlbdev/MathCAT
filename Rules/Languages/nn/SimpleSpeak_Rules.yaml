@@ -32,7 +32,7 @@
   tag: square-root
   match: "."
   replace:
-  - T: "kvadratroten av"      # phrase(the 'square root' of x)
+  - T: "kvadratrota av"      # phrase(the 'square root' of x)
   # NORWEGIAN: Removed test for Verbosity
   - x: "*[1]"
   - test:
@@ -48,12 +48,12 @@
       if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]"     #NORWEGIAN: Changed decimal point to $DecimalSeparators
       then_test:
       - if: "*[2][.='2']"
-        then: [T: "kvadratroten"]        # phrase(the 'square root' of x)
+        then: [T: "kvadratrota"]        # phrase(the 'square root' of x)
       - else_if: "*[2][.='3']"
-        then: [T: "kubikkroten"]        # phrase(the 'cube root' of x)
-      - else: [x: "ToOrdinal(*[2])", T: "roten"]        # phrase(the square 'root' of x)
+        then: [T: "kubikkrota"]        # phrase(the 'cube root' of x)
+      - else: [x: "ToOrdinal(*[2])", T: "rota"]        # phrase(the square 'root' of x)
       else:
-      - T: "roten av grad"      # phrase(the square 'root' of 36)
+      - T: "rota av grad"      # phrase(the square 'root' of 36)
       - x: "*[2]"
       - pause: short
   # SWEDISH: Removed verbosity settings.
