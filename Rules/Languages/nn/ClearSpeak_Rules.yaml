@@ -174,7 +174,7 @@
     - else:
       - test:
           if: "$NeuterUnitFollows and (*[1]=1 or ($IsMixedFraction and preceding-sibling::*[2][.=1]))"
-          then: [T: "ett"]
+          then: [T: "eitt"]
           else: [x: "*[1]"]
       - test:
         - if: "*[1]=1 and *[2]=2"
@@ -247,13 +247,13 @@
   tag: fraction
   match: "."
   replace:
-  - T: "brøken med teller"      # phrase(the 'fraction with numerator' 6)
+  - T: "brøken med teljar"      # phrase(the 'fraction with numerator' 6)
   - test:
       if: not(IsNode(*[1], 'simple'))
       then: [pause: medium]
   - x: "*[1]"
   - pause: medium
-  - T: "og nevner"      # phrase(the fraction with numerator 5 'and denominator' 8)
+  - T: "og nemnar"      # phrase(the fraction with numerator 5 'and denominator' 8)
   - x: "*[2]"
   - pause: medium
   - test:
