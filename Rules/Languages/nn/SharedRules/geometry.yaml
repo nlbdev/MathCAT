@@ -7,7 +7,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - T: "linjestykket fra"      # phrase('the line segment from' A to B)
+      - T: "linjestykket frå"      # phrase('the line segment from' A to B)
       - x: "*[1]"
       - T: "til"                         # phrase(the line segment from A 'to' B)
       - x: "*[2]"
@@ -23,7 +23,7 @@
   - test:
       if: "$Verbosity='Verbose'"
       then:
-      - T: "strålen fra"             # phrase('the ray from' A to B)
+      - T: "strålen frå"             # phrase('the ray from' A to B)
       - x: "*[1]"
       - T: "til"                       # phrase(the ray from A 'to' B)
       - x: "*[2]"
@@ -36,7 +36,7 @@
   tag: arc
   match: "count(*)=2"
   replace:
-  - T: "bue"                        # phrase(the 'arc' A B C)
+  - T: "boge"                        # phrase(the 'arc' A B C)
   - x: "*[1]"
   - x: "*[2]"
 
