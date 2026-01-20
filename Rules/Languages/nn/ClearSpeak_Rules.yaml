@@ -515,16 +515,16 @@
   replace:
   - test:
     - if: "count(*)=0"
-      then: [T: "den tomme mengden"]      # phrase('the empty set')
+      then: [T: "den tomme mengda"]      # phrase('the empty set')
     - else_if: "count(*)=2"
       then:
       - test:
           if: "$Verbosity!='Terse'"
           then: [T: "den"]      # phrase('the' empty set)
-      - T: "tomme mengden"      # phrase(the 'empty set')
+      - T: "tomme mengda"      # phrase(the 'empty set')
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
-      - T: "mengden av"      # phrase(this is a 'set of' numbers)
+      - T: "mengda av"      # phrase(this is a 'set of' numbers)
       - test:
           if: $ClearSpeak_Sets != 'woAll'
           then: [T: "alle"]      # phrase(the set of 'all' integers)
@@ -535,7 +535,7 @@
       - test:
           if: $ClearSpeak_Sets != 'SilentBracket'
           then:
-          - T: "mengden"      # phrase(this is a 'set' of integers)
+          - T: "mengda"      # phrase(this is a 'set' of integers)
       - x: "*[1]"
 
 #- # intervals are controlled by a ClearSpeak Preference -- parens/brackets don't have to match, so we avoid IsBracketed
@@ -555,12 +555,12 @@
   replace:
   - test:
     - if: "name(.)='open-interval'"
-      then: [T: "det åpne"]
+      then: [T: "det opne"]
     - else_if: "name(.)='open-closed-interval' or name(.)='closed-open-interval'"
-      then: [T: "det halvåpne"]
+      then: [T: "det halvopne"]
     - else_if: "name(.)='closed-interval'"
-      then: [T: "det lukkede"]
-  - T: "intervallet fra"      # phrase('the interval from' a to b)
+      then: [T: "det lukka"]
+  - T: "intervallet frå"      # phrase('the interval from' a to b)
   - test:
     - if: "name(.)='closed-open-interval'"
       then: [T: "og med"]
