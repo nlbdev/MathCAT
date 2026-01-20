@@ -298,7 +298,7 @@
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
   - pause: short
@@ -310,7 +310,7 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i eksponenten"      # phrase(5 'raised to the exponent' x plus 1)
+  - T: "opphøgd i eksponenten"      # phrase(5 'raised to the exponent' x plus 1)
   - pause: short
   - x: "*[2]"
   - pause: short
@@ -321,7 +321,7 @@
   match: "$ClearSpeak_Exponents = 'AfterPower'"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(x is 'raised to the power' 4)
+  - T: "opphøgd i"      # phrase(x is 'raised to the power' 4)
   - x: "*[2]"
   - pause: short
 
@@ -346,7 +346,7 @@
   match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           #NORWEGIAN: Changed decimal point to $DecimalSeparators 
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"                 
+  - T: "opphøgd i"                 
   - bookmark: "*[2]/@id"
   - x: "*[2]"
   - pause: short
@@ -359,7 +359,7 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
   - pause: short
@@ -369,7 +369,7 @@
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
   - pause: short
@@ -397,7 +397,7 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(x 'raised to the' second power)
+  - T: "opphøgd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
 
 - # - [xxx]^n
@@ -417,7 +417,7 @@
   - "     ]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(x 'raised to the' second power)
+  - T: "opphøgd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
 
 - # [xxx] var^n
@@ -439,7 +439,7 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(x 'raised to the' second power)
+  - T: "opphøgd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
 
 - # -[xxx] var^n
@@ -463,7 +463,7 @@
   - "      ]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(x 'raised to the' second power)
+  - T: "opphøgd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
 
 - name: default-exponent-power
@@ -472,7 +472,7 @@
   - "*[2][self::m:power or self::m:power or self::m:mrow[m:power]]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i eksponenten"      # phrase(x is 'raised to the exponent')
+  - T: "opphøgd i eksponenten"      # phrase(x is 'raised to the exponent')
   - pause: short
   - x: "*[2]"
   - pause: short
@@ -483,7 +483,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(x 'raised to the' second power)
+  - T: "opphøgd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
 
 #
