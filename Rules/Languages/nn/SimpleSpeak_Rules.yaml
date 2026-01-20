@@ -285,15 +285,15 @@
   - test:
     - if: "count(*)=0"
       then:
-      - T: "den tomme mengden"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
+      - T: "den tomme mengda"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
-      - T: "mengden av alle"      # phrase(the 'set of all' positive integers less than 10)
+      - T: "mengda av alle"      # phrase(the 'set of all' positive integers less than 10)
       - x: "*[1]/*[1]"
       - T: "slik at"      # phrase(x 'such that' x is less than y)
       - x: "*[1]/*[3]"
       else:
-      - T: "mengden"      # phrase(here is a 'set' of numbers)
+      - T: "mengda"      # phrase(here is a 'set' of numbers)
       - x: "*[1]"
 
 # NORWEGIAN: Added sqrt, so it, for example, says "sqrt a times sqrt b"
@@ -323,7 +323,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - T: "ganger"      # phrase(7 'times' 5 equals 35)
+  - T: "gongar"      # phrase(7 'times' 5 equals 35)
 
 - name: no-say-parens
   tag: mrow
