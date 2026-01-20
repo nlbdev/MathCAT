@@ -42,8 +42,8 @@
           else: [T: "den positive"]      # phrase(10 is a 'positive' number)
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "kvadratroten av"]      # phrase(the square root 'of' 5)
-      else: [T: "roten av"]
+      then: [T: "kvadratrota av"]      # phrase(the square root 'of' 5)
+      else: [T: "rota av"]
   - x: "*[1]"
   - test:
     - if: "$ClearSpeak_Roots = 'RootEnd' or $ClearSpeak_Roots = 'PosNegSqRootEnd'"
@@ -73,12 +73,12 @@
       if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
       then_test:
       - if: "*[2][.='2']"
-        then: [T: "kvadratroten"]      # phrase(5 is the 'square root' of 25)
+        then: [T: "kvadratrota"]      # phrase(5 is the 'square root' of 25)
       - else_if: "*[2][.='3']"
-        then: [T: "kubikkroten"]      # phrase(5 is the 'cube root' of 625)
-      - else: [x: "ToOrdinal(*[2])", T: "roten"]      # phrase(the square 'root' of 25)
+        then: [T: "kubikkrota"]      # phrase(5 is the 'cube root' of 625)
+      - else: [x: "ToOrdinal(*[2])", T: "rota"]      # phrase(the square 'root' of 25)
       else:
-      - T: "roten av grad"      # phrase(the square 'root' of 36)
+      - T: "rota av grad"      # phrase(the square 'root' of 36)
       - x: "*[2]"
       - pause: short
   # SWEDISH/NORWEGIAN: Removed verbosity settings.
