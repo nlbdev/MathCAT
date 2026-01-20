@@ -617,7 +617,7 @@
         - else_if: ".='lg'"
           then: [spell: "'lg'"]      # phrase(the 'lg' of x)
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
-          then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of the product of 2 numbers)
+          then: [T: "den naturlege logaritmen"]      # phrase(the 'natural log' of the product of 2 numbers)
           else: [spell: "'ln'"]
       else:
       - test:
@@ -631,10 +631,10 @@
           then:
           - test:
             - if: "$Verbosity='Verbose'"
-              then: [T: "tier-logaritmen"]
+              then: [T: "tiar-logaritmen"]
               else: [spell: "'lg'"]      # phrase(the 'lg' of x)
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
-          then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of x)
+          then: [T: "den naturlege logaritmen"]      # phrase(the 'natural log' of x)
           else: [spell: "'ln'"]
 
 #NORWEGIAN: Changed to English version
@@ -655,7 +655,7 @@
           then:
             - test:
               - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
-                then: [T: "tilfeller"]
+                then: [T: "tilfelle"]
                 else: [T: "tilfelle"]      # phrase(this is the first 'case' of three cases)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
           then:
@@ -667,8 +667,8 @@
           then:
             - test:
               - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
-                then: [T: "betingelser"]      # phrase(this is the first 'constraint' of three constraints)
-                else: [T: "betingelse"]      # phrase(this is the first 'constraint' of three constraints)
+                then: [T: "vilkår"]      # phrase(this is the first 'constraint' of three constraints)
+                else: [T: "vilkår"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then:
             - test:
@@ -707,7 +707,7 @@
         - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
           then: [T: "rad"]      # phrase(the straight 'line' between x and y)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
-          then: [T: "betingelse"]      # phrase(there is a 'constraint' on possible values)
+          then: [T: "vilkår"]      # phrase(there is a 'constraint' on possible values)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then: [T: "likning"]      # phrase(the 'equation' pi r squared gives the area of a circle)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
@@ -740,7 +740,7 @@
     test:
       if: "$ClearSpeak_ImpliedTimes = 'None'"
       then: [T: ""]
-      else: [T: "ganger"]      # phrase(5 'times' 3 equals 15)
+      else: [T: "gongar"]      # phrase(5 'times' 3 equals 15)
 
 - name: no-times
   tag: mo
@@ -780,7 +780,7 @@
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|')]" # followed by parens
   - " )"
   replace:
-  - T: "ganger"      # phrase(5 'times' 3 equals 15)
+  - T: "gongar"      # phrase(5 'times' 3 equals 15)
 
 - name: no-say-parens
   tag: mrow
