@@ -102,7 +102,7 @@
     - else:
       - test:
           if: "*[1]=1 and $NeuterUnitFollows"
-          then: [T: "ett"]
+          then: [T: "eitt"]
           else: [x: "*[1]"]
       - test:
         - if: "*[1]=1 and *[2]=2"
@@ -195,7 +195,7 @@
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
   - pause: short
@@ -217,7 +217,7 @@
   match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - x: "*[2]"
   - pause: short
 
@@ -228,7 +228,7 @@
   - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - x: "*[2]"
   - pause: short
 
@@ -237,7 +237,7 @@
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - x: "*[2]"
   - pause: short
 
@@ -246,7 +246,7 @@
   match: "IsNode(*[2], 'leaf')"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
+  - T: "opphøgd i"
   - x: "*[2]"
   - pause: short
 
@@ -262,7 +262,7 @@
   - "    ]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(15 'raised to the' second power equals 225)
+  - T: "opphøgd i"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
   - pause: short
   - T: "slutt eksponent"      # phrase(start 2 raised to the exponent 4 'end of exponent')
@@ -272,7 +272,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"      # phrase(15 'raised to the' second power equals 225)
+  - T: "opphøgd i"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
 
 #
