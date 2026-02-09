@@ -39,7 +39,6 @@
     - spell: "translate('.', '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳', 'abcdefghijklmnopqrstuvwxyz')"
     - t: "𝐖"
 
-
 # consider italics as normal chars
  - "𝘈-𝘡":    # 0x1d608 - 0x1d621
     - spell: "translate('.', '𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
@@ -47,6 +46,17 @@
  - "𝘢-𝘻":    # 0x1d622 - 0x1d63b
     - spell: "translate('.', '𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻', 'abcdefghijklmnopqrstuvwxyz')"
 
+
+ - "𝑨-𝒁":    # 0x1d468 - 0x1d481
+    # - t: "bold italic"
+    - t: "bii𝐖"  # not part of official ASCIIMath
+    - spell: "translate('.', '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+
+
+ - "𝒂-𝒛":    # 0x1d482 - 0x1d49b
+    # - t: "bold italic"
+    - t: "bii𝐖"  # not part of official ASCIIMath
+    - spell: "translate('.', '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛', 'abcdefghijklmnopqrstuvwxyz')"
 
  - "𝒜-𝒵":    # 0x1d49c - 0x1d4b5
     - t: "cc𝐖"
