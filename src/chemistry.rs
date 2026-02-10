@@ -43,7 +43,8 @@ use regex::Regex;
 use crate::xpath_functions::IsBracketed;
 use phf::{phf_map, phf_set};
 use std::convert::TryInto;
-use log::{error};
+#[allow(unused_imports)]
+use log::{error, debug};
 use std::collections::HashSet;
 use std::cmp::Ordering;
 use crate::errors::*;
@@ -563,7 +564,8 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
             // debug!("After merge_element: -- parent{}", mml_to_string(parent));
 
         } else if let Some(changed_value) = mathml.attribute_value(CHANGED_ATTR) &&
-                  changed_value == ADDED_ATTR_VALUE {
+                  changed_value == ADDED_ATTR_VALUE &&
+                  name(mathml) != "mtext" {  // a hack fix for #477 (chem never modifies mtext, so this is ok)
             mathml.remove_from_parent();
             return true;
         }

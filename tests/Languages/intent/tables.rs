@@ -157,7 +157,7 @@ fn system_of_equations() {
                         <mi data-from-mathml='mi'>y</mi>
                     </mrow>
                     <mrow data-from-mathml='mrow' data-changed='added'>
-                        <mo data-from-mathml='mo' data-previous-space-width='0'>is equal to</mo>
+                        <mo data-from-mathml='mo'>is equal to</mo>
                         <mrow data-from-mathml='mrow' data-changed='added'>
                         <mi data-from-mathml='mi'>y</mi>
                         <mo data-from-mathml='mo'>+</mo>
@@ -176,7 +176,7 @@ fn system_of_equations() {
                         <mi data-from-mathml='mi'>y</mi>
                     </mrow>
                     <mrow data-from-mathml='mrow' data-changed='added'>
-                        <mo data-from-mathml='mo' data-previous-space-width='0'>is equal to</mo>
+                        <mo data-from-mathml='mo'>is equal to</mo>
                         <mn data-from-mathml='mn'>4</mn>
                     </mrow>
                     </mrow>
@@ -212,7 +212,7 @@ fn system_of_equations_infer_intent() {
                         <mi data-from-mathml='mi'>y</mi>
                     </mrow>
                     <mrow data-from-mathml='mrow' data-changed='added'>
-                        <mo data-from-mathml='mo' data-previous-space-width='0'>=</mo>
+                        <mo data-from-mathml='mo'>=</mo>
                         <mrow data-from-mathml='mrow' data-changed='added'>
                         <mi data-from-mathml='mi'>y</mi>
                         <mo data-from-mathml='mo'>+</mo>
@@ -231,7 +231,7 @@ fn system_of_equations_infer_intent() {
                         <mi data-from-mathml='mi'>y</mi>
                     </mrow>
                     <mrow data-from-mathml='mrow' data-changed='added'>
-                        <mo data-from-mathml='mo' data-previous-space-width='0'>=</mo>
+                        <mo data-from-mathml='mo'>=</mo>
                         <mn data-from-mathml='mn'>4</mn>
                     </mrow>
                 </mrow>
@@ -267,7 +267,7 @@ fn lines() {
                     <mi data-from-mathml='mi'>y</mi>
                 </mrow>
                 <mrow data-from-mathml='mrow' data-changed='added'>
-                    <mo data-from-mathml='mo' data-previous-space-width='0'>=</mo>
+                    <mo data-from-mathml='mo'>=</mo>
                     <mrow data-from-mathml='mrow' data-changed='added'>
                     <mi data-from-mathml='mi'>y</mi>
                     <mo data-from-mathml='mo'>+</mo>
@@ -286,7 +286,7 @@ fn lines() {
                     <mi data-from-mathml='mi'>y</mi>
                 </mrow>
                 <mrow data-from-mathml='mrow' data-changed='added'>
-                    <mo data-from-mathml='mo' data-previous-space-width='0'>=</mo>
+                    <mo data-from-mathml='mo'>=</mo>
                     <mn data-from-mathml='mn'>4</mn>
                 </mrow>
                 </mrow>

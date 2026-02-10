@@ -569,8 +569,8 @@ impl CanonicalizeContext {
 		// debug!("Not chemistry -- retry:\n{}", mml_to_string(mathml));
 		let mut converted_mathml = self.canonicalize_mrows(mathml)
 				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
+		debug!("canonicalize before canonicalize_mrows:\n{}", mml_to_string(converted_mathml));
 		if !crate::chemistry::scan_and_mark_chemistry(converted_mathml) {
-			// debug!("canonicalize before canonicalize_mrows:\n{}", mml_to_string(converted_mathml));
 			self.assure_nary_tag_has_one_child(converted_mathml);
 			converted_mathml = self.canonicalize_mrows(mathml)
 				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
@@ -749,7 +749,6 @@ impl CanonicalizeContext {
 			"$", "¢", "€", "£", "₡", "₤", "₨", "₩", "₪", "₱", "₹", "₺", "₿" // could add more currencies...
 		};
 		
-
 		// begin by cleaning up empty elements
 		// debug!("clean_mathml\n{}", mml_to_string(mathml));
 		let element_name = name(mathml);
@@ -760,7 +759,7 @@ impl CanonicalizeContext {
 			name(parent).to_string()
 		};
 		let parent_requires_child = ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(&parent_name) ||
-										  matches!(parent_name.as_ref(), "mtd" | "mtr" | "mlabeledtr" | "mtable");
+										  matches!(parent_name.as_ref(), "mtr" | "mlabeledtr" | "mtable");
 
 		// handle empty leaves -- leaving it empty causes problems with the speech rules
 		if is_leaf(mathml) && !EMPTY_ELEMENTS.contains(element_name) && as_text(mathml).is_empty() {
@@ -1186,7 +1185,6 @@ impl CanonicalizeContext {
 
 				mathml.replace_children(children);
 				// debug!("clean_mathml: after loop\n{}", mml_to_string(mathml));
-
 				if element_name == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(element_name) {
 					clean_chemistry_mrow(mathml);
 				}
@@ -1869,6 +1867,7 @@ impl CanonicalizeContext {
 						prev_mtext.set_attribute_value("data-following-space-width", (ws).to_string().as_str());
 						previous_mtext_with_width = None;
 					} else {
+						// if the space is significant, set it on the current child
 						child.set_attribute_value("data-previous-space-width", ws.to_string().as_str());
 						if name(child) == "mtext" {
 							previous_mtext_with_width = Some(child);
@@ -4773,6 +4772,35 @@ mod canonicalize_tests {
     fn canonical_one_element_mrow_around_mrow() {
         let test_str = "<math><mrow><mrow><mo>-</mo><mi>a</mi></mrow></mrow></math>";
         let target_str = "<math><mrow><mo>-</mo><mi>a</mi></mrow></math>";
+        assert!(are_strs_canonically_equal(test_str, target_str, &[]));
+    }
+
+    #[test]
+    fn canonical_mtext_in_mtd_477() {
+		// make sure mtext doesn't go away
+        let test_str = r#"<math>
+			<mtable>
+				<mtr>
+					<mtd>
+						<mstyle scriptlevel="0">
+							<mspace width="2em"/>
+						</mstyle>
+						<mstyle scriptlevel="0">
+							<mspace width="1em"/>
+						</mstyle>
+					</mtd>
+				</mtr>
+			</mtable>
+		</math>"#;
+        let target_str = r#"   <math>
+			<mtable>
+				<mtr>
+				<mtd>
+					<mtext data-width='1' data-following-space-width='4' scriptlevel='0' data-changed='added'> </mtext>
+				</mtd>
+				</mtr>
+			</mtable>
+		</math>"#;
         assert!(are_strs_canonically_equal(test_str, target_str, &[]));
     }
 
