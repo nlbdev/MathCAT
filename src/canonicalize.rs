@@ -952,6 +952,7 @@ impl CanonicalizeContext {
 							return Some(mathml);
 						},
 						"::" =>{mathml.set_text("∷");},
+						"│" => {mathml.set_text("|");},	// ASCII vertical bar
 						"|" | "||" => if let Some(result) = merge_vertical_bars(mathml) {
 							return Some(result);
 						} else {
