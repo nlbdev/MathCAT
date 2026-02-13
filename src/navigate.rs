@@ -2585,7 +2585,7 @@ mod tests {
             </math>";
         
         set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        for lang in get_supported_languages() {
+        for lang in get_supported_languages().unwrap_or_default() {
             test_language(&lang, mathml_str);
         }
         return Ok( () );
