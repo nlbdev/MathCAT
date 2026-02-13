@@ -192,7 +192,9 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math xmlns="http://www.w3.org/1998/Math/MathML"><mo>(</mo><mn>1</mn><mo>)</mo></math>
+<math><mmultiscripts>   </mmultiscripts></math>
+
+ 
                    "#;
   // let instant = Instant::now();
 
@@ -200,14 +202,14 @@ fn main() {
   if let Err(e) = set_rules_dir(get_rules_dir()) {
     panic!("Error: exiting -- {}", errors_to_string(&e));
   }
-  debug!("Languages: {}", libmathcat::interface::get_supported_languages().join(", "));
+  debug!("Languages: {}", libmathcat::interface::get_supported_languages().unwrap_or_default().join(", "));
 
   #[cfg(feature = "include-zip")]
   info!("***********include-zip is present**********");
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "Nemeth").unwrap();
+  set_preference("BrailleCode", "LaTeX").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
@@ -223,13 +225,14 @@ fn main() {
 
   set_preference("Bookmark", "false").unwrap();
   set_preference("SpeechStyle", "ClearSpeak").unwrap();
-  info!("Languages: {}", libmathcat::interface::get_supported_languages().join(", "));
-  info!("Speech styles: {}", libmathcat::interface::get_supported_speech_styles("ClearSpeak").join(", "));
-  info!("BrailleCodes: {}", libmathcat::interface::get_supported_braille_codes().join(", "));
+  info!("Languages: {}", libmathcat::interface::get_supported_languages().unwrap_or_default().join(", "));
+  info!("Speech styles: {}", libmathcat::interface::get_supported_speech_styles("ClearSpeak").unwrap_or_default().join(", "));
+  info!("BrailleCodes: {}", libmathcat::interface::get_supported_braille_codes().unwrap_or_default().join(", "));
   // set_preference("DecimalSeparators", ",").unwrap();
   // set_preference("BlockSeparators", ". ").unwrap();
   if let Err(e) = set_mathml(expr) {
-    panic!("Error: exiting -- {}", errors_to_string(&e));
+    eprintln!("Error: exiting -- {}", errors_to_string(&e));
+    std::process::exit(1);
   };
 
   // match do_navigate_command("ZoomIn".to_string())  {
@@ -268,10 +271,10 @@ fn main() {
   //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
   //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
-  match get_spoken_text() {
-    Ok(speech) => info!("Computed speech string:\n   '{speech}'"),
-    Err(e) => panic!("{}", errors_to_string(&e)),
-  }
+  // match get_spoken_text() {
+  //   Ok(speech) => info!("Computed speech string:\n   '{speech}'"),
+  //   Err(e) => panic!("{}", errors_to_string(&e)),
+  // }
   debug!("Speech language is {}", get_preference("Language").unwrap());
   debug!("DecimalSeparator: {:?}", get_preference("DecimalSeparator").unwrap());
   debug!("DecimalSeparators: {:?}, BlockSeparators: {:?}", get_preference("DecimalSeparators").unwrap(), get_preference("BlockSeparators").unwrap());
@@ -280,10 +283,10 @@ fn main() {
  
   // info!("Time taken for loading+speech+braille: {}ms", instant.elapsed().as_millis());
   // let instant = Instant::now();
-  // match get_spoken_text() {
-  //   Ok(speech) => info!("Computed speech string:\n   '{}'", speech),
-  //   Err(e) => panic!("{}", errors_to_string(&e)),
-  // }
+  match get_spoken_text() {
+    Ok(speech) => info!("Computed speech string:\n   '{}'", speech),
+    Err(e) => panic!("{}", errors_to_string(&e)),
+  }
   // info!("Time taken (second time for speech): {}ms", instant.elapsed().as_millis());
   // info!("SpeechStyle: {:?}", get_preference("SpeechStyle"));
 
