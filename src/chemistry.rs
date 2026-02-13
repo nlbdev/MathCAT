@@ -396,12 +396,15 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
         if n > len {
             return None;    // can't be an chemical letter
         }
-        let chem_element = unsafe{ str::from_utf8_unchecked(&bytes_str[..n]) };
-        if CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key( chem_element ) {
-            return Some( new_chemical_element(doc, chem_element) );
+        match str::from_utf8(&bytes_str[..n]) {
+            Ok(chem_element) => {
+                if CHEMICAL_ELEMENT_ELECTRONEGATIVITY.contains_key(chem_element) {
+                    return Some(new_chemical_element(doc, chem_element));
+                }
+                return None;
+            }
+            Err(_) => return None,
         }
-
-        return None;
     }
 
     fn new_chemical_element<'a>(doc: &Document<'a>, chem_element_str: &str) -> Element<'a> {

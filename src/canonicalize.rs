@@ -3250,7 +3250,7 @@ impl CanonicalizeContext {
 					0x1D551u32 => 0x2124u32,
 				};
 								
-				return unsafe { char::from_u32_unchecked(
+				return unsafe { char::from_u32_unchecked(		// safe because the values are a char or from the table above
 					match EXCEPTIONS.get(&ch) {
 						None => ch,
 						Some(exception_value) => *exception_value,

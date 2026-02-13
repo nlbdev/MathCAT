@@ -14,7 +14,7 @@ use crate::canonicalize::get_parent;
 use std::borrow::Cow;
 use std::ops::Range;
 use std::sync::LazyLock;
-use log::error;
+use log::{debug, error};
 
 static UEB_PREFIXES: phf::Set<char> = phf_set! {
     '⠼', '⠈', '⠘', '⠸', '⠐', '⠨', '⠰', '⠠',
@@ -255,13 +255,14 @@ fn is_highlighted(ch: char) -> bool {
 }
 
 fn highlight(ch: char) -> char {
+    // safe because we have checked the range
     return unsafe{char::from_u32_unchecked(ch as u32 | 0xC0)};    // 0x28C0..0x28FF all have dots 7 & 8 on
 }
 
 fn unhighlight(ch: char) -> char {
     let ch_as_u32 = ch as u32;
     if (0x28C0..0x28FF).contains(&ch_as_u32) {              // 0x28C0..0x28FF all have dots 7 & 8 on
-        return unsafe{char::from_u32_unchecked(ch_as_u32 & 0x283F)};
+        return unsafe{char::from_u32_unchecked(ch_as_u32 & 0x283F)};  // safe because we have checked the range
     } else {
         return ch;
     }
@@ -910,7 +911,7 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             return remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
         }
         let grade2 = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade2, UEB_Duration::Symbol);
-        // debug!("Symbol mode:  '{}'", grade2);
+        debug!("Symbol mode:  '{}'", grade2);
 
         if is_grade2_string_ok(&grade2) {
             return grade2;
@@ -919,7 +920,7 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             // A conversation with Ms. DeAndrea from BANA said that they mean use passage mode if ≥3 "segments" (≥2 blanks)
             // The G1 Word mode might not be at the start (iceb.rs:omission_3_6_7)
             let grade1_word = try_grade1_word_mode(raw_braille);
-            // debug!("Word mode:    '{}'", grade1_word);
+            debug!("Word mode:    '{}'", grade1_word);
             if !grade1_word.is_empty() {
                 return grade1_word;
             } else {

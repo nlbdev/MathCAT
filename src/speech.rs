@@ -2559,7 +2559,7 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
         fn add_dots_to_braille_char(ch: char, baseline_indicator_hack: bool) -> char {
             let as_u32 = ch as u32;
             if (0x2800..0x28FF).contains(&as_u32) {
-                return unsafe {char::from_u32_unchecked(as_u32 | 0xC0)};
+                return unsafe {char::from_u32_unchecked(as_u32 | 0xC0)};  // safe because we have checked the range
             } else if baseline_indicator_hack && ch == 'b' {
                 return '𝑏'
             } else {
