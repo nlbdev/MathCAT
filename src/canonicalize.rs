@@ -569,7 +569,7 @@ impl CanonicalizeContext {
 		// debug!("Not chemistry -- retry:\n{}", mml_to_string(mathml));
 		let mut converted_mathml = self.canonicalize_mrows(mathml)
 				.with_context(|| format!("while processing\n{}", mml_to_string(mathml)))?;
-		debug!("canonicalize before canonicalize_mrows:\n{}", mml_to_string(converted_mathml));
+		// debug!("canonicalize before canonicalize_mrows:\n{}", mml_to_string(converted_mathml));
 		if !crate::chemistry::scan_and_mark_chemistry(converted_mathml) {
 			self.assure_nary_tag_has_one_child(converted_mathml);
 			converted_mathml = self.canonicalize_mrows(mathml)
@@ -1512,7 +1512,6 @@ impl CanonicalizeContext {
 			let mut mathml = mathml;
 			let children = mathml.children();
 			let n = children.len();
-			debug!("clean_mmultiscripts: start with {} children\n{}", n, mml_to_string(mathml));
 			let i_mprescripts =
 				if let Some((i,_)) = children.iter().enumerate()
 					.find(|&(_,&el)| name(as_element(el)) == "mprescripts") { i } else { n };
