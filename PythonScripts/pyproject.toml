@@ -1,10 +1,19 @@
 [project]
 name = "pythonscripts"
 version = "0.1.0"
-description = "Add your description here"
+description = "Utility scripts for MathCAT, including tracking of localization progress in Rules-files."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["rich", "ruamel.yaml"]
+dependencies = [
+    "attrs",
+    "beautifulsoup4",
+    "deepl",
+    "googletrans",
+    "html-table-extractor",
+    "pyyaml",
+    "rich",
+    "ruamel.yaml",
+]
 
 [project.scripts]
 audit-translations = "audit_translations.cli:main"
