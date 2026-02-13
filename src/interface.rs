@@ -20,6 +20,7 @@ use log::{debug, error};
 use crate::navigate::*;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::{is_leaf, IsNode};
+use std::panic::{catch_unwind, AssertUnwindSafe};
 
 #[cfg(feature = "enable-logs")]
 use std::sync::Once;
@@ -44,6 +45,58 @@ fn enable_logs() {
     });
 }
 
+// For getting a message from a panic
+thread_local! {
+    // Stores (Message, File, Line)
+    static PANIC_INFO: RefCell<Option<(String, String, u32)>> = RefCell::new(None);
+}
+
+/// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
+fn init_panic_handler() {
+    use std::panic;
+
+    panic::set_hook(Box::new(|info| {
+        let location = info.location()
+            .map(|l| format!("{}:{}", l.file(), l.line()))
+            .unwrap_or_else(|| "unknown".to_string());
+
+        let payload = info.payload();
+        let msg = if let Some(s) = payload.downcast_ref::<&'static str>() {
+            s.to_string()
+        } else if let Some(s) = payload.downcast_ref::<String>() {
+            s.clone()
+        } else {
+            "Unknown panic payload".to_string()
+        };
+
+        // Use try_with/try_borrow_mut to ensure the hook never panics itself
+        let _ = PANIC_INFO.try_with(|cell| {
+            if let Ok(mut slot) = cell.try_borrow_mut() {
+                *slot = Some((msg, location, 0));
+            }
+        });
+    }));
+}
+
+fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
+    match result {
+        Ok(val) => val,
+        Err(_) => {
+            // Retrieve the smuggled info
+            let details = PANIC_INFO.with(|cell| cell.borrow_mut().take());
+            
+            if let Some((msg, file, line)) = details {
+                Err(anyhow::anyhow!(
+                    "MathCAT crash! Please report the following information: '{}' at {}:{}",
+                    msg, file, line
+                ))
+            } else {
+                Err(anyhow::anyhow!("MathCAT crash! -- please report"))
+            }
+        }
+    }
+} 
+
 // wrap up some common functionality between the call from 'main' and AT
 fn cleanup_mathml(mathml: Element) -> Result<Element> {
     trim_element(mathml, false);
@@ -67,15 +120,19 @@ fn init_mathml_instance() -> RefCell<Package> {
 /// IMPORTANT: this should be the very first call to MathCAT. If 'dir' is an empty string, the environment var 'MathCATRulesDir' is tried.
 pub fn set_rules_dir(dir: impl AsRef<str>) -> Result<()> {
     enable_logs();
-    use std::path::PathBuf;
-    let dir = dir.as_ref();
-    let dir = if dir.is_empty() {
-        std::env::var_os("MathCATRulesDir").unwrap_or_default()
-    } else {
-        std::ffi::OsString::from(dir)
-    };
-    let pref_manager = crate::prefs::PreferenceManager::get();
-    return pref_manager.borrow_mut().initialize(PathBuf::from(dir));
+    init_panic_handler();
+    let dir = dir.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        use std::path::PathBuf;
+        let dir_os = if dir.is_empty() {
+            std::env::var_os("MathCATRulesDir").unwrap_or_default()
+        } else {
+            std::ffi::OsString::from(&dir)
+        };
+        let pref_manager = crate::prefs::PreferenceManager::get();
+        pref_manager.borrow_mut().initialize(PathBuf::from(dir_os))
+    }));
+    return report_any_panic(result);
 }
 
 /// Returns the version number (from Cargo.toml) of the build
@@ -97,72 +154,76 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]+:"#).unwrap()); // very limited namespace prefix match
     static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]+?);"#).unwrap());
 
-    NAVIGATION_STATE.with(|nav_stack| {
-        nav_stack.borrow_mut().reset();
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        NAVIGATION_STATE.with(|nav_stack| {
+            nav_stack.borrow_mut().reset();
+        });
 
-    // We need the main definitions files to be read in so canonicalize can work.
-    // This call reads all of them for the current preferences, but that's ok since they will likely be used
-    crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
+        // We need the main definitions files to be read in so canonicalize can work.
+        // This call reads all of them for the current preferences, but that's ok since they will likely be used
+        crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
 
-    let mathml_str = mathml_str.as_ref();
-    return MATHML_INSTANCE.with(|old_package| {
-        static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
+        let mathml_str = mathml_str.as_ref();
+        return MATHML_INSTANCE.with(|old_package| {
+            static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
 
-        let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
-                                                // need to deal with character data and convert to something the parser knows
-        let mathml_str =
-            HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
-                None => {
-                    error_message = format!("No entity named '{}'", &cap[0]);
-                    cap[0].to_string()
-                }
-                Some(&ch) => ch.to_string(),
-            });
+            let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
+                                                    // need to deal with character data and convert to something the parser knows
+            let mathml_str =
+                HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+                    None => {
+                        error_message = format!("No entity named '{}'", &cap[0]);
+                        cap[0].to_string()
+                    }
+                    Some(&ch) => ch.to_string(),
+                });
 
-        if !error_message.is_empty() {
-            bail!(error_message);
-        }
-        let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
-        let mathml_str = MATHJAX_V3.replace_all(&mathml_str, "");
+            if !error_message.is_empty() {
+                bail!(error_message);
+            }
+            let mathml_str = MATHJAX_V2.replace_all(&mathml_str, "");
+            let mathml_str = MATHJAX_V3.replace_all(&mathml_str, "");
 
-        // the speech rules use the xpath "name" function and that includes the prefix
-        // getting rid of the prefix properly probably involves a recursive replacement in the tree
-        // if the prefix is used, it is almost certainly something like "m" or "mml", so this cheat will work.
-        let mathml_str = NAMESPACE_DECL.replace(&mathml_str, "xmlns"); // do this before the PREFIX replace!
-        let mathml_str = PREFIX.replace_all(&mathml_str, "$1");
+            // the speech rules use the xpath "name" function and that includes the prefix
+            // getting rid of the prefix properly probably involves a recursive replacement in the tree
+            // if the prefix is used, it is almost certainly something like "m" or "mml", so this cheat will work.
+            let mathml_str = NAMESPACE_DECL.replace(&mathml_str, "xmlns"); // do this before the PREFIX replace!
+            let mathml_str = PREFIX.replace_all(&mathml_str, "$1");
 
-        let new_package = parser::parse(&mathml_str);
-        if let Err(e) = new_package {
-            bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
-        }
+            let new_package = parser::parse(&mathml_str);
+            if let Err(e) = new_package {
+                bail!("Invalid MathML input:\n{}\nError is: {}", &mathml_str, &e.to_string());
+            }
 
-        let new_package = new_package.unwrap();
-        let mathml = get_element(&new_package);
-        let mathml = cleanup_mathml(mathml)?;
-        let mathml_string = mml_to_string(mathml);
-        old_package.replace(new_package);
+            let new_package = new_package.unwrap();
+            let mathml = get_element(&new_package);
+            let mathml = cleanup_mathml(mathml)?;
+            let mathml_string = mml_to_string(mathml);
+            old_package.replace(new_package);
 
-        return Ok(mathml_string);
-    });
+            return Ok(mathml_string);
+        });
+    }));
+
+    return report_any_panic(result);
 }
 
 /// Get the spoken text of the MathML that was set.
 /// The speech takes into account any AT or user preferences.
 pub fn get_spoken_text() -> Result<String> {
     enable_logs();
-    // use std::time::{Instant};
-    // let instant = Instant::now();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let new_package = Package::new();
-        let intent = crate::speech::intent_from_mathml(mathml, new_package.as_document())?;
-        debug!("Intent tree:\n{}", mml_to_string(intent));
-        let speech = crate::speech::speak_mathml(intent, "", 0)?;
-        // info!("Time taken: {}ms", instant.elapsed().as_millis());
-        return Ok(speech);
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let new_package = Package::new();
+            let intent = crate::speech::intent_from_mathml(mathml, new_package.as_document())?;
+            debug!("Intent tree:\n{}", mml_to_string(intent));
+            let speech = crate::speech::speak_mathml(intent, "", 0)?;
+            return Ok(speech);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Get the spoken text for an overview of the MathML that was set.
@@ -170,36 +231,39 @@ pub fn get_spoken_text() -> Result<String> {
 /// Note: this implementation for is currently minimal and should not be used.
 pub fn get_overview_text() -> Result<String> {
     enable_logs();
-    // use std::time::{Instant};
-    // let instant = Instant::now();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let speech = crate::speech::overview_mathml(mathml, "", 0)?;
-        // info!("Time taken: {}ms", instant.elapsed().as_millis());
-        return Ok(speech);
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let speech = crate::speech::overview_mathml(mathml, "", 0)?;
+            return Ok(speech);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Get the value of the named preference.
 /// None is returned if `name` is not a known preference.
 pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    let name = name.as_ref();
-    use crate::prefs::NO_PREFERENCE;
-    return crate::speech::SPEECH_RULES.with(|rules| {
-        let rules = rules.borrow();
-        let pref_manager = rules.pref_manager.borrow();
-        let mut value = pref_manager.pref_to_string(name);
-        if value == NO_PREFERENCE {
-            value = pref_manager.pref_to_string(name);
-        }
-        if value == NO_PREFERENCE {
-            bail!("No preference named '{}'", name);
-        } else {
-            return Ok(value);
-        }
-    });
+    let name = name.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        use crate::prefs::NO_PREFERENCE;
+        crate::speech::SPEECH_RULES.with(|rules| {
+            let rules = rules.borrow();
+            let pref_manager = rules.pref_manager.borrow();
+            let mut value = pref_manager.pref_to_string(&name);
+            if value == NO_PREFERENCE {
+                value = pref_manager.pref_to_string(&name);
+            }
+            if value == NO_PREFERENCE {
+                bail!("No preference named '{}'", name);
+            } else {
+                return Ok(value);
+            }
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Set a MathCAT preference. The preference name should be a known preference name.
@@ -224,9 +288,16 @@ pub fn get_preference(name: impl AsRef<str>) -> Result<String> {
 /// Be careful setting preferences -- these potentially override user settings, so only preferences that really need setting should be set.
 pub fn set_preference(name: impl AsRef<str>, value: impl AsRef<str>) -> Result<()> {
     enable_logs();
-    let name = name.as_ref();
-    // "LanguageAuto" allows setting the language dir without actually changing the value of "Language" from Auto
-    let mut value = value.as_ref().to_string();
+    let name = name.as_ref().to_string();
+    let value = value.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        set_preference_impl(&name, &value)
+    }));
+    return report_any_panic(result);
+}
+
+fn set_preference_impl(name: &str, value: &str) -> Result<()> {
+    let mut value = value.to_string();
     if name == "Language" || name == "LanguageAuto" {
         // check the format
         if value != "Auto" {
@@ -286,13 +357,13 @@ pub fn set_preference(name: impl AsRef<str>, value: impl AsRef<str>) -> Result<(
     })?;
 
     return Ok(());
+}
 
-    fn to_float(name: &str, value: &str) -> Result<f64> {
-        return match value.parse::<f64>() {
-            Ok(val) => Ok(val),
-            Err(_) => bail!("SetPreference: preference'{}'s value '{}' must be a float", name, value),
-        };
-    }
+fn to_float(name: &str, value: &str) -> Result<f64> {
+    return match value.parse::<f64>() {
+        Ok(val) => Ok(val),
+        Err(_) => bail!("SetPreference: preference'{}'s value '{}' must be a float", name, value),
+    };
 }
 
 /// Get the braille associated with the MathML that was set by [`set_mathml`].
@@ -300,15 +371,16 @@ pub fn set_preference(name: impl AsRef<str>, value: impl AsRef<str>) -> Result<(
 /// If 'nav_node_id' is given, it is highlighted based on the value of `BrailleNavHighlight` (default: `EndPoints`)
 pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    // use std::time::{Instant};
-    // let instant = Instant::now();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let braille = crate::braille::braille_mathml(mathml, nav_node_id.as_ref())?.0;
-        // info!("Time taken: {}ms", instant.elapsed().as_millis());
-        return Ok(braille);
-    });
+    let nav_node_id = nav_node_id.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let braille = crate::braille::braille_mathml(mathml, &nav_node_id)?.0;
+            return Ok(braille);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Get the braille associated with the current navigation focus of the MathML that was set by [`set_mathml`].
@@ -316,53 +388,56 @@ pub fn get_braille(nav_node_id: impl AsRef<str>) -> Result<String> {
 /// The returned braille is brailled as if the current navigation focus is the entire expression to be brailled.
 pub fn get_navigation_braille() -> Result<String> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let new_package = Package::new(); // used if we need to create a new tree
-        let new_doc = new_package.as_document();
-        let nav_mathml = NAVIGATION_STATE.with(|nav_stack| {
-            return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
-                Err(e) => Err(e),
-                Ok((found, offset)) => {
-                    // get the MathML node and wrap it inside of a <math> element
-                    // if the offset is given, we need to get the character it references
-                    if offset == 0 {
-                        if name(found) == "math" {
-                            Ok(found)
-                        } else {
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let new_package = Package::new(); // used if we need to create a new tree
+            let new_doc = new_package.as_document();
+            let nav_mathml = NAVIGATION_STATE.with(|nav_stack| {
+                return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
+                    Err(e) => Err(e),
+                    Ok((found, offset)) => {
+                        // get the MathML node and wrap it inside of a <math> element
+                        // if the offset is given, we need to get the character it references
+                        if offset == 0 {
+                            if name(found) == "math" {
+                                Ok(found)
+                            } else {
+                                let new_mathml = create_mathml_element(&new_doc, "math");
+                                new_mathml.append_child(copy_mathml(found));
+                                new_doc.root().append_child(new_mathml);
+                                Ok(new_mathml)
+                            }
+                        } else if !is_leaf(found) {
+                            bail!(
+                                "Internal error: non-zero offset '{}' on a non-leaf element '{}'",
+                                offset,
+                                name(found)
+                            );
+                        } else if let Some(ch) = as_text(found).chars().nth(offset) {
+                            let internal_mathml = create_mathml_element(&new_doc, name(found));
+                            internal_mathml.set_text(&ch.to_string());
                             let new_mathml = create_mathml_element(&new_doc, "math");
-                            new_mathml.append_child(copy_mathml(found));
+                            new_mathml.append_child(internal_mathml);
                             new_doc.root().append_child(new_mathml);
                             Ok(new_mathml)
+                        } else {
+                            bail!(
+                                "Internal error: offset '{}' on leaf element '{}' doesn't exist",
+                                offset,
+                                mml_to_string(found)
+                            );
                         }
-                    } else if !is_leaf(found) {
-                        bail!(
-                            "Internal error: non-zero offset '{}' on a non-leaf element '{}'",
-                            offset,
-                            name(found)
-                        );
-                    } else if let Some(ch) = as_text(found).chars().nth(offset) {
-                        let internal_mathml = create_mathml_element(&new_doc, name(found));
-                        internal_mathml.set_text(&ch.to_string());
-                        let new_mathml = create_mathml_element(&new_doc, "math");
-                        new_mathml.append_child(internal_mathml);
-                        new_doc.root().append_child(new_mathml);
-                        Ok(new_mathml)
-                    } else {
-                        bail!(
-                            "Internal error: offset '{}' on leaf element '{}' doesn't exist",
-                            offset,
-                            mml_to_string(found)
-                        );
                     }
-                }
-            };
-        })?;
+                };
+            })?;
 
-        let braille = crate::braille::braille_mathml(nav_mathml, "")?.0;
-        return Ok(braille);
-    });
+            let braille = crate::braille::braille_mathml(nav_mathml, "")?.0;
+            return Ok(braille);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given a key code along with the modifier keys, the current node is moved accordingly (or value reported in some cases).
@@ -375,11 +450,15 @@ pub fn do_navigate_keypress(
     alt_key: bool,
     meta_key: bool,
 ) -> Result<String> {
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return do_mathml_navigate_key_press(mathml, key, shift_key, control_key, alt_key, meta_key);
-    });
+    enable_logs();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return do_mathml_navigate_key_press(mathml, key, shift_key, control_key, alt_key, meta_key);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given a navigation command, the current node is moved accordingly.
@@ -417,42 +496,54 @@ pub fn do_navigate_keypress(
 /// When done with Navigation, call with `Exit`
 pub fn do_navigate_command(command: impl AsRef<str>) -> Result<String> {
     enable_logs();
-    let command = NAV_COMMANDS.get_key(command.as_ref()); // gets a &'static version of the command
-    if command.is_none() {
-        bail!("Unknown command in call to DoNavigateCommand()");
-    };
-    let command = *command.unwrap();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return do_navigate_command_string(mathml, command);
-    });
+    let command = command.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let cmd = NAV_COMMANDS.get_key(&command); // gets a &'static version of the command
+        if cmd.is_none() {
+            bail!("Unknown command in call to DoNavigateCommand()");
+        };
+        let cmd = *cmd.unwrap();
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return do_navigate_command_string(mathml, cmd);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given an 'id' and an offset (for tokens), set the navigation node to that id.
 /// An error is returned if the 'id' doesn't exist
 pub fn set_navigation_node(id: impl AsRef<str>, offset: usize) -> Result<()> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return set_navigation_node_from_id(mathml, id.as_ref(), offset);
-    });
+    let id = id.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return set_navigation_node_from_id(mathml, &id, offset);
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Return the MathML associated with the current (navigation) node and the offset (0-based) from that mathml (not yet implemented)
 /// The offset is needed for token elements that have multiple characters.
 pub fn get_navigation_mathml() -> Result<(String, usize)> {
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return NAVIGATION_STATE.with(|nav_stack| {
-            return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
-                Err(e) => Err(e),
-                Ok((found, offset)) => Ok((mml_to_string(found), offset)),
-            };
-        });
-    });
+    enable_logs();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return NAVIGATION_STATE.with(|nav_stack| {
+                return match nav_stack.borrow_mut().get_navigation_mathml(mathml) {
+                    Err(e) => Err(e),
+                    Ok((found, offset)) => Ok((mml_to_string(found), offset)),
+                };
+            });
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Return the `id` and `offset` (0-based) associated with the current (navigation) node.
@@ -460,87 +551,106 @@ pub fn get_navigation_mathml() -> Result<(String, usize)> {
 /// The offset is needed for token elements that have multiple characters.
 pub fn get_navigation_mathml_id() -> Result<(String, usize)> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return Ok(NAVIGATION_STATE.with(|nav_stack| {
-            return nav_stack.borrow().get_navigation_mathml_id(mathml);
-        }));
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return Ok(NAVIGATION_STATE.with(|nav_stack| {
+                return nav_stack.borrow().get_navigation_mathml_id(mathml);
+            }));
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Return the start and end braille character positions associated with the current (navigation) node.
 pub fn get_braille_position() -> Result<(usize, usize)> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        let nav_node = get_navigation_mathml_id()?;
-        let (_, start, end) = crate::braille::braille_mathml(mathml, &nav_node.0)?;
-        return Ok((start, end));
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            let nav_node = get_navigation_mathml_id()?;
+            let (_, start, end) = crate::braille::braille_mathml(mathml, &nav_node.0)?;
+            return Ok((start, end));
+        })
+    }));
+    return report_any_panic(result);
 }
 
 /// Given a 0-based braille position, return the smallest MathML node enclosing it.
 /// This node might be a leaf with an offset.
 pub fn get_navigation_node_from_braille_position(position: usize) -> Result<(String, usize)> {
     enable_logs();
-    return MATHML_INSTANCE.with(|package_instance| {
-        let package_instance = package_instance.borrow();
-        let mathml = get_element(&package_instance);
-        return crate::braille::get_navigation_node_from_braille_position(mathml, position);
-    });
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        MATHML_INSTANCE.with(|package_instance| {
+            let package_instance = package_instance.borrow();
+            let mathml = get_element(&package_instance);
+            return crate::braille::get_navigation_node_from_braille_position(mathml, position);
+        })
+    }));
+    return report_any_panic(result);
 }
 
-pub fn get_supported_braille_codes() -> Vec<String> {
+pub fn get_supported_braille_codes() -> Result<Vec<String>> {
     enable_logs();
-    let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
-    let braille_dir = rules_dir.join("Braille");
-    let mut braille_code_paths = Vec::new();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
+        let braille_dir = rules_dir.join("Braille");
+        let mut braille_code_paths = Vec::new();
 
-    find_all_dirs_shim(&braille_dir, &mut braille_code_paths);
-    let mut braille_code_paths = braille_code_paths.iter()
-                    .map(|path| path.strip_prefix(&braille_dir).unwrap().to_string_lossy().to_string())
-                    .filter(|string_path| !string_path.is_empty() )
-                    .collect::<Vec<String>>();
-    braille_code_paths.sort();
+        find_all_dirs_shim(&braille_dir, &mut braille_code_paths);
+        let mut braille_code_paths = braille_code_paths.iter()
+                        .map(|path| path.strip_prefix(&braille_dir).unwrap().to_string_lossy().to_string())
+                        .filter(|string_path| !string_path.is_empty() )
+                        .collect::<Vec<String>>();
+        braille_code_paths.sort();
 
-    return braille_code_paths;
+        Ok(braille_code_paths)
+    }));
+    return report_any_panic(result);
  }
 
 /// Returns a Vec of all supported languages ("en", "es", ...)
-pub fn get_supported_languages() -> Vec<String> {
+pub fn get_supported_languages() -> Result<Vec<String>> {
     enable_logs();
-    let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
-    let lang_dir = rules_dir.join("Languages");
-    let mut lang_paths = Vec::new();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
+        let lang_dir = rules_dir.join("Languages");
+        let mut lang_paths = Vec::new();
 
-    find_all_dirs_shim(&lang_dir, &mut lang_paths);
-    let mut language_paths = lang_paths.iter()
-                    .map(|path| path.strip_prefix(&lang_dir).unwrap()
-                                              .to_string_lossy()
-                                              .replace(std::path::MAIN_SEPARATOR, "-")
-                                              .to_string())
-                    .filter(|string_path| !string_path.is_empty() )
-                    .collect::<Vec<String>>();
+        find_all_dirs_shim(&lang_dir, &mut lang_paths);
+        let mut language_paths = lang_paths.iter()
+                        .map(|path| path.strip_prefix(&lang_dir).unwrap()
+                                                  .to_string_lossy()
+                                                  .replace(std::path::MAIN_SEPARATOR, "-")
+                                                  .to_string())
+                        .filter(|string_path| !string_path.is_empty() )
+                        .collect::<Vec<String>>();
 
-    // make sure the 'zz' test dir isn't included (build.rs removes it, but for debugging is there)
-    language_paths.retain(|s| !s.starts_with("zz"));
-    language_paths.sort();
-    return language_paths;
+        // make sure the 'zz' test dir isn't included (build.rs removes it, but for debugging is there)
+        language_paths.retain(|s| !s.starts_with("zz"));
+        language_paths.sort();
+        Ok(language_paths)
+    }));
+    return report_any_panic(result);
  }
 
- pub fn get_supported_speech_styles(lang: impl AsRef<str>) -> Vec<String> {
+ pub fn get_supported_speech_styles(lang: impl AsRef<str>) -> Result<Vec<String>> {
     enable_logs();
-    let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
-    let lang_dir = rules_dir.join("Languages").join(lang.as_ref());
-    let mut speech_styles = find_files_in_dir_that_ends_with_shim(&lang_dir, "_Rules.yaml");
-    for file_name in &mut speech_styles {
-        file_name.truncate(file_name.len() - "_Rules.yaml".len())
-    }
-    speech_styles.sort();
-    speech_styles.dedup(); // remove duplicates -- shouldn't be any, but just in case
-    return speech_styles;
+    let lang = lang.as_ref().to_string();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        let rules_dir = crate::prefs::PreferenceManager::get().borrow().get_rules_dir();
+        let lang_dir = rules_dir.join("Languages").join(&lang);
+        let mut speech_styles = find_files_in_dir_that_ends_with_shim(&lang_dir, "_Rules.yaml");
+        for file_name in &mut speech_styles {
+            file_name.truncate(file_name.len() - "_Rules.yaml".len())
+        }
+        speech_styles.sort();
+        speech_styles.dedup(); // remove duplicates -- shouldn't be any, but just in case
+        Ok(speech_styles)
+    }));
+    return report_any_panic(result);
  }
 
 // utility functions
