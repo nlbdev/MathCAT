@@ -1296,12 +1296,15 @@ fn is_generalized_salt(elements: &[&str]) -> bool {
 ///
 /// Note: 'mathml' is not necessarily canonicalized   
 pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
+    if !matches!(name(mathml), "msub" | "msup" | "msubsup" | "mmultiscripts") {
+        return NOT_CHEMISTRY;
+    }
     // some simple sanity checks on the scripts...
     let tag_name = name(mathml);
     let children = mathml.children();
     let mut likelihood = 0;
     let mut is_empty_subscript = false;
-    // debug!("likely_adorned_chem_formula:\n{}", mml_to_string(mathml));
+    debug!("likely_adorned_chem_formula:\n{}", mml_to_string(mathml));
     if tag_name == "msub" || tag_name == "msubsup" {
         // subscripts should be just a number, although they could be 'n' or '2n' or other exprs.
         let subscript = as_element(children[1]);

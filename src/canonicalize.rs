@@ -1512,6 +1512,7 @@ impl CanonicalizeContext {
 			let mut mathml = mathml;
 			let children = mathml.children();
 			let n = children.len();
+			debug!("clean_mmultiscripts: start with {} children\n{}", n, mml_to_string(mathml));
 			let i_mprescripts =
 				if let Some((i,_)) = children.iter().enumerate()
 					.find(|&(_,&el)| name(as_element(el)) == "mprescripts") { i } else { n };
@@ -6576,27 +6577,23 @@ mod canonicalize_tests {
 	}
 
 	#[test]
+    fn empty_mmultiscripts_485() {
+        let test_str = "<math><mmultiscripts>   </mmultiscripts></math>";
+        let target_str = "<math>
+		<mmultiscripts data-chem-formula='6'>
+		<mtext data-chem-element='1'>C</mtext>
+		<mprescripts></mprescripts>
+		<mn>6</mn>
+		<mn>14</mn>
+		</mmultiscripts>
+		</math>";
+        assert!(are_strs_canonically_equal(test_str, target_str, &[]));
+	}
+
+	#[test]
     fn empty_mrows_in_mmultiscripts_306() {
-        let test_str = "<math display='block'>
-			<mmultiscripts intent='_permutation:prefix(_of,$k,_from,$n)'>
-				<mi>P</mi>
-				<mi arg='k'>k</mi>
-				<mrow/>
-				<mprescripts/>
-				<mrow/>
-				<mi arg='n'>n</mi>
-			</mmultiscripts>
-		</math>";
-        let target_str = "<math display='block'>
-			<mmultiscripts intent='_permutation:prefix(_of,$k,_from,$n)'>
-				<mi>P</mi>
-				<mi arg='k'>k</mi>
-				<none></none>
-				<mprescripts></mprescripts>
-				<none></none>
-				<mi arg='n'>n</mi>
-			</mmultiscripts>
-		</math>";
+        let test_str = "<math><mmultiscripts>   </mmultiscripts></math>";
+        let target_str = "<math><mtext data-added='missing-content' data-width='0.700'> </mtext></math>";
         assert!(are_strs_canonically_equal(test_str, target_str, &[]));
 	}
 
