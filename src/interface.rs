@@ -48,7 +48,7 @@ fn enable_logs() {
 // For getting a message from a panic
 thread_local! {
     // Stores (Message, File, Line)
-    static PANIC_INFO: RefCell<Option<(String, String, u32)>> = RefCell::new(None);
+    static PANIC_INFO: RefCell<Option<(String, String, u32)>> = const { RefCell::new(None) };
 }
 
 /// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
