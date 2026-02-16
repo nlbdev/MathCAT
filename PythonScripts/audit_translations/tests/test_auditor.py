@@ -4,8 +4,19 @@ Tests for auditor helpers.
 
 from pathlib import Path
 
+import pytest
+
 from ..auditor import collect_issues, compare_files, console, get_yaml_files, list_languages, print_warnings
 from ..dataclasses import ComparisonResult, RuleDifference, RuleInfo
+
+
+@pytest.fixture()
+def fixed_console_width():
+    """Pin Rich console to 80 columns so golden-file comparisons are portable."""
+    old = console.width
+    console.width = 80
+    yield
+    console.width = old
 
 
 def make_rule(name: str, tag: str, line: int, raw: str) -> RuleInfo:
@@ -155,7 +166,7 @@ def test_get_yaml_files_includes_region(tmp_path) -> None:
     (region_dir / "unicode.yaml").write_text("---", encoding="utf-8")
 
     files = get_yaml_files(lang_dir, region_dir)
-    assert set(files) == {"base.yaml", "SharedRules/shared.yaml", "unicode.yaml"}
+    assert set(files) == {Path("base.yaml"), Path("SharedRules/shared.yaml"), Path("unicode.yaml")}
 
 
 def test_list_languages_includes_region_codes(tmp_path) -> None:
@@ -183,9 +194,11 @@ def test_list_languages_includes_region_codes(tmp_path) -> None:
     assert "zz-aa" in output
 
 
-def test_print_warnings_omits_snippets_when_not_verbose() -> None:
+def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> None:
     """
     Ensure the print_warnings output matches the non-verbose golden snapshot.
+
+    Uses pytest fixture for console width.
     """
     base_dir = Path(__file__).parent
     fixtures_dir = base_dir / "fixtures"
@@ -202,9 +215,11 @@ def test_print_warnings_omits_snippets_when_not_verbose() -> None:
     assert output == golden_path.read_text(encoding="utf-8")
 
 
-def test_print_warnings_includes_snippets_when_verbose() -> None:
+def test_print_warnings_includes_snippets_when_verbose(fixed_console_width) -> None:
     """
     Ensure the print_warnings output matches the verbose golden snapshot.
+
+    Uses pytest fixture for console width.
     """
     base_dir = Path(__file__).parent
     fixtures_dir = base_dir / "fixtures"

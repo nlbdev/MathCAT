@@ -44,20 +44,20 @@ def get_rules_dir(rules_dir: Optional[str] = None) -> Path:
     return package_dir.parent.parent / "Rules" / "Languages"
 
 
-def get_yaml_files(lang_dir: Path, region_dir: Optional[Path] = None) -> List[str]:
+def get_yaml_files(lang_dir: Path, region_dir: Optional[Path] = None) -> List[Path]:
     """Get all YAML files to audit for a language, including region overrides."""
-    files: set[str] = set()
+    files: set[Path] = set()
 
     def collect_from(directory: Path, root: Path) -> None:
         if not directory.exists():
             return
         for f in directory.glob("*.yaml"):
             if f.name != "prefs.yaml":  # Skip prefs.yaml as it's not translated
-                files.add(str(f.relative_to(root)))
+                files.add(f.relative_to(root))
         shared_dir = directory / "SharedRules"
         if shared_dir.exists():
             for f in shared_dir.glob("*.yaml"):
-                files.add(str(f.relative_to(root)))
+                files.add(f.relative_to(root))
 
     collect_from(lang_dir, lang_dir)
     if region_dir:
@@ -177,7 +177,7 @@ def print_diff_item(diff: RuleDifference, line_en: int, line_tr: int, verbose: b
 def issue_base(rule: RuleInfo, file_name: str, language: str) -> dict:
     return {
         "language": language,
-        "file": file_name,
+        "file": Path(file_name).as_posix(),
         "rule_name": rule.name or "",
         "rule_tag": rule.tag or "",
         "rule_key": rule.key,
