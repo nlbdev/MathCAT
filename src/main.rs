@@ -5,6 +5,7 @@
 use libmathcat::interface::*;
 use log::{debug, info};
 use std::time::Instant;
+use std::process::exit;
 
 
 // Maybe also have this speak to test the TTS generation.
@@ -192,7 +193,7 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math><mmultiscripts>   </mmultiscripts></math>
+<math> <mrow> <mi>p</mi> <mo>?</mo> </mrow> </math>
 
  
                    "#;
@@ -200,7 +201,7 @@ fn main() {
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
   if let Err(e) = set_rules_dir(get_rules_dir()) {
-    panic!("Error: exiting -- {}", errors_to_string(&e));
+    eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);
   }
   debug!("Languages: {}", libmathcat::interface::get_supported_languages().unwrap_or_default().join(", "));
 
@@ -209,7 +210,7 @@ fn main() {
   info!("Version = '{}' using Rules dir {}", get_version(), get_rules_dir());
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
-  set_preference("BrailleCode", "LaTeX").unwrap();
+  set_preference("BrailleCode", "Nemeth").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
@@ -231,49 +232,48 @@ fn main() {
   // set_preference("DecimalSeparators", ",").unwrap();
   // set_preference("BlockSeparators", ". ").unwrap();
   if let Err(e) = set_mathml(expr) {
-    eprintln!("Error: exiting -- {}", errors_to_string(&e));
-    std::process::exit(1);
+    eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
   // match do_navigate_command("ZoomIn".to_string())  {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
   // }
   // match do_navigate_command("ToggleZoomLockUp".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("ToggleZoomLockUp speech: '{speech}'"),
   // }
   // match do_navigate_command("MovePrevious".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MovePrevious speech: '{speech}'"),
   // }
   // match do_navigate_command("MovePrevious".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MovePrevious speech: '{}'", speech),
   // }
   // match do_navigate_command("MovePrevious".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MovePrevious speech: '{}'", speech),
   // }
   // match do_navigate_command("MoveNext".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
   // match do_navigate_command("MoveNext".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
   // match do_navigate_command("MoveNext".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
   // match do_navigate_command("MoveNext".to_string()) {
-  //   Err(e) => panic!("Error: exiting -- {}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
   // match get_spoken_text() {
   //   Ok(speech) => info!("Computed speech string:\n   '{speech}'"),
-  //   Err(e) => panic!("{}", errors_to_string(&e)),
+  //   Err(e) => eprintln!("{}", errors_to_string(&e)); exit(1);,
   // }
   debug!("Speech language is {}", get_preference("Language").unwrap());
   debug!("DecimalSeparator: {:?}", get_preference("DecimalSeparator").unwrap());
@@ -285,14 +285,14 @@ fn main() {
   // let instant = Instant::now();
   match get_spoken_text() {
     Ok(speech) => info!("Computed speech string:\n   '{}'", speech),
-    Err(e) => panic!("{}", errors_to_string(&e)),
+    Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
   }
   // info!("Time taken (second time for speech): {}ms", instant.elapsed().as_millis());
   // info!("SpeechStyle: {:?}", get_preference("SpeechStyle"));
 
   match get_braille("") {
     Ok(braille) => info!("Computed braille string:\n   '{braille}'"),
-    Err(e) => panic!("{}", errors_to_string(&e)),
+    Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
   }
   debug!("...using BrailleCode: {:?}", get_preference("BrailleCode").unwrap());
   // let xpath_counts = libmathcat::speech::xpath_count();
@@ -312,15 +312,15 @@ fn timing_test(expr: &str, n_loops: usize) {
   let instant = Instant::now();
   for _ in 0..n_loops {
     if let Err(e) = set_mathml(expr) {
-      panic!("Error: exiting -- {}", errors_to_string(&e));
+      eprintln!("Error: exiting -- {}", errors_to_string(&e));
     };
     match get_spoken_text() {
       Ok(_) =>( ),
-      Err(e) => panic!("{}", errors_to_string(&e)),
+      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
     }
     match get_braille("") {
       Ok(_) => (),
-      Err(e) => panic!("{}", errors_to_string(&e)),
+      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
     }
   }
   info!("Time taken (time for set, speech, {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
@@ -328,7 +328,7 @@ fn timing_test(expr: &str, n_loops: usize) {
   let instant = Instant::now();
   for _ in 0..n_loops {
     if let Err(e) = set_mathml(expr) {
-      panic!("Error: exiting -- {}", errors_to_string(&e));
+      eprintln!("Error: exiting -- {}", errors_to_string(&e));
     };
   }
   info!("Time taken (time for set averaged over {} loops): {}ms", n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
@@ -337,7 +337,7 @@ fn timing_test(expr: &str, n_loops: usize) {
   for _ in 0..n_loops {
     match get_spoken_text() {
       Ok(_) =>( ),
-      Err(e) => panic!("{}", errors_to_string(&e)),
+      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
     }
   }
   info!("Time taken (time for get_spoken_text() averaged over {} loops): {}ms", n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
@@ -348,13 +348,13 @@ fn timing_test(expr: &str, n_loops: usize) {
   for _ in 0..n_loops {
     match get_braille("") {
       Ok(_) => (),
-      Err(e) => panic!("{}", errors_to_string(&e)),
+      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);},
     }
   }
   info!("Time taken (time for {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
 
     if let Err(e) = set_mathml(expr) {
-      panic!("Error: exiting -- {}", errors_to_string(&e));
+      eprintln!("Error: exiting -- {}", errors_to_string(&e));
     };
   set_preference("BrailleCode", "Nemeth").unwrap();
   get_braille("").unwrap();
@@ -362,7 +362,7 @@ fn timing_test(expr: &str, n_loops: usize) {
   for _ in 0..n_loops {
     match get_braille("") {
       Ok(_) => (),
-      Err(e) => panic!("{}", errors_to_string(&e)),
+      Err(e) => {eprintln!("{}", errors_to_string(&e)); exit(1);} ,
     }
   }
   info!("Time taken (time for {} braille averaged over {} loops): {}ms", get_preference("BrailleCode").unwrap(), n_loops, instant.elapsed().as_millis() as f64/n_loops_float);
