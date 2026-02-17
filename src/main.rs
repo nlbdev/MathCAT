@@ -193,9 +193,7 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math> <mrow> <mi>p</mi> <mo>?</mo> </mrow> </math>
-
- 
+<math><mn>₩8.54</mn><mo>+</mo><mn>$1</mn></math> 
                    "#;
   // let instant = Instant::now();
 
@@ -211,6 +209,7 @@ fn main() {
   set_preference("Language", "en").unwrap();
   set_preference("DecimalSeparator", "Auto").unwrap();
   set_preference("BrailleCode", "Nemeth").unwrap();
+  set_preference("BrailleNavHighlight", "On").unwrap();
   set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
@@ -299,7 +298,7 @@ fn main() {
   // info!("#xpath = {}; duplicates = {}", xpath_counts.0, xpath_counts.1);
   // info!("Time taken (second time for speech + braille): {}ms", instant.elapsed().as_millis());
   // debug!("Hashmap sizes:\n{}", libmathcat::speech::SpeechRules::print_sizes());
-  timing_test(expr, 0);
+  timing_test(expr, 000);
 
 }
 

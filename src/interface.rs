@@ -52,7 +52,7 @@ thread_local! {
 }
 
 /// Initialize the panic handler to catch panics and store the message, file, and line number in `PANIC_INFO`.
-fn init_panic_handler() {
+pub fn init_panic_handler() {
     use std::panic;
 
     panic::set_hook(Box::new(|info| {
@@ -78,7 +78,7 @@ fn init_panic_handler() {
     }));
 }
 
-fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
+pub fn report_any_panic<T>(result: Result<Result<T, Error>, Box<dyn std::any::Any + Send>>) -> Result<T, Error> {
     match result {
         Ok(val) => val,
         Err(_) => {

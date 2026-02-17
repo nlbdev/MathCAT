@@ -70,27 +70,40 @@ pub fn are_strs_canonically_equal_with_locale(test: &str, target: &str, ignore_a
     use crate::{interface::*, pretty_print::mml_to_string};
     use sxd_document::parser;
     use crate::canonicalize::canonicalize;
-    // this forces initialization
-    crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
-    crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
-    set_preference("Language", "en").unwrap();
-    set_preference("BlockSeparators", block_separators).unwrap();
-    set_preference("DecimalSeparators", decimal_separators).unwrap();
-    
-    let package1 = &parser::parse(test).expect("Failed to parse test input");
-    let mathml = get_element(package1);
-    trim_element(mathml, false);
-    // debug!("test:\n{}", mml_to_string(mathml));
-    let mathml_test = canonicalize(mathml).unwrap();
-   
-    let package2 = &parser::parse(target).expect("Failed to parse target input");
-    let mathml_target = get_element(package2);
-    trim_element(mathml_target, false);
-    // debug!("target:\n{}", mml_to_string(mathml_target));
+    use std::panic::{catch_unwind, AssertUnwindSafe};
 
-    match is_same_element(mathml_test, mathml_target, ignore_attrs) {
-        Ok(_) => return true,
-        Err(e) => panic!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target)),
+    crate::interface::init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        // this forces initialization
+        crate::interface::set_rules_dir(abs_rules_dir_path()).unwrap();
+        crate::speech::SPEECH_RULES.with(|rules|  rules.borrow_mut().read_files().unwrap());
+        set_preference("Language", "en").unwrap();
+        set_preference("BlockSeparators", block_separators).unwrap();
+        set_preference("DecimalSeparators", decimal_separators).unwrap();
+
+        let package1 = &parser::parse(test).expect("Failed to parse test input");
+        let mathml = get_element(package1);
+        trim_element(mathml, false);
+        let mathml_test = canonicalize(mathml).unwrap();
+
+        let package2 = &parser::parse(target).expect("Failed to parse target input");
+        let mathml_target = get_element(package2);
+        trim_element(mathml_target, false);
+
+        match is_same_element(mathml_test, mathml_target, ignore_attrs) {
+            Ok(_) => Ok(true),
+            Err(e) => {
+                eprintln!("{}\nResult:\n{}\nTarget:\n{}", e, mml_to_string(mathml_test), mml_to_string(mathml_target));
+                Ok(false)
+            },
+        }
+    }));
+    match crate::interface::report_any_panic(result) {
+        Ok(b) => b,
+        Err(e) => {
+            eprintln!("{}", e);
+            false
+        }
     }
 }
 
