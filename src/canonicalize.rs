@@ -745,9 +745,13 @@ impl CanonicalizeContext {
 		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
 
 			
-		static CURRENCY_SYMBOLS: phf::Set<&str> = phf_set! {
-			"$", "¢", "€", "£", "₡", "₤", "₨", "₩", "₪", "₱", "₹", "₺", "₿" // could add more currencies...
+		static CURRENCY_SYMBOLS: phf::Set<char> = phf_set! {
+			'$', '¢', '€', '£', '₡', '₤', '₨', '₩', '₪', '₱', '₹', '₺', '₿' // could add more currencies...
 		};
+
+		fn contains_any(s: &str, set: &phf::Set<char>) -> bool {
+			s.chars().any(|c| set.contains(&c))
+		}		
 		
 		// begin by cleaning up empty elements
 		// debug!("clean_mathml\n{}", mml_to_string(mathml));
@@ -803,6 +807,10 @@ impl CanonicalizeContext {
 					set_mathml_name(mathml, "mrow");
 					mathml.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 					mathml.replace_children([mo,mn]);
+				} else if contains_any(text, &CURRENCY_SYMBOLS) {
+						if let Some(result) = split_currency_symbol(mathml) {
+							return Some(result);
+						}
 				}
 				if let Some((idx, last_char)) = text.char_indices().next_back() {
 					// look for something like 12°
@@ -895,10 +903,15 @@ impl CanonicalizeContext {
 				}
 
 				let text = as_text(mathml);
+				debug!("mtext: {}, contains? {}", text, contains_any(text, &CURRENCY_SYMBOLS));
 				if !text.trim().is_empty() && is_roman_number_match(text) && is_roman_numeral_number_context(mathml) {
 					// people tend to set them in a non-italic font and software makes that 'mtext'
 					CanonicalizeContext::make_roman_numeral(mathml);
 					return Some(mathml);
+				} else if contains_any(text, &CURRENCY_SYMBOLS) {
+					if let Some(result) = split_currency_symbol(mathml) {
+						return Some(result);
+					}
 				}
 				// common bug: trig functions, lim, etc., should be mi
 				if ["…", "⋯", "∞"].contains(&text) ||
@@ -976,9 +989,10 @@ impl CanonicalizeContext {
 						mathml.set_text(&new_text);
 						return Some(mathml);
 					}
-					if CURRENCY_SYMBOLS.contains(text) {
-						set_mathml_name(mathml, "mi");
-						return Some(mathml);
+					if contains_any(text, &CURRENCY_SYMBOLS) {
+						if let Some(result) = split_currency_symbol(mathml) {
+							return Some(result);
+						}
 					}
 					return Some(mathml);
 				});
@@ -1101,9 +1115,9 @@ impl CanonicalizeContext {
 								// don't increment 'i' because there is one less child now and so everything shifted left
 							},
 							Some(new_child) => {
+								// debug!("new_child (i={})\n{}", i, mml_to_string(new_child));
 								let new_child_name = name(new_child);
 								children = mathml.children();				// clean_mathml(child) may have changed following siblings
-								// debug!("new_child (i={})\n{}", i, mml_to_string(new_child));
 								children[i] = ChildOfElement::Element(new_child);
 								mathml.replace_children(children);
 								if new_child_name == "mi" || new_child_name == "mtext" {
@@ -1591,6 +1605,81 @@ impl CanonicalizeContext {
 				return mathml;
 			} else {
 				return as_element(children[0]);	// no scripts
+			}
+		}
+
+		/// Split off the currency symbol from the rest of the text and return an mrow with the result
+		/// Assumes it has already checked and that we have a leaf
+		fn split_currency_symbol(leaf: Element) -> Option<Element> {
+			assert!(is_leaf(leaf));
+			let text = as_text(leaf);
+			assert!(contains_any(text, &CURRENCY_SYMBOLS));
+			let mut iter = text.chars();
+			match (iter.next(), iter.next()) {
+				(None, _) => return None,
+				(Some(_), None) => {  // 1 char
+					leaf.set_name("mi");
+					return Some(leaf);				}
+				(Some(_), Some(_)) => { // 2 or more chars
+					// WARNING: don't use 'leaf' in the mrow -- that detaches it from its parent and could shrink the number of children causing problems
+					if text.chars().any(|c| c.is_ascii_digit()) {		// might be a number with a currency symbol
+						leaf.set_name("mn");	// make sure we create an mn (might be one already)
+					}
+					let first_ch = text.char_indices().next().map(|(i, ch)| &text[i..i + ch.len_utf8()]).unwrap();
+					if CURRENCY_SYMBOLS.contains(&first_ch.chars().next().unwrap()) {
+						let mrow = create_mathml_element(&leaf.document(), "mrow");
+						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
+						currency_symbol.set_text(first_ch);
+						mrow.append_child(currency_symbol);
+						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+						mrow.append_child(implied_times);
+						let currency_amount = create_mathml_element(&leaf.document(), name(leaf));
+						currency_amount.set_text(&text[first_ch.len()..]);
+						mrow.append_child(currency_amount);
+						return Some(mrow);
+					}
+					let last_ch = text.char_indices().last().map(|(i, _)| &text[i..]).unwrap();
+					if CURRENCY_SYMBOLS.contains(&last_ch.chars().next().unwrap()) {
+						let mrow = create_mathml_element(&leaf.document(), "mrow");
+						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+						mrow.append_child(implied_times);
+						let currency_amount = create_mathml_element(&leaf.document(), name(leaf));
+						currency_amount.set_text(&text[..text.len()-last_ch.len()]);
+						mrow.append_child(currency_amount);
+						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
+						currency_symbol.set_text(last_ch);
+						mrow.append_child(currency_symbol);
+						return Some(mrow);
+					}
+					// try to find it in the middle
+					for (byte_idx, ch) in text.char_indices() {
+						if contains_any(&text[byte_idx .. byte_idx + ch.len_utf8()], &CURRENCY_SYMBOLS) {
+							// get all the substrings
+							let first_part = &text[..byte_idx];
+							let currency_symbol = &text[byte_idx .. byte_idx + ch.len_utf8()];
+							let second_part = &text[byte_idx + ch.len_utf8() ..];
+							let mrow = create_mathml_element(&leaf.document(), "mrow");
+							mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
+							let first_part_element = create_mathml_element(&leaf.document(), name(leaf));
+							first_part_element.set_text(first_part);
+							mrow.append_child(first_part_element);
+							let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+							mrow.append_child(implied_times);
+							let currency_symbol_element = create_mathml_element(&leaf.document(), "mi");
+							currency_symbol_element.set_text(currency_symbol);
+							mrow.append_child(currency_symbol_element);
+							let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
+							mrow.append_child(implied_times);
+							let second_part_element = create_mathml_element(&leaf.document(), name(leaf));
+							second_part_element.set_text(second_part);
+							mrow.append_child(second_part_element);
+							return Some(mrow);
+						}
+					}
+					return None
+				}
 			}
 		}
 
@@ -4480,7 +4569,7 @@ fn show_invisible_op_char(ch: &str) -> &str {
 
 #[cfg(test)]
 mod canonicalize_tests {
-	use crate::are_strs_canonically_equal_with_locale;
+	use crate::{are_strs_canonically_equal_with_locale};
 
 #[allow(unused_imports)]
 	use super::super::init_logger;
@@ -5567,6 +5656,48 @@ mod canonicalize_tests {
         assert!(are_strs_canonically_equal(test_str, target_str, &[]));
     }
 
+	
+	#[test]
+    fn currency_in_leaf_prefix() {
+        let test_str = "<math><mn>$8.54</mn></math>";
+        let target_str = "<math>
+			<mrow data-changed='added'>
+			<mi>$</mi>
+			<mo data-changed='added'>&#x2062;</mo>
+			<mn>8.54</mn>
+			</mrow>
+		</math>";
+		assert!(are_strs_canonically_equal(test_str, target_str, &[]));
+	}
+
+	#[test]
+    fn currency_in_leaf_postfix() {
+        let test_str = "<math><mn>188,23€</mn></math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mn>188,23</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi>€</mi>
+			</mrow>
+		</math>";
+   assert!(are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ","));
+}
+
+	#[test]
+    fn currency_in_leaf_infix() {
+        let test_str = "<math><mn>1€23</mn></math>";
+        let target_str = " <math>
+			<mrow data-changed='added'>
+				<mn>1</mn>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mi>€</mi>
+				<mo data-changed='added'>&#x2062;</mo>
+				<mn>23</mn>
+			</mrow>
+		</math>";
+   assert!(are_strs_canonically_equal_with_locale(test_str, target_str, &[], ".", ","));
+}
 	
 	#[test]
     fn mtext_whitespace_string() {
