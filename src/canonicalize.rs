@@ -745,12 +745,12 @@ impl CanonicalizeContext {
 		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
 
 			
-		static CURRENCY_SYMBOLS: phf::Set<char> = phf_set! {
-			'$', '¢', '€', '£', '₡', '₤', '₨', '₩', '₪', '₱', '₹', '₺', '₿' // could add more currencies...
-		};
+		fn is_currency_symbol(ch: char) -> bool {
+			matches!(ch, '$' | '¢' | '€' | '£' | '₡' | '₤' | '₨' | '₩' | '₪' | '₱' | '₹' | '₺' | '₿')
+		}
 
-		fn contains_any(s: &str, set: &phf::Set<char>) -> bool {
-			s.chars().any(|c| set.contains(&c))
+		fn contains_currency(s: &str) -> bool {
+			s.chars().any(is_currency_symbol)
 		}		
 		
 		// begin by cleaning up empty elements
@@ -807,14 +807,14 @@ impl CanonicalizeContext {
 					set_mathml_name(mathml, "mrow");
 					mathml.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 					mathml.replace_children([mo,mn]);
-				} else if contains_any(text, &CURRENCY_SYMBOLS) {
+				} else if contains_currency(text) {
 						if let Some(result) = split_currency_symbol(mathml) {
 							return Some(result);
 						}
 				}
 				if let Some((idx, last_char)) = text.char_indices().next_back() {
 					// look for something like 12°
-					if PSEUDO_SCRIPTS.contains(&last_char) {
+					if is_pseudo_script_char(last_char) {
 						let doc = mathml.document();
 						let mn = create_mathml_element(&doc, "mn");
 						let mo = create_mathml_element(&doc, "mo");
@@ -903,12 +903,12 @@ impl CanonicalizeContext {
 				}
 
 				let text = as_text(mathml);
-				debug!("mtext: {}, contains? {}", text, contains_any(text, &CURRENCY_SYMBOLS));
+				debug!("mtext: {}, contains? {}", text, contains_currency(text));
 				if !text.trim().is_empty() && is_roman_number_match(text) && is_roman_numeral_number_context(mathml) {
 					// people tend to set them in a non-italic font and software makes that 'mtext'
 					CanonicalizeContext::make_roman_numeral(mathml);
 					return Some(mathml);
-				} else if contains_any(text, &CURRENCY_SYMBOLS) {
+				} else if contains_currency(text) {
 					if let Some(result) = split_currency_symbol(mathml) {
 						return Some(result);
 					}
@@ -989,7 +989,7 @@ impl CanonicalizeContext {
 						mathml.set_text(&new_text);
 						return Some(mathml);
 					}
-					if contains_any(text, &CURRENCY_SYMBOLS) {
+					if contains_currency(text) {
 						if let Some(result) = split_currency_symbol(mathml) {
 							return Some(result);
 						}
@@ -1419,7 +1419,7 @@ impl CanonicalizeContext {
 
 			let text = as_text(mi);
 			// debug!("split_apart_pseudo_scripts: start text=\"{text}\"");
-			if !text.chars().any(|c| PSEUDO_SCRIPTS.contains(&c)) || IS_DEGREES_C_OR_F.is_match(text) {
+			if !text.chars().any(is_pseudo_script_char) || IS_DEGREES_C_OR_F.is_match(text) {
 				return None;
 			}
 
@@ -1428,7 +1428,7 @@ impl CanonicalizeContext {
 			let chars = text.chars();
     		let next_chars = text.chars().skip(1);
 			let result = chars.zip(next_chars).map(|(a, b)|
-						if a.is_alphabetic() && PSEUDO_SCRIPTS.contains(&b) {
+						if a.is_alphabetic() && is_pseudo_script_char(b) {
 							// create msup
 							let base = create_mathml_element(&document, "mi");
 							base.set_text(&a.to_string());
@@ -1613,7 +1613,7 @@ impl CanonicalizeContext {
 		fn split_currency_symbol(leaf: Element) -> Option<Element> {
 			assert!(is_leaf(leaf));
 			let text = as_text(leaf);
-			assert!(contains_any(text, &CURRENCY_SYMBOLS));
+			assert!(contains_currency(text));
 			let mut iter = text.chars();
 			match (iter.next(), iter.next()) {
 				(None, _) => return None,
@@ -1626,7 +1626,7 @@ impl CanonicalizeContext {
 						leaf.set_name("mn");	// make sure we create an mn (might be one already)
 					}
 					let first_ch = text.char_indices().next().map(|(i, ch)| &text[i..i + ch.len_utf8()]).unwrap();
-					if CURRENCY_SYMBOLS.contains(&first_ch.chars().next().unwrap()) {
+					if is_currency_symbol(first_ch.chars().next().unwrap()) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
@@ -1640,7 +1640,7 @@ impl CanonicalizeContext {
 						return Some(mrow);
 					}
 					let last_ch = text.char_indices().last().map(|(i, _)| &text[i..]).unwrap();
-					if CURRENCY_SYMBOLS.contains(&last_ch.chars().next().unwrap()) {
+					if is_currency_symbol(last_ch.chars().next().unwrap()) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
@@ -1655,7 +1655,7 @@ impl CanonicalizeContext {
 					}
 					// try to find it in the middle
 					for (byte_idx, ch) in text.char_indices() {
-						if contains_any(&text[byte_idx .. byte_idx + ch.len_utf8()], &CURRENCY_SYMBOLS) {
+						if contains_currency(&text[byte_idx .. byte_idx + ch.len_utf8()]) {
 							// get all the substrings
 							let first_part = &text[..byte_idx];
 							let currency_symbol = &text[byte_idx .. byte_idx + ch.len_utf8()];
@@ -2168,15 +2168,16 @@ impl CanonicalizeContext {
 			// It would also be really expensive since we would need a dictionary for each language.
 			// We shouldn't need to worry about trig names like "cos", but people sometimes forget to use "\cos"
 			// Hence, we check against the "FunctionNames" that get read on startup.
-			static VOWELS: phf::Set<char> = phf_set! {
-				'a', 'e', 'i', 'o', 'u', 'y',
-				'à',  'á',  'â',  'ã',  'ä',  'è',  'é',  'ê',  'ë',  'ì',  'í',  'î',  'ï', 
-				'ò',  'ó',  'ô',  'õ',  'ö',  'ú',  'Ù',  'û',  'ü',  'ý',  'ÿ',  
-				// Vietnamese
-				'ả', 'ạ', 'ă', 'ằ', 'ẳ', 'ẵ', 'ắ', 'ặ', 'ầ', 'ẩ', 'ẫ', 'ấ', 'ậ', 'ẻ', 'ẽ', 'ẹ', 'ề', 'ể', 'ễ', 'ế', 'ệ',
-				'ỉ', 'ĩ', 'ị', 'ỏ', 'ọ', 'ồ', 'ổ', 'ỗ', 'ố', 'ộ', 'ơ', 'ờ', 'ở', 'ỡ', 'ớ', 'ợ',
-				'ủ', 'ũ', 'ụ', 'ư', 'ừ', 'ử', 'ữ', 'ứ', 'ự', 'ỳ', 'ỷ', 'ỹ', 'ỵ', 
-			};
+			fn is_vowel(ch: char) -> bool {
+				matches!(ch,
+					'a' | 'e' | 'i' | 'o' | 'u' | 'y' |
+					'à' | 'á' | 'â' | 'ã' | 'ä' | 'è' | 'é' | 'ê' | 'ë' | 'ì' | 'í' | 'î' | 'ï' |
+					'ò' | 'ó' | 'ô' | 'õ' | 'ö' | 'ú' | 'Ù' | 'û' | 'ü' | 'ý' | 'ÿ' |
+					'ả' | 'ạ' | 'ă' | 'ằ' | 'ẳ' | 'ẵ' | 'ắ' | 'ặ' | 'ầ' | 'ẩ' | 'ẫ' | 'ấ' | 'ậ' | 'ẻ' | 'ẽ' | 'ẹ' | 'ề' | 'ể' | 'ễ' | 'ế' | 'ệ' |
+					'ỉ' | 'ĩ' | 'ị' | 'ỏ' | 'ọ' | 'ồ' | 'ổ' | 'ỗ' | 'ố' | 'ộ' | 'ơ' | 'ờ' | 'ở' | 'ỡ' | 'ớ' | 'ợ' |
+					'ủ' | 'ũ' | 'ụ' | 'ư' | 'ừ' | 'ử' | 'ữ' | 'ứ' | 'ự' | 'ỳ' | 'ỷ' | 'ỹ' | 'ỵ'
+				)
+			}
 			let parent = get_parent(mi);	// not canonicalized into mrows, so parent could be "math"
 			let parent_name = name(parent);
 			// don't merge if more than one char, or if not in an mrow (or implied on since we haven't normalized yet)
@@ -2256,7 +2257,7 @@ impl CanonicalizeContext {
 			}
 			// If it is a word, it needs a vowel and it must be a letter
 			// FIX: this check needs to be internationalized to include accented vowels, other alphabets
-			if !text.chars().any(|ch| VOWELS.contains(&ch) || !ch.is_ascii_alphabetic()) {
+			if !text.chars().any(|ch| is_vowel(ch) || !ch.is_ascii_alphabetic()) {
 				return None;
 			}
 		
@@ -2680,12 +2681,13 @@ impl CanonicalizeContext {
 		}
 
 		// from https://www.w3.org/TR/MathML3/chapter7.html#chars.pseudo-scripts
-		static PSEUDO_SCRIPTS: phf::Set<char> = phf_set! {
-			'\"', '\'', '*', '`', 'ª', '°', '²', '³', '´', '¹', 'º',
-			'‘', '’', '“', '”', '„', '‟',
-			'′', '″', '‴', '‵', '‶', '‷', '⁗',
-		};
-
+		fn is_pseudo_script_char(ch: char) -> bool {
+			matches!(ch,
+				'\"' | '\'' | '*' | '`' | 'ª' | '°' | '²' | '³' | '´' | '¹' | 'º' |
+				'\u{2018}' | '\u{2019}' | '\u{201C}' | '\u{201D}' | '\u{201E}' | '\u{201F}' |
+				'\u{2032}' | '\u{2033}' | '\u{2034}' | '\u{2035}' | '\u{2036}' | '\u{2037}' | '\u{2057}'
+			)
+		}
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
 	
 			assert!(name(mrow) == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(name(mrow)), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
@@ -2736,14 +2738,14 @@ impl CanonicalizeContext {
 				if name(child) == "mo" {
 					let text = as_text(child);
 					if let Some(ch) = single_char(text)
-						&& PSEUDO_SCRIPTS.contains(&ch) {
+						&& is_pseudo_script_char(ch) {
 							// don't script a pseudo-script
 							let preceding_siblings = child.preceding_siblings();
 							if !preceding_siblings.is_empty() {
 								let last_child = as_element(preceding_siblings[preceding_siblings.len()-1]);
 								if name(last_child) == "mo" &&
 								   let Some(ch) = single_char(as_text(last_child))
-										&& PSEUDO_SCRIPTS.contains(&ch) {
+										&& is_pseudo_script_char(ch) {
 											return false;
 										}
 							}

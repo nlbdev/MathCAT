@@ -35,41 +35,41 @@ fn main() {
       .format_level(false)
       .init();
 
-//    let expr = r#"
-//    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-//    <mrow>
-//      <msup>
-//        <mi>e</mi>
-//        <mrow>
-//          <mo>&#x2212;</mo>
-//          <mfrac>
-//            <mn>1</mn>
-//            <mn>2</mn>
-//          </mfrac>
-//          <msup>
-//            <mrow>
-//              <mrow>
-//                <mo>(</mo>
-//                <mrow>
-//                  <mfrac>
-//                    <mrow>
-//                      <mi>x</mi>
-//                      <mo>&#x2212;</mo>
-//                      <mi>&#x03BC;</mi>
-//                    </mrow>
-//                    <mi>&#x03C3;</mi>
-//                  </mfrac>
-//                </mrow>
-//                <mo>)</mo>
-//              </mrow>
-//            </mrow>
-//            <mn>2</mn>
-//          </msup>
-//        </mrow>
-//      </msup>
-//    </mrow>
-//  </math>
-// "#;
+   let expr = r#"
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+   <mrow>
+     <msup>
+       <mi>e</mi>
+       <mrow>
+         <mo>&#x2212;</mo>
+         <mfrac>
+           <mn>1</mn>
+           <mn>2</mn>
+         </mfrac>
+         <msup>
+           <mrow>
+             <mrow>
+               <mo>(</mo>
+               <mrow>
+                 <mfrac>
+                   <mrow>
+                     <mi>x</mi>
+                     <mo>&#x2212;</mo>
+                     <mi>&#x03BC;</mi>
+                   </mrow>
+                   <mi>&#x03C3;</mi>
+                 </mfrac>
+               </mrow>
+               <mo>)</mo>
+             </mrow>
+           </mrow>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+     </msup>
+   </mrow>
+ </math>
+"#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
   //       <mi arg='base'>x</mi>
@@ -192,9 +192,9 @@ fn main() {
   //     </mrow>
   //   </math>";
 
-  let expr = r#"
-<math><mn>₩8.54</mn><mo>+</mo><mn>$1</mn></math> 
-                   "#;
+//   let expr = r#"
+// <math><mn>₩8.54</mn><mo>+</mo><mn>$1</mn></math> 
+//                    "#;
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -298,7 +298,7 @@ fn main() {
   // info!("#xpath = {}; duplicates = {}", xpath_counts.0, xpath_counts.1);
   // info!("Time taken (second time for speech + braille): {}ms", instant.elapsed().as_millis());
   // debug!("Hashmap sizes:\n{}", libmathcat::speech::SpeechRules::print_sizes());
-  timing_test(expr, 000);
+  timing_test(expr, 5000);
 
 }
 
