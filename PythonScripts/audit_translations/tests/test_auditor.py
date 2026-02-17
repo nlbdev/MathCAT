@@ -4,8 +4,19 @@ Tests for auditor helpers.
 
 from pathlib import Path
 
+import pytest
+
 from ..auditor import collect_issues, compare_files, console, get_yaml_files, list_languages, print_warnings
 from ..dataclasses import ComparisonResult, RuleDifference, RuleInfo
+
+
+@pytest.fixture()
+def fixed_console_width():
+    """Pin Rich console to 80 columns so golden-file comparisons are portable."""
+    old = console.width
+    console.width = 80
+    yield
+    console.width = old
 
 
 def make_rule(name: str, tag: str, line: int, raw: str) -> RuleInfo:
@@ -138,6 +149,45 @@ def test_compare_files_merges_region_rules(tmp_path) -> None:
     assert result.extra_rules == []
 
 
+def test_compare_files_skips_untranslated_and_diffs_when_audit_ignored(tmp_path) -> None:
+    """
+    Ensure audit-ignore suppresses untranslated and diff findings for a rule.
+
+    The translated rule intentionally contains both a lowercase text key and a
+    match mismatch. With an audit-ignore marker present, neither should be
+    surfaced by compare_files.
+    """
+    english_file = tmp_path / "en.yaml"
+    translated_file = tmp_path / "de.yaml"
+
+    english_file.write_text(
+        """- name: ignored-rule
+  tag: mo
+  match: "self::m:mo"
+  replace:
+    - T: "english"
+""",
+        encoding="utf-8",
+    )
+    translated_file.write_text(
+        """- name: ignored-rule
+  tag: mo  # audit-ignore
+  match: "self::m:mi"
+  replace:
+    - t: "nicht uebersetzt"
+""",
+        encoding="utf-8",
+    )
+
+    result = compare_files(str(english_file), str(translated_file))
+
+    assert result.missing_rules == []
+    assert result.extra_rules == []
+    assert result.untranslated_text == []
+    assert result.rule_differences == []
+    assert collect_issues(result, "de.yaml", "de") == []
+
+
 def test_get_yaml_files_includes_region(tmp_path) -> None:
     """
     Ensures get_yaml_files merges base and region file lists.
@@ -155,7 +205,7 @@ def test_get_yaml_files_includes_region(tmp_path) -> None:
     (region_dir / "unicode.yaml").write_text("---", encoding="utf-8")
 
     files = get_yaml_files(lang_dir, region_dir)
-    assert set(files) == {"base.yaml", "SharedRules/shared.yaml", "unicode.yaml"}
+    assert set(files) == {Path("base.yaml"), Path("SharedRules/shared.yaml"), Path("unicode.yaml")}
 
 
 def test_list_languages_includes_region_codes(tmp_path) -> None:
@@ -183,9 +233,11 @@ def test_list_languages_includes_region_codes(tmp_path) -> None:
     assert "zz-aa" in output
 
 
-def test_print_warnings_omits_snippets_when_not_verbose() -> None:
+def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> None:
     """
     Ensure the print_warnings output matches the non-verbose golden snapshot.
+
+    Uses pytest fixture for console width.
     """
     base_dir = Path(__file__).parent
     fixtures_dir = base_dir / "fixtures"
@@ -202,9 +254,11 @@ def test_print_warnings_omits_snippets_when_not_verbose() -> None:
     assert output == golden_path.read_text(encoding="utf-8")
 
 
-def test_print_warnings_includes_snippets_when_verbose() -> None:
+def test_print_warnings_includes_snippets_when_verbose(fixed_console_width) -> None:
     """
     Ensure the print_warnings output matches the verbose golden snapshot.
+
+    Uses pytest fixture for console width.
     """
     base_dir = Path(__file__).parent
     fixtures_dir = base_dir / "fixtures"
@@ -352,3 +406,163 @@ def test_print_warnings_still_shows_missing_else() -> None:
 
     # Should report exactly 1 issue (the structure difference)
     assert issues_count == 1, f"Expected 1 issue but got {issues_count}"
+
+
+def test_print_warnings_groups_multiple_subgroups_for_single_rule(fixed_console_width) -> None:
+    """
+    Ensure one rule can render multiple subgroup types in stable order.
+
+    This covers the new grouped renderer path where a single rule can include
+    untranslated entries plus multiple diff types. It validates both subgroup
+    labels and the expected ordering policy.
+    """
+    en = make_rule("grouped-rule", "mi", 10, "en raw")
+    tr = make_rule("grouped-rule", "mi", 20, "tr raw")
+    en.line_map = {"match": [11], "condition": [12], "variables": [13]}
+    tr.line_map = {"match": [21], "condition": [22], "variables": [23]}
+
+    diffs = [
+        RuleDifference(
+            english_rule=en,
+            translated_rule=tr,
+            diff_type="match",
+            description="Match pattern differs",
+            english_snippet="en-match",
+            translated_snippet="tr-match",
+        ),
+        RuleDifference(
+            english_rule=en,
+            translated_rule=tr,
+            diff_type="condition",
+            description="Conditions differ",
+            english_snippet="en-cond",
+            translated_snippet="tr-cond",
+        ),
+        RuleDifference(
+            english_rule=en,
+            translated_rule=tr,
+            diff_type="variables",
+            description="Variable definitions differ",
+            english_snippet="en-var",
+            translated_snippet="tr-var",
+        ),
+    ]
+    result = ComparisonResult(
+        missing_rules=[],
+        extra_rules=[],
+        untranslated_text=[(tr, [("t", "first", 24), ("ct", "second", 25)])],
+        rule_differences=diffs,
+        file_path="",
+        english_rule_count=1,
+        translated_rule_count=1,
+    )
+
+    with console.capture() as capture:
+        issues_count = print_warnings(result, "grouped.yaml", verbose=False)
+    output = capture.get()
+
+    assert output.count("• grouped-rule (mi)") == 1
+    assert "Untranslated Text [2]" in output
+    assert "Match Pattern Differences [1]" in output
+    assert "Condition Differences [1]" in output
+    assert "Variable Differences [1]" in output
+
+    untranslated_index = output.index("Untranslated Text [2]")
+    match_index = output.index("Match Pattern Differences [1]")
+    condition_index = output.index("Condition Differences [1]")
+    variable_index = output.index("Variable Differences [1]")
+    assert untranslated_index < match_index < condition_index < variable_index
+
+    assert issues_count == 5
+
+
+def test_print_warnings_groups_missing_and_extra_by_rule(fixed_console_width) -> None:
+    """
+    Ensure missing, extra, and diff issues are grouped under their own rule headers.
+
+    This verifies grouping across multiple rules: each rule should appear once,
+    with only its relevant subgroup block(s), and issue counting should remain
+    aligned with rendered leaf items.
+    """
+    missing = make_rule("missing-rule", "mn", 30, "missing raw")
+    extra = make_rule("extra-rule", "mo", 40, "extra raw")
+    en = make_rule("diff-rule", "mrow", 50, "diff en")
+    tr = make_rule("diff-rule", "mrow", 60, "diff tr")
+    en.line_map = {"condition": [51]}
+    tr.line_map = {"condition": [61]}
+    diff = RuleDifference(
+        english_rule=en,
+        translated_rule=tr,
+        diff_type="condition",
+        description="Conditions differ",
+        english_snippet="en-only",
+        translated_snippet="tr-only",
+    )
+
+    result = ComparisonResult(
+        missing_rules=[missing],
+        extra_rules=[extra],
+        untranslated_text=[],
+        rule_differences=[diff],
+        file_path="",
+        english_rule_count=2,
+        translated_rule_count=2,
+    )
+
+    with console.capture() as capture:
+        issues_count = print_warnings(result, "mixed.yaml", verbose=False)
+    output = capture.get()
+
+    assert output.count("• missing-rule (mn)") == 1
+    assert output.count("• extra-rule (mo)") == 1
+    assert output.count("• diff-rule (mrow)") == 1
+    assert "Missing in Translation [1]" in output
+    assert "Extra in Translation [1]" in output
+    assert "Condition Differences [1]" in output
+    assert issues_count == 3
+
+
+def test_print_warnings_verbose_shows_snippets_only_for_differences(fixed_console_width) -> None:
+    """
+    Ensure verbose snippet lines are printed only for rule differences.
+
+    Missing and untranslated groups should not emit en/tr snippet lines in
+    verbose mode; only diff subgroups should include these details.
+    """
+    missing = make_rule("missing-rule", "mn", 10, "missing raw")
+    tr_untranslated = make_rule("untranslated-rule", "mi", 20, "untranslated raw")
+    en = make_rule("diff-rule", "mrow", 30, "diff en")
+    tr = make_rule("diff-rule", "mrow", 40, "diff tr")
+    en.line_map = {"match": [31]}
+    tr.line_map = {"match": [41]}
+
+    diff = RuleDifference(
+        english_rule=en,
+        translated_rule=tr,
+        diff_type="match",
+        description="Match pattern differs",
+        english_snippet="en-snippet",
+        translated_snippet="tr-snippet",
+    )
+    result = ComparisonResult(
+        missing_rules=[missing],
+        extra_rules=[],
+        untranslated_text=[(tr_untranslated, [("t", "leave me", 21)])],
+        rule_differences=[diff],
+        file_path="",
+        english_rule_count=2,
+        translated_rule_count=2,
+    )
+
+    with console.capture() as capture:
+        issues_count = print_warnings(result, "verbose.yaml", verbose=True)
+    output = capture.get()
+
+    assert "Missing in Translation [1]" in output
+    assert "Untranslated Text [1]" in output
+    assert "Match Pattern Differences [1]" in output
+    assert output.count("en:") == 1
+    assert output.count("tr:") == 1
+    assert "en-snippet" in output
+    assert "tr-snippet" in output
+    assert issues_count == 3

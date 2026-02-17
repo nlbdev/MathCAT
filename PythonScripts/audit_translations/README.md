@@ -56,7 +56,6 @@ The tool automatically adjusts its matching logic based on the file type:
 
 **Syntax:**
 ```bash
-# Preferred: console script (no -m needed)
 uv run audit-translations <language> [--file <specific_file>]
 uv run audit-translations --list
 
@@ -111,4 +110,4 @@ uv run --project PythonScripts audit-translations --list
 
 ### Testing
 
-```uv run python -m pytest```
+```uv run pytest```
