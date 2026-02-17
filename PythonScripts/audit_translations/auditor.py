@@ -9,7 +9,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Iterable, List, Optional, TextIO, Tuple
+from typing import Any, Dict, Iterable, List, Optional, TextIO, Tuple
 
 from rich.console import Console
 from rich.markup import escape
@@ -154,24 +154,46 @@ def rule_label(rule: RuleInfo) -> str:
     if rule.name is None:
         return f"[yellow]\"{escape(rule.key)}\"[/]"
     tag = rule.tag or "unknown"
-    return f"[cyan]{escape(rule.name)}[/] [dim][{escape(tag)}][/]"
+    return f"[cyan]{escape(rule.name)}[/] [dim]({escape(tag)})[/]"
 
 
-def print_rule_item(rule: RuleInfo, issue_line: int, context: str = ""):
-    console.print(f"      [dim]•[/] {rule_label(rule)} [dim](line {issue_line}{context})[/]")
+def issue_type_sort_key(issue_type: str) -> Tuple[int, str]:
+    """
+    Stable ordering for per-rule issue groups.
+
+    The first tuple element defines user-facing priority (missing/untranslated/
+    match/condition/variables/structure/extra). The second element keeps sorting
+    deterministic for unknown keys.
+    """
+    order = {
+        "missing_rule": 0,
+        "untranslated_text": 1,
+        "rule_difference:match": 2,
+        "rule_difference:condition": 3,
+        "rule_difference:variables": 4,
+        "rule_difference:structure": 5,
+        "extra_rule": 6,
+    }
+    return order.get(issue_type, 99), issue_type
 
 
-def print_diff_item(diff: RuleDifference, line_en: int, line_tr: int, verbose: bool = False):
-    """Print a single rule difference"""
-    rule = diff.english_rule
-    console.print(
-        f"      [dim]•[/] {rule_label(rule)} "
-        f"[dim](line {line_en} en, {line_tr} tr)[/]"
-    )
-    console.print(f"          [dim]{diff.description}[/]")
-    if verbose:
-        console.print(f"          [green]en:[/] {escape(diff.english_snippet)}")
-        console.print(f"          [red]tr:[/] {escape(diff.translated_snippet)}")
+def issue_type_label(issue_type: str) -> str:
+    """
+    Return the display label used in rich grouped output.
+
+    Unknown issue types fall back to their raw key so renderer behavior remains
+    robust when new categories are introduced.
+    """
+    labels = {
+        "missing_rule": "Missing in Translation",
+        "untranslated_text": "Untranslated Text",
+        "rule_difference:match": "Match Pattern Differences",
+        "rule_difference:condition": "Condition Differences",
+        "rule_difference:variables": "Variable Differences",
+        "rule_difference:structure": "Structure Differences",
+        "extra_rule": "Extra in Translation",
+    }
+    return labels.get(issue_type, issue_type)
 
 
 def issue_base(rule: RuleInfo, file_name: str, language: str) -> dict:
@@ -373,6 +395,7 @@ class IssueWriter:
 def print_warnings(result: ComparisonResult, file_name: str, verbose: bool = False) -> int:
     """Print warnings to console. Returns count of issues found."""
     issues = 0
+    display_name = Path(file_name).as_posix()
 
     has_issues = result.missing_rules or result.untranslated_text or result.extra_rules or result.rule_differences
     if not has_issues:
@@ -382,64 +405,117 @@ def print_warnings(result: ComparisonResult, file_name: str, verbose: bool = Fal
                   ("red", "✗") if result.translated_rule_count == 0 else ("yellow", "⚠")
     console.print()
     console.rule(style="cyan")
-    console.print(f"[{style}]{icon}[/] [bold]{escape(file_name)}[/]")
+    console.print(f"[{style}]{icon}[/] [bold]{escape(display_name)}[/]")
     console.print(f"  [dim]English: {result.english_rule_count} rules  →  Translated: {result.translated_rule_count} rules[/]")
     console.rule(style="cyan")
 
-    if result.missing_rules:
-        console.print(f"\n  [red]✗[/] [bold]Missing Rules[/] [[red]{len(result.missing_rules)}[/]] [dim](in English but not in translation)[/]")
-        for rule in result.missing_rules:
-            print_rule_item(rule, issue_line=rule.line_number, context=" in English")
-            issues += 1
+    grouped_issues: Dict[str, Dict[str, Any]] = {}
 
-    if result.untranslated_text:
-        untranslated_count = sum(len(entries) for _, entries in result.untranslated_text)
-        console.print(f"\n  [yellow]⚠[/] [bold]Untranslated Text[/] [[yellow]{untranslated_count}[/]] [dim](lowercase t/ot/ct keys)[/]")
-        for rule, entries in result.untranslated_text:
-            for _, text, line in entries:
-                issue_line = line or rule.line_number
-                print_rule_item(rule, issue_line=issue_line)
-                console.print(f"          [dim]→[/] [yellow]\"{escape(text)}\"[/]")
-                issues += 1
+    def add_issue(rule: RuleInfo, issue_type: str, payload: Dict[str, Any]) -> None:
+        if rule.key not in grouped_issues:
+            grouped_issues[rule.key] = {
+                "rule": rule,
+                "by_type": {},
+            }
+        type_map: Dict[str, List[Dict[str, Any]]] = grouped_issues[rule.key]["by_type"]
+        type_map.setdefault(issue_type, []).append(payload)
 
-    if result.rule_differences:
-        # Count only diffs that will actually be displayed
-        displayable_diffs = []
-        for diff in result.rule_differences:
-            if diff.diff_type == "structure":
-                en_tokens = extract_structure_elements(diff.english_rule.data)
-                tr_tokens = extract_structure_elements(diff.translated_rule.data)
-                en_token, tr_token, mismatch_pos = first_structure_mismatch(en_tokens, tr_tokens)
+    for rule in result.missing_rules:
+        add_issue(
+            rule,
+            "missing_rule",
+            {"line_en": rule.line_number},
+        )
 
-                # Skip reporting when tokens are misaligned (both exist but differ)
-                # This avoids misleading line numbers when entire blocks are missing/added
-                if en_token is not None and tr_token is not None and en_token != tr_token:
-                    continue
-
-                line_en = resolve_issue_line(diff.english_rule, "structure", en_token)
-                line_tr = resolve_issue_line(diff.translated_rule, "structure", tr_token)
-                # Skip structure diffs where we can't find both tokens
-                if line_en is None or line_tr is None:
-                    continue
-            else:
-                line_en = resolve_issue_line(diff.english_rule, diff.diff_type)
-                line_tr = resolve_issue_line(diff.translated_rule, diff.diff_type)
-            displayable_diffs.append((diff, line_en, line_tr))
-
-        if displayable_diffs:
-            console.print(
-                f"\n  [magenta]≠[/] [bold]Rule Differences[/] "
-                f"[[magenta]{len(displayable_diffs)}[/]] [dim](structural differences between en and translation)[/]"
+    for rule, entries in result.untranslated_text:
+        for _, text, line in entries:
+            issue_line = line or rule.line_number
+            add_issue(
+                rule,
+                "untranslated_text",
+                {"line_tr": issue_line, "text": text},
             )
-            for diff, line_en, line_tr in displayable_diffs:
-                print_diff_item(diff, line_en=line_en, line_tr=line_tr, verbose=verbose)
-                issues += 1
 
-    if result.extra_rules:
-        console.print(f"\n  [blue]ℹ[/] [bold]Extra Rules[/] [[blue]{len(result.extra_rules)}[/]] [dim](may be intentional)[/]")
-        for rule in result.extra_rules:
-            print_rule_item(rule, issue_line=rule.line_number)
-            issues += 1
+    for diff in result.rule_differences:
+        if diff.diff_type == "structure":
+            en_tokens = extract_structure_elements(diff.english_rule.data)
+            tr_tokens = extract_structure_elements(diff.translated_rule.data)
+            en_token, tr_token, mismatch_pos = first_structure_mismatch(en_tokens, tr_tokens)
+
+            # Skip reporting when tokens are misaligned (both exist but differ)
+            # This avoids misleading line numbers when entire blocks are missing/added
+            if en_token is not None and tr_token is not None and en_token != tr_token:
+                continue
+
+            line_en = resolve_issue_line(diff.english_rule, "structure", en_token)
+            line_tr = resolve_issue_line(diff.translated_rule, "structure", tr_token)
+            # Skip structure diffs where we can't find both tokens
+            if line_en is None or line_tr is None:
+                continue
+        else:
+            line_en = resolve_issue_line(diff.english_rule, diff.diff_type)
+            line_tr = resolve_issue_line(diff.translated_rule, diff.diff_type)
+
+        add_issue(
+            diff.english_rule,
+            f"rule_difference:{diff.diff_type}",
+            {"line_en": line_en, "line_tr": line_tr, "diff": diff},
+        )
+
+    for rule in result.extra_rules:
+        add_issue(
+            rule,
+            "extra_rule",
+            {"line_tr": rule.line_number},
+        )
+
+    if grouped_issues:
+        total_grouped_issues = sum(
+            len(entries)
+            for group in grouped_issues.values()
+            for entries in group["by_type"].values()
+        )
+        console.print(
+            f"\n  [magenta]≠[/] [bold]Rule Issues[/] "
+            f"[[magenta]{total_grouped_issues}[/]] [dim](grouped by rule and issue type)[/]"
+        )
+        for group in grouped_issues.values():
+            rule = group["rule"]
+            by_type: Dict[str, List[Dict[str, Any]]] = group["by_type"]
+            console.print(f"      [dim]•[/] {rule_label(rule)}")
+            for issue_type in sorted(by_type.keys(), key=issue_type_sort_key):
+                entries = by_type[issue_type]
+                console.print(
+                    f"          [dim]{issue_type_label(issue_type)} "
+                    f"[{len(entries)}][/]"
+                )
+                for entry in entries:
+                    if issue_type == "missing_rule":
+                        console.print(
+                            f"              [dim]•[/] [dim](line {entry['line_en']} in English)[/]"
+                        )
+                        issues += 1
+                    elif issue_type == "extra_rule":
+                        console.print(
+                            f"              [dim]•[/] [dim](line {entry['line_tr']} in translation)[/]"
+                        )
+                        issues += 1
+                    elif issue_type == "untranslated_text":
+                        console.print(
+                            f"              [dim]•[/] [dim](line {entry['line_tr']} tr)[/] "
+                            f"[yellow]\"{escape(entry['text'])}\"[/]"
+                        )
+                        issues += 1
+                    else:
+                        diff: RuleDifference = entry["diff"]
+                        console.print(
+                            f"              [dim]•[/] [dim](line {entry['line_en']} en, {entry['line_tr']} tr)[/]"
+                        )
+                        console.print(f"                  [dim]{diff.description}[/]")
+                        if verbose:
+                            console.print(f"                  [green]en:[/] {escape(diff.english_snippet)}")
+                            console.print(f"                  [red]tr:[/] {escape(diff.translated_snippet)}")
+                        issues += 1
 
     return issues
 

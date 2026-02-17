@@ -1,0 +1,68 @@
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ MathCAT Translation Audit: ES                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+  Comparing against English (en) reference files
+  Files to check: 1
+
+────────────────────────────────────────────────────────────────────────────────
+⚠ SharedRules/calculus.yaml
+  English: 4 rules  →  Translated: 3 rules
+────────────────────────────────────────────────────────────────────────────────
+
+  ≠ Rule Issues [13] (grouped by rule and issue type)
+      • laplacian (laplacian)
+          Missing in Translation [1]
+              • (line 4 in English)
+      • divergence (divergence)
+          Untranslated Text [3]
+              • (line 10 tr) "divergence"
+              • (line 11 tr) "div"
+              • (line 12 tr) "of"
+          Match Pattern Differences [1]
+              • (line 22 en, 6 tr)
+                  Match pattern differs
+                  en: count(*) = 1
+                  tr: .
+          Condition Differences [1]
+              • (line 25 en, 9 tr)
+                  Conditions differ
+                  en: $Verbosity='Terse', not(IsNode(*[1], 'leaf'))
+                  tr: $Verbosity='Verbose', not(IsNode(*[1], 'leaf'))
+      • curl (curl)
+          Untranslated Text [1]
+              • (line 22 tr) "curl of"
+          Match Pattern Differences [1]
+              • (line 35 en, 20 tr)
+                  Match pattern differs
+                  en: count(*) = 1
+                  tr: .
+          Condition Differences [1]
+              • (line 39 en, 24 tr)
+                  Conditions differ
+                  en: $Verbosity!='Terse', not(IsNode(*[1], 'leaf'))
+                  tr: not(IsNode(*[1], 'leaf'))
+          Structure Differences [1]
+              • (line 38 en, 18 tr)
+                  Rule structure differs (test/if/then/else blocks)
+                  en: replace: test: if: then: test: if: then:
+                  tr: replace: test: if: then:
+      • gradient (gradient)
+          Untranslated Text [2]
+              • (line 34 tr) "gradient of"
+              • (line 35 tr) "del"
+          Match Pattern Differences [1]
+              • (line 48 en, 30 tr)
+                  Match pattern differs
+                  en: count(*) = 1
+                  tr: .
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                 SUMMARY                                                      │
+│   Files checked                     1                                        │
+│   Files with issues                 1                                        │
+│   Files OK                          0                                        │
+│   Missing rules                     1                                        │
+│   Untranslated text                 6                                        │
+│   Rule differences                  6                                        │
+│   Extra rules                       0                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
