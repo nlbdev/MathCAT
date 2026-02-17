@@ -302,22 +302,26 @@ impl IsNode {
         }
     }
 
+    #[inline]
     pub fn is_mathml(elem: Element) -> bool {
         // doesn't check MATHML_FROM_NAME_ATTR because we are interested in if it is an intent.
         return ALL_MATHML_ELEMENTS.contains(name(elem));
     }
 
     #[allow(non_snake_case)]
+    #[inline]
     pub fn is_2D(elem: Element) -> bool {
         return MATHML_2D_NODES.contains(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
     }
 
+    #[inline]
     pub fn is_scripted(elem: Element) -> bool {
-        return MATHML_SCRIPTED_NODES.contains(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
+        return is_scripted_node(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
     }
 
+    #[inline]
     pub fn is_modified(elem: Element) -> bool {
-        return MATHML_MODIFIED_NODES.contains(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
+        return is_modified_node(elem.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(elem)));
     }
     }
 
@@ -332,11 +336,13 @@ static ALL_MATHML_ELEMENTS: phf::Set<&str> = phf_set!{
     "mrow", "a", "mfenced", "mtable", "mtr", "mlabeledtr",
 };
 
-static MATHML_LEAF_NODES: phf::Set<&str> = phf_set! {
-	"mi", "mo", "mn", "mtext", "ms", "mspace", "mglyph",
-    "none", "annotation", "ci", "cn", "csymbol",    // content could be inside an annotation-xml (faster to allow here than to check lots of places)
-};
-
+#[inline]
+fn is_leaf_node(s: &str) -> bool {
+    matches!(s,
+        "mi" | "mo" | "mn" | "mtext" | "ms" | "mspace" | "mglyph" |
+        "none" | "annotation" | "ci" | "cn" | "csymbol"
+    )
+}
 
 // Should mstack and mlongdiv be included here?
 static MATHML_2D_NODES: phf::Set<&str> = phf_set! {
@@ -345,18 +351,17 @@ static MATHML_2D_NODES: phf::Set<&str> = phf_set! {
     "mtable", "mtr", "mlabeledtr", "mtd",
 };
 
-// Should mstack and mlongdiv be included here?
-static MATHML_MODIFIED_NODES: phf::Set<&str> = phf_set! {
-    "msub", "msup", "msubsup", "munder", "mover", "munderover", "mmultiscripts",
-};
+fn is_modified_node(s: &str) -> bool {
+    matches!(s, "msub" | "msup" | "msubsup" | "munder" | "mover" | "munderover" | "mmultiscripts")
+}
 
-// Should mstack and mlongdiv be included here?
-static MATHML_SCRIPTED_NODES: phf::Set<&str> = phf_set! {
-    "msub", "msup", "msubsup", "mmultiscripts",
-};
+fn is_scripted_node(s: &str) -> bool {
+    matches!(s, "msub" | "msup" | "msubsup" | "mmultiscripts")
+}
 
+#[inline]
 pub fn is_leaf(element: Element) -> bool {
-    return MATHML_LEAF_NODES.contains(name(element));
+    return is_leaf_node(name(element));
 }
 
 impl Function for IsNode {
@@ -1095,7 +1100,7 @@ impl DistanceFromLeaf {
         let mut distance = 1;
         loop {
             // debug!("distance={} -- element: {}", distance, mml_to_string(element));
-            if MATHML_LEAF_NODES.contains(element.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(element))) {
+            if is_leaf_node(element.attribute_value(MATHML_FROM_NAME_ATTR).unwrap_or(name(element))) {
                 return distance;
             }
             if treat_2d_elements_as_tokens && (IsNode::is_2D(element) || !IsNode::is_mathml(element)) {

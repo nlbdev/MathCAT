@@ -45,10 +45,10 @@ const MHCHEM_MMULTISCRIPTS_HACK: &str = "MHCHEM_SCRIPT_HACK";
 static OPERATORS: phf::Map<&str, OperatorInfo> = include!("operator-info.in");
 
 
-// The set of fence operators that can being either a left or right fence (or infix). For example: "|".
-static AMBIGUOUS_OPERATORS: phf::Set<&str> = phf_set! {
-	"|", "∥", "\u{2016}"
-};
+/// The set of fence operators that can being either a left or right fence (or infix). For example: "|".
+fn is_ambiguous_operator(s: &str) -> bool {
+	matches!(s, "|" | "∥" | "\u{2016}")
+}
 
 // static vars used when canonicalizing
 // lowest priority operator so it is never popped off the stack
@@ -319,20 +319,24 @@ impl<'a, 'op:'a> StackInfo<'a, 'op> {
 }
 
 
+#[inline]
 pub fn create_mathml_element<'a>(doc: &Document<'a>, name: &str) -> Element<'a> {
 	return doc.create_element(sxd_document::QName::with_namespace_uri(
 		Some("http://www.w3.org/1998/Math/MathML"),
 		name));
 }
 
+#[inline]
 pub fn is_fence(mo: Element) -> bool {
 	return CanonicalizeContext::find_operator(None, mo, None, None, None).is_fence();
 }
 
+#[inline]
 pub fn is_relational_op(mo: Element) -> bool {
 	return CanonicalizeContext::find_operator(None, mo, None, None, None).priority == *EQUAL_PRIORITY;
 }
 
+#[inline]
 pub fn set_mathml_name(element: Element, new_name: &str) {
 	element.set_name(QName::with_namespace_uri(Some("http://www.w3.org/1998/Math/MathML"), new_name));
 }
@@ -347,7 +351,7 @@ pub fn replace_children<'a>(mathml: Element<'a>, replacements: Vec<Element<'a>>)
 	// debug!("\nreplace_children: mathml\n{}", mml_to_string(mathml));
 	// debug!("replace_children: parent before replace\n{}", mml_to_string(parent));
 	// debug!("{} replacements:\n{}", replacements.len(), replacements.iter().map(|e| mml_to_string(e)).collect::<Vec<String>>().join("\n"));
-	if ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(parent_name) ||
+	if is_element_with_fixed_number_of_children(parent_name) ||
 	   parent_name == "mmultiscripts" {     // each child acts like the parent has a fixed number of children
 		// gather up the preceding/following siblings before mucking with the tree structure (mrow.append_children below)
 		let mut new_children = mathml.preceding_siblings();
@@ -433,17 +437,17 @@ enum FunctionNameCertainty {
 }
 
 
-static ELEMENTS_WITH_ONE_CHILD: phf::Set<&str> = phf_set! {
-	"math", "msqrt", "merror", "mpadded", "mphantom", "menclose", "mtd", "mscarry"
-};
+fn is_element_with_one_child(s: &str) -> bool {
+	matches!(s, "math" | "msqrt" | "merror" | "mpadded" | "mphantom" | "menclose" | "mtd" | "mscarry")
+}
 
-static ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN: phf::Set<&str> = phf_set! {
-	"mfrac", "mroot", "msub", "msup", "msubsup","munder", "mover", "munderover"
-};
+fn is_element_with_fixed_number_of_children(s: &str) -> bool {
+	matches!(s, "mfrac" | "mroot" | "msub" | "msup" | "msubsup" | "munder" | "mover" | "munderover")
+}
 
-static EMPTY_ELEMENTS: phf::Set<&str> = phf_set! {
-	"mspace", "none", "mprescripts", "mglyph", "malignmark", "maligngroup", "msline",
-};
+fn is_empty_element(s: &str) -> bool {
+	matches!(s, "mspace" | "none" | "mprescripts" | "mglyph" | "malignmark" | "maligngroup" | "msline")
+}
 
 // turns out Roman Numerals tests aren't needed, but we do want to block VII from being a chemical match
 // two cases because we don't want to have a match for 'Cl', etc.
@@ -544,6 +548,15 @@ struct CanonicalizeContext {
 
 
 impl CanonicalizeContext {
+	// from https://www.w3.org/TR/MathML3/chapter7.html#chars.pseudo-scripts
+	fn is_pseudo_script_char(c: char) -> bool {
+		matches!(c,
+			'"' | '\'' | '*' | '`' | 'ª' | '°' | '²' | '³' | '´' | '¹' | 'º' |
+			'\u{2018}' | '\u{2019}' | '\u{201C}' | '\u{201D}' | '\u{201E}' | '\u{201F}' |
+			'′' | '″' | '‴' | '‵' | '‶' | '‷' | '⁗'
+		)
+	}
+
 	fn new() -> CanonicalizeContext {
 		return CanonicalizeContext {
 			patterns: CanonicalizeContextPatternsCache::get(),
@@ -582,7 +595,7 @@ impl CanonicalizeContext {
 	/// Make sure there is exactly one child
 	fn assure_nary_tag_has_one_child(&self, mathml: Element) {
 		let children = mathml.children();
-		if !ELEMENTS_WITH_ONE_CHILD.contains(name(mathml)) {
+		if !is_element_with_one_child(name(mathml)) {
 			return;
 		}
 
@@ -604,7 +617,7 @@ impl CanonicalizeContext {
 		let n_children = mathml.children().len();
 		let element_name = name(mathml);
 		if is_leaf(mathml) {
-			if EMPTY_ELEMENTS.contains(element_name) {
+			if is_empty_element(element_name) {
 				if n_children != 0 {
 					bail!("{} should only have one child:\n{}", element_name, mml_to_string(mathml));
 				}
@@ -617,7 +630,7 @@ impl CanonicalizeContext {
 			};
 		}
 
-		if ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(element_name) {
+		if is_element_with_fixed_number_of_children(element_name) {
 			match element_name {
 				"munderover" | "msubsup" => if n_children != 3 {
 					bail!("{} should have 3 children:\n{}", element_name, mml_to_string(mathml));
@@ -745,12 +758,11 @@ impl CanonicalizeContext {
 		static IS_UNDERSCORE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[_\u{00A0}]+$").unwrap());
 
 			
-		static CURRENCY_SYMBOLS: phf::Set<char> = phf_set! {
-			'$', '¢', '€', '£', '₡', '₤', '₨', '₩', '₪', '₱', '₹', '₺', '₿' // could add more currencies...
-		};
-
-		fn contains_any(s: &str, set: &phf::Set<char>) -> bool {
-			s.chars().any(|c| set.contains(&c))
+		fn is_currency_symbol(c: char) -> bool {
+			matches!(c, '$' | '¢' | '€' | '£' | '₡' | '₤' | '₨' | '₩' | '₪' | '₱' | '₹' | '₺' | '₿')
+		}
+		fn contains_currency_symbol(s: &str) -> bool {
+			s.chars().any(is_currency_symbol)
 		}		
 		
 		// begin by cleaning up empty elements
@@ -762,15 +774,15 @@ impl CanonicalizeContext {
 			let parent = get_parent(mathml);
 			name(parent).to_string()
 		};
-		let parent_requires_child = ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(&parent_name) ||
+		let parent_requires_child = is_element_with_fixed_number_of_children(&parent_name) ||
 										  matches!(parent_name.as_ref(), "mtr" | "mlabeledtr" | "mtable");
 
 		// handle empty leaves -- leaving it empty causes problems with the speech rules
-		if is_leaf(mathml) && !EMPTY_ELEMENTS.contains(element_name) && as_text(mathml).is_empty() {
+		if is_leaf(mathml) && !is_empty_element(element_name) && as_text(mathml).is_empty() {
 			return if parent_requires_child {Some( CanonicalizeContext::make_empty_element(mathml) )} else {None};
 		};
 		
-		if mathml.children().is_empty() && !EMPTY_ELEMENTS.contains(element_name) {
+		if mathml.children().is_empty() && !is_empty_element(element_name) {
 			if element_name == "mrow" && mathml.attribute(INTENT_ATTR).is_none() {
 				// if it is an empty mrow that doesn't need to be there, get rid of it. Otherwise, replace it with an mtext
 				if parent_name == "mmultiscripts" {	// MathML Core dropped "none" in favor of <mrow/>, but MathCAT is written with <none/>
@@ -807,14 +819,14 @@ impl CanonicalizeContext {
 					set_mathml_name(mathml, "mrow");
 					mathml.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 					mathml.replace_children([mo,mn]);
-				} else if contains_any(text, &CURRENCY_SYMBOLS) {
+				} else if contains_currency_symbol(text) {
 						if let Some(result) = split_currency_symbol(mathml) {
 							return Some(result);
 						}
 				}
 				if let Some((idx, last_char)) = text.char_indices().next_back() {
 					// look for something like 12°
-					if PSEUDO_SCRIPTS.contains(&last_char) {
+					if CanonicalizeContext::is_pseudo_script_char(last_char) {
 						let doc = mathml.document();
 						let mn = create_mathml_element(&doc, "mn");
 						let mo = create_mathml_element(&doc, "mo");
@@ -903,12 +915,12 @@ impl CanonicalizeContext {
 				}
 
 				let text = as_text(mathml);
-				debug!("mtext: {}, contains? {}", text, contains_any(text, &CURRENCY_SYMBOLS));
+				debug!("mtext: {}, contains? {}", text, contains_currency_symbol(text));
 				if !text.trim().is_empty() && is_roman_number_match(text) && is_roman_numeral_number_context(mathml) {
 					// people tend to set them in a non-italic font and software makes that 'mtext'
 					CanonicalizeContext::make_roman_numeral(mathml);
 					return Some(mathml);
-				} else if contains_any(text, &CURRENCY_SYMBOLS) {
+				} else if contains_currency_symbol(text) {
 					if let Some(result) = split_currency_symbol(mathml) {
 						return Some(result);
 					}
@@ -989,7 +1001,7 @@ impl CanonicalizeContext {
 						mathml.set_text(&new_text);
 						return Some(mathml);
 					}
-					if contains_any(text, &CURRENCY_SYMBOLS) {
+					if contains_currency_symbol(text) {
 						if let Some(result) = split_currency_symbol(mathml) {
 							return Some(result);
 						}
@@ -1094,7 +1106,7 @@ impl CanonicalizeContext {
 
 				// FIX: this should be setting children, not mathml
 				let mathml =  if element_name == "mrow" ||
-							(children.len() > 1 && ELEMENTS_WITH_ONE_CHILD.contains(element_name)) {
+							(children.len() > 1 && is_element_with_one_child(element_name)) {
 					let merged = merge_dots(mathml);	// FIX -- switch to passing in children
 					let merged = merge_primes(merged);
 					let merged = merge_degrees_C_F(merged);
@@ -1159,7 +1171,7 @@ impl CanonicalizeContext {
 					return Some(mathml);		// child has already been cleaned, so we can return
 				}
 
-				if element_name == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(element_name) {
+				if element_name == "mrow" || is_element_with_one_child(element_name) {
 					merge_number_blocks(self, mathml, &mut children);
 					merge_whitespace(&mut children);
 					merge_cross_or_dot_product_elements(&mut children);
@@ -1200,7 +1212,7 @@ impl CanonicalizeContext {
 
 				mathml.replace_children(children);
 				// debug!("clean_mathml: after loop\n{}", mml_to_string(mathml));
-				if element_name == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(element_name) {
+				if element_name == "mrow" || is_element_with_one_child(element_name) {
 					clean_chemistry_mrow(mathml);
 				}
 				self.assure_nary_tag_has_one_child(mathml);
@@ -1419,7 +1431,7 @@ impl CanonicalizeContext {
 
 			let text = as_text(mi);
 			// debug!("split_apart_pseudo_scripts: start text=\"{text}\"");
-			if !text.chars().any(|c| PSEUDO_SCRIPTS.contains(&c)) || IS_DEGREES_C_OR_F.is_match(text) {
+			if !text.chars().any(CanonicalizeContext::is_pseudo_script_char) || IS_DEGREES_C_OR_F.is_match(text) {
 				return None;
 			}
 
@@ -1428,7 +1440,7 @@ impl CanonicalizeContext {
 			let chars = text.chars();
     		let next_chars = text.chars().skip(1);
 			let result = chars.zip(next_chars).map(|(a, b)|
-						if a.is_alphabetic() && PSEUDO_SCRIPTS.contains(&b) {
+						if a.is_alphabetic() && CanonicalizeContext::is_pseudo_script_char(b) {
 							// create msup
 							let base = create_mathml_element(&document, "mi");
 							base.set_text(&a.to_string());
@@ -1613,7 +1625,7 @@ impl CanonicalizeContext {
 		fn split_currency_symbol(leaf: Element) -> Option<Element> {
 			assert!(is_leaf(leaf));
 			let text = as_text(leaf);
-			assert!(contains_any(text, &CURRENCY_SYMBOLS));
+			assert!(contains_currency_symbol(text));
 			let mut iter = text.chars();
 			match (iter.next(), iter.next()) {
 				(None, _) => return None,
@@ -1626,7 +1638,7 @@ impl CanonicalizeContext {
 						leaf.set_name("mn");	// make sure we create an mn (might be one already)
 					}
 					let first_ch = text.char_indices().next().map(|(i, ch)| &text[i..i + ch.len_utf8()]).unwrap();
-					if CURRENCY_SYMBOLS.contains(&first_ch.chars().next().unwrap()) {
+					if first_ch.chars().next().map_or(false, is_currency_symbol) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let currency_symbol = create_mathml_element(&leaf.document(), "mi");
@@ -1640,7 +1652,7 @@ impl CanonicalizeContext {
 						return Some(mrow);
 					}
 					let last_ch = text.char_indices().last().map(|(i, _)| &text[i..]).unwrap();
-					if CURRENCY_SYMBOLS.contains(&last_ch.chars().next().unwrap()) {
+					if last_ch.chars().next().map_or(false, is_currency_symbol) {
 						let mrow = create_mathml_element(&leaf.document(), "mrow");
 						mrow.set_attribute_value(CHANGED_ATTR, ADDED_ATTR_VALUE);
 						let implied_times = create_mo(leaf.document(), "\u{2062}", ADDED_ATTR_VALUE);
@@ -1655,7 +1667,7 @@ impl CanonicalizeContext {
 					}
 					// try to find it in the middle
 					for (byte_idx, ch) in text.char_indices() {
-						if contains_any(&text[byte_idx .. byte_idx + ch.len_utf8()], &CURRENCY_SYMBOLS) {
+						if is_currency_symbol(ch) {
 							// get all the substrings
 							let first_part = &text[..byte_idx];
 							let currency_symbol = &text[byte_idx .. byte_idx + ch.len_utf8()];
@@ -1764,7 +1776,7 @@ impl CanonicalizeContext {
 
 		/// merge a following mstyle that has the same attrs
 		fn merge_adjacent_similar_mstyles(mathml: Element) {
-			if ELEMENTS_WITH_FIXED_NUMBER_OF_CHILDREN.contains(name(get_parent(mathml))) {
+			if is_element_with_fixed_number_of_children(name(get_parent(mathml))) {
 				// FIX: look to see if all of the children (might be more than just the adjacent one) have the same attr and then pull them up to the parent
 				return;		// can't remove subsequent child 
 			}
@@ -1876,11 +1888,10 @@ impl CanonicalizeContext {
 			/// make sure all the non-mo leaf siblings are roman numerals
 			/// 'mo' should only be '+', '-', '=', ',', '.'  -- unlikely someone is doing anything sophisticated
 			fn is_roman_numeral_adjacent<'a, I>(siblings: I, must_be_upper_case: bool) -> bool
-					where I: Iterator<Item = &'a ChildOfElement<'a>> {		
-				static ROMAN_NUMERAL_OPERATORS: phf::Set<&str> = phf_set! {
-					"+", "-'", "=", "<", "≤", ">", "≥", 
-					// ",", ".",   // [c,d] triggers this if "," is present, so omitting it
-				};
+					where I: Iterator<Item = &'a ChildOfElement<'a>> {
+				fn is_roman_numeral_operator(s: &str) -> bool {
+					matches!(s, "+" | "-" | "=" | "<" | "≤" | ">" | "≥")
+				}
 				let mut found_match = false;				// guard against no siblings
 				let mut last_was_roman_numeral = true;	// started at roman numeral
 				// debug!("start is_roman_numeral_adjacent");
@@ -1893,7 +1904,7 @@ impl CanonicalizeContext {
 								return false;
 							}
 							let text = as_text(maybe_roman_numeral);
-							if !ROMAN_NUMERAL_OPERATORS.contains(text) {
+							if !is_roman_numeral_operator(text) {
 								return false;
 							}
 							last_was_roman_numeral = false;
@@ -2679,16 +2690,9 @@ impl CanonicalizeContext {
 			return result;
 		}
 
-		// from https://www.w3.org/TR/MathML3/chapter7.html#chars.pseudo-scripts
-		static PSEUDO_SCRIPTS: phf::Set<char> = phf_set! {
-			'\"', '\'', '*', '`', 'ª', '°', '²', '³', '´', '¹', 'º',
-			'‘', '’', '“', '”', '„', '‟',
-			'′', '″', '‴', '‵', '‶', '‷', '⁗',
-		};
-
 		fn handle_pseudo_scripts(mrow: Element) -> Element {
 	
-			assert!(name(mrow) == "mrow" || ELEMENTS_WITH_ONE_CHILD.contains(name(mrow)), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
+			assert!(name(mrow) == "mrow" || is_element_with_one_child(name(mrow)), "non-mrow passed to handle_pseudo_scripts: {}", mml_to_string(mrow));
 			let mut children = mrow.children();
 			// check to see if mrow of all pseudo scripts
 			if children.iter().all(|&child| {
@@ -2736,14 +2740,14 @@ impl CanonicalizeContext {
 				if name(child) == "mo" {
 					let text = as_text(child);
 					if let Some(ch) = single_char(text)
-						&& PSEUDO_SCRIPTS.contains(&ch) {
+						&& CanonicalizeContext::is_pseudo_script_char(ch) {
 							// don't script a pseudo-script
 							let preceding_siblings = child.preceding_siblings();
 							if !preceding_siblings.is_empty() {
 								let last_child = as_element(preceding_siblings[preceding_siblings.len()-1]);
 								if name(last_child) == "mo" &&
 								   let Some(ch) = single_char(as_text(last_child))
-										&& PSEUDO_SCRIPTS.contains(&ch) {
+										&& CanonicalizeContext::is_pseudo_script_char(ch) {
 											return false;
 										}
 							}
@@ -3582,7 +3586,7 @@ impl CanonicalizeContext {
 			return original_op;
 		}
 		let op = found_op_info.unwrap();
-		if !AMBIGUOUS_OPERATORS.contains(operator_str) {
+		if !is_ambiguous_operator(operator_str) {
 			// debug!("   op is not ambiguous");
 			return original_op;
 		};
@@ -4493,12 +4497,14 @@ pub fn add_attrs<'a>(mathml: Element<'a>, attrs: &[Attribute]) -> Element<'a> {
 }
 
 
+#[inline]
 pub fn name(node: Element<'_>) -> &str {
 	return node.name().local_part();
 }
 
 /// The child of a non-leaf element must be an element
 // Note: can't use references as that results in 'returning use of local variable'
+#[inline]
 pub fn as_element(child: ChildOfElement) -> Element {
 	return match child {
 		ChildOfElement::Element(e) => e,
@@ -4510,6 +4516,7 @@ pub fn as_element(child: ChildOfElement) -> Element {
 
 /// The child of a leaf element must be text (previously trimmed)
 /// Note: trim() combines all the Text children into a single string
+#[inline]
 pub fn as_text(leaf_child: Element<'_>) -> &str {
 	assert!(is_leaf(leaf_child));
 	let children = leaf_child.children();
@@ -4525,6 +4532,7 @@ pub fn as_text(leaf_child: Element<'_>) -> &str {
 
 /// Returns the parent of the argument.
 /// Warning: this assumes the parent exists
+#[inline]
 pub fn get_parent(mathml: Element) -> Element {
 	return mathml.parent().unwrap().element().unwrap();
 }
@@ -4546,6 +4554,7 @@ fn create_mo<'a, 'd:'a>(doc: Document<'d>, ch: &'a str, attr_value: &str) -> Ele
 }
 
 /// return 'node' or if it is adorned, return its base (recursive)
+#[inline]
 pub fn get_possible_embellished_node(node: Element) -> Element {
 	let mut node = node;
 	while IsNode::is_modified(node) {
