@@ -76,14 +76,12 @@ pub static SPLIT_TOKEN: &str = "data-split";
 static MERGED_TOKEN: &str = "data-merged";
 
 /// these can be in the base of an under/over script
-fn is_chem_equation_arrow(c: char) -> bool {
-    matches!(c,
-        '→' | '➔' | '←' | '⟶' | '⟵' | '⤻' | '⇋' | '⇌' |
-        '↑' | '↓' | '↿' | '↾' | '⇃' | '⇂' | '⥮' | '⥯' | '⇷' | '⇸' | '⤉' | '⤈' |
-        '⥂' | '⥄' | '⥃' |
-        '\u{1f8d0}' | '\u{1f8d1}' | '\u{1f8d2}' | '\u{1f8d3}' | '\u{1f8d4}' | '\u{1f8d5}'
-    )
-}
+static CHEM_EQUATION_ARROWS: phf::Set<char> = phf_set! {
+    '→', '➔', '←', '⟶', '⟵', '⤻', '⇋', '⇌',
+    '↑', '↓', '↿', '↾', '⇃', '⇂', '⥮', '⥯', '⇷', '⇸', '⤉', '⤈',
+    '⥂', '⥄', '⥃',
+    '\u{1f8d0}', '\u{1f8d1}', '\u{1f8d2}', '\u{1f8d3}', '\u{1f8d4}', '\u{1f8d5}',         // proposed Unicode equilibrium arrows
+};
 
 // Returns true if the 'property' (should have ":") is in the intent
 fn has_chem_intent(mathml: Element, property: &str) -> bool {
@@ -109,7 +107,6 @@ fn has_inherited_property(mathml: Element, property: &str) -> bool {
     return false;
 }
 
-#[inline]
 pub fn is_chemistry_off(mathml: Element) -> bool {
     if has_chem_intent(mathml, ":chemical-formula") || has_chem_intent(mathml, ":chemical-equation") {
         return false;
@@ -764,7 +761,7 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
             return false;
         }
         let text = as_text(base);
-        return text.len() == 1 && (text == "=" || text.chars().next().map_or(false, is_chem_equation_arrow));
+        return text.len() == 1 && (text == "=" || CHEM_EQUATION_ARROWS.contains(&text.chars().next().unwrap()));
 
     }
 
@@ -1213,10 +1210,10 @@ fn is_order_ok(mrow: Element) -> bool {
 
 
 fn has_noble_element(elements: &[&str]) -> bool {
-    fn is_noble_element(s: &str) -> bool {
-        matches!(s, "He" | "Ne" | "Ar" | "Kr" | "Xe" | "Rn" | "Og")
-    }
-    return elements.iter().any(|&e| is_noble_element(e));
+    static NOBLE_ELEMENTS: phf::Set<&str> = phf_set! {
+        "He", "Ne", "Ar", "Kr", "Xe", "Rn", "Og" // Og might be reactive, but it is unstable
+    };
+    return elements.iter().any(|&e| NOBLE_ELEMENTS.contains(e));
 }
 
 fn has_c_h_o(elements: &[&str]) -> bool {
@@ -1452,16 +1449,16 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
     }
 }
 
-/// useful function to see if the str is a single char matching the predicate
-fn is_single_char_matching(leaf_text: &str, pred: impl Fn(char) -> bool) -> bool {
+/// useful function to see if the str is a single char that is in 'set'
+fn is_in_set(leaf_text: &str, set: &phf::Set<char> ) -> bool {
     let mut chars = leaf_text.chars();
     let ch = chars.next();
-    if chars.next().is_none() {
+    if chars.next().is_none() {     // only one char
         if let Some(first_ch) = ch {
-            return pred(first_ch);
+            return set.contains(&first_ch);
         }
     }
-    false
+    return false;
 }
 
 fn likely_chem_formula_operator(mathml: Element) -> isize {
@@ -1470,19 +1467,19 @@ fn likely_chem_formula_operator(mathml: Element) -> isize {
     #[derive(PartialEq, Eq)]
     enum BondType {DoubleBond, TripleBond}      // options for is_legal_bond()
     // "⋅" is used in GTM 16.2 and en.wikipedia.org/wiki/Cement_chemist_notation -- may want to add some similar chars
-    fn is_chem_formula_operator(s: &str) -> bool {
-        matches!(s,
-            "-" | "\u{2212}" | "⋅" | ":" | "=" | "∷" | "≡" | ":::" | "≣" | "::::" |
-            "⋮"
-        )
-    }
-    fn is_chem_formula_ok(c: char) -> bool {
-        matches!(c, '(' | ')' | '[' | ']' | '\u{2062}' | '\u{2063}')
-    }
+    static CHEM_FORMULA_OPERATORS: phf::Set<&str> = phf_set! {
+        "-", "\u{2212}", "⋅", ":", "=", "∷", "≡", ":::", "≣", "::::", // bond symbols (need both 2212 and minus because maybe not canonicalized)
+        "⋮", // lewis dots, part of "⋮⋮" - triple bond (see Nemeth chem guide 2.5.4)
+    };
+    static CHEM_FORMULA_OK: phf::Set<char> = phf_set! {
+        '(', ')', '[', ']',
+        // FIX: the invisible operator between elements should be well-defined, but this likely needs work, so both accepted for now
+        '\u{2062}', '\u{2063}' // invisible separators
+        };
 
     assert_eq!(name(mathml), "mo");
     let leaf_text = as_text(mathml);
-    if is_chem_formula_operator(leaf_text) &&
+    if CHEM_FORMULA_OPERATORS.contains(leaf_text) &&
        (has_inherited_property(mathml, "chemical-formula") ||
         ( !(leaf_text == "=" || leaf_text == "∷" ) || is_legal_bond(mathml, BondType::DoubleBond) )  &&
         ( !(leaf_text == "≡" || leaf_text == ":::" ) || is_legal_bond(mathml, BondType::TripleBond) )
@@ -1490,7 +1487,7 @@ fn likely_chem_formula_operator(mathml: Element) -> isize {
         mathml.set_attribute_value(MAYBE_CHEMISTRY, "1");
         mathml.set_attribute_value(CHEM_FORMULA_OPERATOR, "1");
         return 1;
-    } else if is_single_char_matching(leaf_text, is_chem_formula_ok) {
+    } else if is_in_set(leaf_text, &CHEM_FORMULA_OK) {
         return 0;  // not much info
     } else {
         return -3; // still a small chance;
@@ -1527,10 +1524,12 @@ fn likely_chem_formula_operator(mathml: Element) -> isize {
 
         fn is_legal_double_bond(left: &str, right: &str) -> bool {
             // this is based on table in en.wikipedia.org/wiki/Double_bond#Types_of_double_bonds_between_atoms
-            fn is_double_bond_to_self(s: &str) -> bool {
-                matches!(s, "C" | "O" | "N" | "S" | "Si" | "Ge" | "Sn" | "Pb")
-            }
-            if left == right && is_double_bond_to_self(left) {
+            static DOUBLE_BOND_TO_SELF: phf::Set<&str> = phf_set! {
+                "C", "O", "N", "S", "Si", "Ge", "Sn", "Pb"
+            };
+                // "C" => &["O", "N", "S"],
+                // "O" => &["N", "S"],
+            if left == right && DOUBLE_BOND_TO_SELF.contains(left) {
                 return true;
             }
             return match left {
@@ -1556,14 +1555,15 @@ fn likely_chem_formula_operator(mathml: Element) -> isize {
 fn likely_chem_equation_operator(mathml: Element) -> isize {
 
     // mostly from chenzhijin.com/en/article/Useful%20Unicode%20for%20Chemists (Arrows and Other)
-    fn is_chem_equation_operator(c: char) -> bool {
-        matches!(c, '+' | '=' | '-' | '·' | '℃' | '°' | '‡' | '∆' | '×' | '\u{2062}')
-    }
+    static CHEM_EQUATION_OPERATORS: phf::Set<char> = phf_set! {
+        '+', '=', '-',
+        '·', '℃', '°', '‡', '∆', '×', '\u{2062}' // invisible times
+    };
 
     let elem_name = name(mathml);
     if elem_name == "munder" || elem_name == "mover" || elem_name == "munderover" {
         let base = as_element(mathml.children()[0]);
-        if name(base) == "mo" && is_single_char_matching(as_text(base), is_chem_equation_arrow) {
+        if name(base) == "mo" && is_in_set(as_text(base), &CHEM_EQUATION_ARROWS) {
             base.set_attribute_value(MAYBE_CHEMISTRY, "1");
             base.set_attribute_value(CHEM_EQUATION_OPERATOR, "1");
             return 1;
@@ -1576,7 +1576,7 @@ fn likely_chem_equation_operator(mathml: Element) -> isize {
 
     if name(mathml) == "mo" {
         let text = as_text(mathml);
-        if is_single_char_matching(text, is_chem_equation_operator) || is_single_char_matching(text, is_chem_equation_arrow) {
+        if is_in_set(text, &CHEM_EQUATION_OPERATORS) || is_in_set(text, &CHEM_EQUATION_ARROWS) {
             mathml.set_attribute_value(MAYBE_CHEMISTRY, "1");
             mathml.set_attribute_value(CHEM_EQUATION_OPERATOR, "1");
             return 1;
@@ -1811,7 +1811,6 @@ static CHEMICAL_ELEMENT_ATOMIC_NUMBER: phf::Map<&str, u32> = phf_map! {
     "Rg" => 111, "Cn" => 112, "Nh" => 113, "Fl" => 114, "Mc" => 115, "Lv" => 116, "Ts" => 117, "Og" => 118, 
 };
 
-#[inline]
 pub fn is_chemical_element(node: Element) -> bool {
 	// FIX: allow name to be in an mrow (e.g., <mi>N</mi><mi>a</mi>
 	let name = name(node);

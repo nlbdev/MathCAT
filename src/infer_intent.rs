@@ -15,6 +15,7 @@ use std::sync::LazyLock;
 use crate::pretty_print::mml_to_string;
 use crate::xpath_functions::is_leaf;
 use regex::Regex;
+use phf::phf_set;
 use log::{debug, error, warn};
 
 const IMPLICIT_FUNCTION_NAME: &str = "apply-function";
@@ -64,9 +65,9 @@ pub fn infer_intent<'r, 'c, 's:'c, 'm:'c>(rules_with_context: &'r mut SpeechRule
 }
 
 
-fn is_fixity(s: &str) -> bool {
-    matches!(s, "function" | "infix" | "prefix" | "postfix" | "silent" | "other")
-}
+static FIXITIES: phf::Set<&str> = phf_set! {
+    "function", "infix", "prefix", "postfix", "silent", "other",
+};
 
 /// Eliminate all but the last fixity property
 pub fn simplify_fixity_properties(properties: &str) -> String {
@@ -75,7 +76,7 @@ pub fn simplify_fixity_properties(properties: &str) -> String {
     let mut fixity_property = "";
     let mut answer = ":".to_string();
     for part in parts {
-        if is_fixity(part) {
+        if FIXITIES.contains(part) {
             fixity_property = part;
         } else if !part.is_empty() {
             answer.push_str(part);
@@ -92,7 +93,7 @@ pub fn simplify_fixity_properties(properties: &str) -> String {
 /// Given the intent add the fixity property for the intent if it isn't given (and one exists)
 fn add_fixity(intent: Element) {
     let properties = intent.attribute_value(INTENT_PROPERTY).unwrap_or_default();
-    if properties.split(":").all(|property| !is_fixity(property)) {
+    if properties.split(":").all(|property| !FIXITIES.contains(property)) {
         let intent_name = name(intent);
         crate::definitions::SPEECH_DEFINITIONS.with(|definitions| {
             let definitions = definitions.borrow();
@@ -134,7 +135,7 @@ pub fn add_fixity_children(intent: Element) -> Element {
         }
         let doc = mathml.document();
         let properties = mathml.attribute_value(INTENT_PROPERTY).unwrap_or_default();
-        let fixity = properties.rsplit(':').find(|&property| is_fixity(property)).unwrap_or_default();
+        let fixity = properties.rsplit(':').find(|&property| FIXITIES.contains(property)).unwrap_or_default();
         let intent_name = name(mathml);
     
         let op_name_id = mathml.attribute_value("id").unwrap_or("new-id");
