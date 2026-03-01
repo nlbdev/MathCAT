@@ -43,7 +43,7 @@
                   en: $Verbosity!='Terse', not(IsNode(*[1], 'leaf'))
                   es: not(IsNode(*[1], 'leaf'))
           Structure Differences [1]
-              • (line 38 en, 18 es)
+              • (line 40 en, 25 es)
                   Rule structure differs (test/if/then/else blocks)
                   en: replace: test: if: then: test: if: then:
                   es: replace: test: if: then:

@@ -291,11 +291,84 @@ def resolve_issue_line(rule: RuleInfo, kind: str, token: Optional[str] = None) -
     return lines[0] if lines else rule.line_number
 
 
+def structure_token_occurrence_index(tokens: List[str], position: int) -> Optional[int]:
+    """
+    Return which occurrence of a token appears at a given absolute token position.
+
+    Example: for ["test:", "if:", "test:"], position 2 returns 1.
+    """
+    if position < 0 or position >= len(tokens):
+        return None
+    token = tokens[position]
+    return sum(1 for current in tokens[:position] if current == token)
+
+
+def resolve_structure_issue_lines(diff: RuleDifference) -> Optional[Tuple[int, int]]:
+    """
+    Resolve stable line anchors for a structural rule difference.
+
+    Strategy:
+    - Use position-aware token occurrence matching when possible.
+    - For insert/delete cases (one side missing token), anchor to the previous
+      shared structural token; if unavailable, anchor to `replace:`.
+    """
+    en_tokens = extract_structure_elements(diff.english_rule.data)
+    tr_tokens = extract_structure_elements(diff.translated_rule.data)
+    en_token, tr_token, mismatch_pos = first_structure_mismatch(en_tokens, tr_tokens)
+
+    if mismatch_pos < 0:
+        return None
+
+    # Insertion/deletion: anchor to the previous shared token if possible.
+    if en_token is None or tr_token is None:
+        anchor_pos = mismatch_pos - 1
+        if (
+            anchor_pos >= 0
+            and anchor_pos < len(en_tokens)
+            and anchor_pos < len(tr_tokens)
+            and en_tokens[anchor_pos] == tr_tokens[anchor_pos]
+        ):
+            anchor_token = en_tokens[anchor_pos]
+            en_occ = structure_token_occurrence_index(en_tokens, anchor_pos)
+            tr_occ = structure_token_occurrence_index(tr_tokens, anchor_pos)
+            if en_occ is not None and tr_occ is not None:
+                line_en = resolve_issue_line_at_position(diff.english_rule, "structure", anchor_token, en_occ)
+                line_tr = resolve_issue_line_at_position(diff.translated_rule, "structure", anchor_token, tr_occ)
+                if line_en is not None and line_tr is not None:
+                    return line_en, line_tr
+
+        # Fallback: anchor both sides to replace, which is the rule body entrypoint.
+        line_en = resolve_issue_line(diff.english_rule, "structure", "replace:") or diff.english_rule.line_number
+        line_tr = resolve_issue_line(diff.translated_rule, "structure", "replace:") or diff.translated_rule.line_number
+        return line_en, line_tr
+
+    # Exact token available on both sides: resolve by occurrence index at mismatch.
+    en_occ = structure_token_occurrence_index(en_tokens, mismatch_pos)
+    tr_occ = structure_token_occurrence_index(tr_tokens, mismatch_pos)
+    if en_occ is not None and tr_occ is not None:
+        line_en = resolve_issue_line_at_position(diff.english_rule, "structure", en_token, en_occ)
+        line_tr = resolve_issue_line_at_position(diff.translated_rule, "structure", tr_token, tr_occ)
+        if line_en is not None and line_tr is not None:
+            return line_en, line_tr
+
+    line_en = resolve_issue_line(diff.english_rule, "structure", en_token)
+    line_tr = resolve_issue_line(diff.translated_rule, "structure", tr_token)
+    if line_en is None or line_tr is None:
+        return None
+    return line_en, line_tr
+
+
 def collect_issues(
     result: ComparisonResult,
     file_name: str,
     language: str,
 ) -> List[dict]:
+    """
+    Flatten a ComparisonResult into one normalized dictionary per issue.
+
+    This is the canonical bridge from parser/diff objects to serializable
+    records consumed by JSONL output, snapshot tests, and line-level assertions.
+    """
     issues = []
 
     for rule in result.missing_rules:
@@ -345,23 +418,10 @@ def collect_issues(
         rule = diff.english_rule
         issue = issue_base(rule, file_name, language)
         if diff.diff_type == "structure":
-            en_tokens = extract_structure_elements(diff.english_rule.data)
-            tr_tokens = extract_structure_elements(diff.translated_rule.data)
-            en_token, tr_token, mismatch_pos = first_structure_mismatch(en_tokens, tr_tokens)
-
-            # Skip reporting when tokens are misaligned (both exist but differ)
-            # This avoids misleading line numbers when entire blocks are missing/added
-            # We only report when one is None (clear case of missing element)
-            if en_token is not None and tr_token is not None and en_token != tr_token:
+            structure_lines = resolve_structure_issue_lines(diff)
+            if structure_lines is None:
                 continue
-
-            issue_line_en = resolve_issue_line(diff.english_rule, "structure", en_token)
-            issue_line_tr = resolve_issue_line(diff.translated_rule, "structure", tr_token)
-
-            # Skip reporting structure differences where we can't find both tokens
-            # This avoids misleading line numbers when blocks are missing
-            if issue_line_en is None or issue_line_tr is None:
-                continue
+            issue_line_en, issue_line_tr = structure_lines
         else:
             issue_line_en = resolve_issue_line(diff.english_rule, diff.diff_type)
             issue_line_tr = resolve_issue_line(diff.translated_rule, diff.diff_type)
@@ -444,20 +504,10 @@ def print_warnings(
 
     for diff in result.rule_differences:
         if diff.diff_type == "structure":
-            en_tokens = extract_structure_elements(diff.english_rule.data)
-            tr_tokens = extract_structure_elements(diff.translated_rule.data)
-            en_token, tr_token, mismatch_pos = first_structure_mismatch(en_tokens, tr_tokens)
-
-            # Skip reporting when tokens are misaligned (both exist but differ)
-            # This avoids misleading line numbers when entire blocks are missing/added
-            if en_token is not None and tr_token is not None and en_token != tr_token:
+            structure_lines = resolve_structure_issue_lines(diff)
+            if structure_lines is None:
                 continue
-
-            line_en = resolve_issue_line(diff.english_rule, "structure", en_token)
-            line_tr = resolve_issue_line(diff.translated_rule, "structure", tr_token)
-            # Skip structure diffs where we can't find both tokens
-            if line_en is None or line_tr is None:
-                continue
+            line_en, line_tr = structure_lines
         else:
             line_en = resolve_issue_line(diff.english_rule, diff.diff_type)
             line_tr = resolve_issue_line(diff.translated_rule, diff.diff_type)

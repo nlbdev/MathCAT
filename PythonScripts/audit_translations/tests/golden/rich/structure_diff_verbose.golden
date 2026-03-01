@@ -7,7 +7,7 @@
   ≠ Rule Issues [1] (grouped by rule and issue type)
       • struct-rule (mi)
           Structure Differences [1]
-              • (line 9 en, 1 tr)
+              • (line 7 en, 7 tr)
                   Rule structure differs (test/if/then/else blocks)
                   en: replace: test: if: then: else:
                   tr: replace: test: if: then:
