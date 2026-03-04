@@ -458,7 +458,7 @@ pub fn scan_and_mark_chemistry(mathml: Element) -> bool {
             }
         }
     }
-    debug!("...after marking:\n{}", mml_to_string(child));
+    // debug!("...after marking:\n{}", mml_to_string(child));
 
     if child.attribute(CHEM_FORMULA).is_none() && child.attribute(CHEM_EQUATION).is_none() {
         if !has_maybe_chemistry(mathml) {
@@ -590,48 +590,52 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
         // could be no preceding children to canonicalization creating mrows (see issue #303), so might need to use parent, etc
         while preceding_children.is_empty() {
             preceding_children = parent.preceding_siblings();
-            parent = get_parent(parent);
             if name(parent) == "math" {
-                panic!("is_changed_after_unmarking_chemistry: error no preceding children to merge. mathml=\n{}", mml_to_string(mathml));
+                break;  // consider {SIN}^{-1} -- no preceding child
             }
+            parent = get_parent(parent);
         }
 
-        // deal with the first element (if it needs unwrapping, it has only prescripts)
-        let first_element_of_split = as_element(preceding_children[preceding_children.len()-1]);
-        // debug!("first_element_of_split: \n{}", mml_to_string(first_element_of_split));
-        if name(first_element_of_split) == "mmultiscripts" {
-            // take the base and make it the first child of preceding_children (what will get merged)
-            // put the rest of the elements (the prescripts) at the end of the parent last element (mathml) which must be an mmultiscripts
-            let first_element_children = first_element_of_split.children();
-            assert_eq!(name(mathml), "mmultiscripts");
-            let mut script_children = mathml.children();
-            assert_eq!(name(as_element(script_children[0])), "mi");
-            assert!(!script_children.len().is_multiple_of(2));  // doesn't have <mprescripts/>
-            script_children.push(first_element_children[1]);    // mprescripts
-            script_children.push(first_element_children[2]);    // prescripts subscript
-            script_children.push(first_element_children[3]);    // prescripts superscript
+        let mut new_script_children = vec![];
+        if !preceding_children.is_empty() {
+            // deal with the first element (if it needs unwrapping, it has only prescripts)
+            let first_element_of_split = as_element(preceding_children[preceding_children.len()-1]);
+            // debug!("first_element_of_split: \n{}", mml_to_string(first_element_of_split));
+            if name(first_element_of_split) == "mmultiscripts" {
+                // take the base and make it the first child of preceding_children (what will get merged)
+                // put the rest of the elements (the prescripts) at the end of the parent last element (mathml) which must be an mmultiscripts
+                let first_element_children = first_element_of_split.children();
+                assert_eq!(name(mathml), "mmultiscripts");
+                let mut script_children = mathml.children();
+                assert_eq!(name(as_element(script_children[0])), "mi");
+                assert!(!script_children.len().is_multiple_of(2));  // doesn't have <mprescripts/>
+                script_children.push(first_element_children[1]);    // mprescripts
+                script_children.push(first_element_children[2]);    // prescripts subscript
+                script_children.push(first_element_children[3]);    // prescripts superscript
 
-            let base_of_first_element = first_element_children[0];  // base
-            assert_eq!(name(as_element(base_of_first_element)), "mi");
-            let script_base = as_element(script_children[0]);
-            let mut merged_base_text = as_text( as_element(base_of_first_element)).to_string();
-            merged_base_text.push_str(as_text(script_base));
-            script_base.set_text(&merged_base_text);
-            script_base.remove_attribute("mathvariant");
-            script_base.remove_attribute(ADDED_ATTR_VALUE);
-            script_base.remove_attribute(MAYBE_CHEMISTRY);
-            script_base.remove_attribute(SPLIT_TOKEN);
-            mathml.replace_children(script_children);
-    
-            first_element_of_split.remove_from_parent();
-            return true;
+                let base_of_first_element = first_element_children[0];  // base
+                assert_eq!(name(as_element(base_of_first_element)), "mi");
+                let script_base = as_element(script_children[0]);
+                let mut merged_base_text = as_text( as_element(base_of_first_element)).to_string();
+                merged_base_text.push_str(as_text(script_base));
+                script_base.set_text(&merged_base_text);
+                script_base.remove_attribute("mathvariant");
+                script_base.remove_attribute(ADDED_ATTR_VALUE);
+                script_base.remove_attribute(MAYBE_CHEMISTRY);
+                script_base.remove_attribute(SPLIT_TOKEN);
+                mathml.replace_children(script_children);
+        
+                first_element_of_split.remove_from_parent();
+                return true;
+            }
+            new_script_children.push(ChildOfElement::Element(first_element_of_split));
         }
+        debug!("mathml after handling preceding children:\n{}", mml_to_string(mathml));
         let mut children_of_script = mathml.children();
         let split_child = as_element(children_of_script[0]);
-        let mut new_script_children = vec![ChildOfElement::Element(first_element_of_split)];
         new_script_children.append(&mut children_of_script);
         mathml.replace_children(new_script_children);     // temporarily has bad number of children 
-        // debug!("After making bad script:\n{}", mml_to_string(mathml));
+        debug!("After making bad script:\n{}", mml_to_string(mathml));
         if let Err(err) = merge_element(split_child) {
             panic!("{}", err);
         }
@@ -1370,7 +1374,7 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
 
     let mut empty_superscript = false;
     if tag_name == "msup" || tag_name == "msubsup" {
-        // debug!("likely_adorned_chem_formula: mathml\n{}", mml_to_string(mathml));
+        debug!("likely_adorned_chem_formula: mathml\n{}", mml_to_string(mathml));
         let superscript = as_element(children[if tag_name == "msup" {1} else {2}]);
         empty_superscript = name(superscript) == "mtext" && as_text(superscript).trim().is_empty();
         if !empty_superscript {
@@ -1411,7 +1415,14 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
             if is_adorned_electron(children[0], prescripts) {
                 return 100;     // very likely chemistry
             }
-            
+            let base = as_element(children[0]);
+            let base_name = name(base);
+            let atomic_number = if matches!(base_name, "mi" | "mtext") &&
+                                        let Some(atomic_number) = CHEMICAL_ELEMENT_ATOMIC_NUMBER.get(as_text(base)) {
+                        *atomic_number
+                    } else {
+                        return NOT_CHEMISTRY;
+                    };
             if pre_superscript_name == "mo" {
                 // Lewis dot prescript case
                 if pre_subscript_name != "none" {
@@ -1419,17 +1430,15 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
                 }
                 likelihood += likely_chem_superscript(pre_superscript);
             } else if pre_superscript_name == "mn" { // must have a pre-superscript (neutrons + protons)
-                // fix could make sure they are integers
-                likelihood += 1;        // looking like an atomic number                
-                if pre_subscript_name == "mn" {
-                    // make sure the atomic number matches the base
-                    let base = as_element(children[0]);
-                    let base_name = name(base);
-                    if (base_name == "mi" || base_name == "mtext") &&
-                        let Some(atomic_number) = CHEMICAL_ELEMENT_ATOMIC_NUMBER.get(as_text(base)) &&
-                            as_text(pre_subscript) == atomic_number.to_string() {
-                                likelihood = CHEMISTRY_THRESHOLD;
-                            }
+                if let Some(mass) = as_text(pre_superscript).parse::<u32>().ok() {
+                    // "drip line" is 1.5 * mass < 3.5 * mass -- it is possible to outside of this range, but VERY unlikely
+                    // to avoid floating point, we multiply by 2 and compare to 3 and 7
+                    if 3*atomic_number < 2*mass && 2*mass < 7*atomic_number {
+                        likelihood += 3;
+                    }
+                }
+                if pre_subscript_name == "mn"  && as_text(pre_subscript) == atomic_number.to_string() {
+                        likelihood = CHEMISTRY_THRESHOLD;
                 }
             } else {
                 return NOT_CHEMISTRY;
@@ -1476,6 +1485,7 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
         likelihood += likely_chem_formula(base);
     }
     
+    debug!("returning from likely_adorned_chem_formula: likelihood={}, mathml\n{}", likelihood, mml_to_string(mathml));
     return likelihood;
 
 
@@ -2803,14 +2813,14 @@ mod chem_tests {
           </mrow>
         </mrow>
       </math>";
-        let target = "<math>
-            <mmultiscripts data-previous-space-width='-0.083'>
-            <mi mathvariant='normal'>U</mi>
-            <mprescripts></mprescripts>
-            <none/>
-            <mn>238</mn>
+        let target = " <math>
+            <mmultiscripts data-previous-space-width='-0.083' data-chem-formula='5'>
+                <mi mathvariant='normal' data-chem-element='2'>U</mi>
+                <mprescripts></mprescripts>
+                <none></none>
+                <mn>238</mn>
             </mmultiscripts>
-        </math>";
+         </math>";
         assert!(are_strs_canonically_equal(test, target, &[]));
     }
 
@@ -3024,15 +3034,15 @@ mod chem_tests {
         </mrow>
       </math>";
     let target = "<math>
-        <mrow data-chem-formula='7'>
-            <mmultiscripts data-previous-space-width='-0.083' data-chem-formula='3'>
+        <mrow data-chem-formula='11'>
+            <mmultiscripts data-previous-space-width='-0.083' data-chem-formula='5'>
                 <mi mathvariant='normal' data-chem-element='2'>O</mi>
                 <mprescripts></mprescripts>
                 <none></none>
                 <mn>18</mn>
             </mmultiscripts>
             <mo data-changed='added' data-chem-formula-op='0'>&#x2063;</mo>
-            <mmultiscripts data-previous-space-width='0.027999999999999997' data-chem-formula='3'>
+            <mmultiscripts data-previous-space-width='0.027999999999999997' data-chem-formula='5'>
                 <mi mathvariant='normal' data-chem-element='2'>O</mi>
                 <mprescripts></mprescripts>
                 <none></none>
