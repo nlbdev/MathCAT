@@ -13,8 +13,8 @@ from typing import TextIO
 from rich.panel import Panel
 from rich.table import Table
 
-from .dataclasses import RuleInfo, ComparisonResult
-from .parsers import parse_yaml_file, diff_rules
+from .dataclasses import ComparisonResult, RuleInfo
+from .parsers import diff_rules, parse_yaml_file
 from .renderer import collect_issues, console, print_warnings
 
 # Re-export console so existing `from .auditor import console` callers keep working.
@@ -181,12 +181,12 @@ def audit_language(
     if output_format == "rich":
         # Print header
         console.print(Panel(f"MathCAT Translation Audit: {language.upper()}", style="bold cyan"))
-        console.print(f"\n  [dim]Comparing against English (en) reference files[/]")
+        console.print("\n  [dim]Comparing against English (en) reference files[/]")
         console.print(f"  [dim]Files to check: {len(files)}[/]")
 
     out_stream: TextIO = sys.stdout
     if output_path:
-        out_stream = open(output_path, "w", encoding="utf-8", newline="")
+        out_stream = open(output_path, "w", encoding="utf-8", newline="")  # noqa: SIM115
 
     total_issues = 0
     total_missing = 0
@@ -259,7 +259,7 @@ def audit_language(
     return total_issues
 
 
-def list_languages(rules_dir: str | None = None):
+def list_languages(rules_dir: str | None = None) -> None:
     """List available languages for auditing"""
     console.print(Panel("Available Languages", style="bold cyan"))
 

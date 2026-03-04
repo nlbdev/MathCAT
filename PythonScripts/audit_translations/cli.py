@@ -7,10 +7,10 @@ Handles argument parsing and the main entry point.
 import argparse
 import sys
 
-from .auditor import audit_language, list_languages, console
+from .auditor import audit_language, console, list_languages
 
 
-def main():
+def main() -> None:
     """Main entry point for the audit tool"""
 
     parser = argparse.ArgumentParser(

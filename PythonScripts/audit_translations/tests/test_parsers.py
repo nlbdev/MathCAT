@@ -2,14 +2,14 @@
 Tests for parsers.py.
 """
 
-from typing import List
 
 import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from ..dataclasses import RuleInfo, RuleDifference
+from ..dataclasses import RuleDifference, RuleInfo
 from ..parsers import (
+    build_line_map,
     diff_rules,
     extract_conditions,
     extract_match_pattern,
@@ -18,7 +18,6 @@ from ..parsers import (
     find_untranslated_text_entries,
     find_untranslated_text_values,
     has_audit_ignore,
-    build_line_map,
     parse_rules_file,
     parse_unicode_file,
 )
@@ -488,8 +487,8 @@ class TestDiffRules:
             },
         )
         tr = make_rule("test", "mo", {"if": "condition_c"})
-        diffs: List[RuleDifference] = diff_rules(en, tr)
-        cond_diff: RuleDifference = [d for d in diffs if d.diff_type == "condition"][0]
+        diffs: list[RuleDifference] = diff_rules(en, tr)
+        cond_diff: RuleDifference = next(d for d in diffs if d.diff_type == "condition")
         assert cond_diff.english_snippet == "condition_b, condition_a"
         assert cond_diff.translated_snippet == "condition_c"
 
@@ -521,8 +520,8 @@ class TestDiffRules:
             },
         )
         tr = make_rule("test", "mo", {"if": "condition_c"})
-        diffs: List[RuleDifference] = diff_rules(en, tr)
-        cond_diff: RuleDifference = [d for d in diffs if d.diff_type == "condition"][0]
+        diffs: list[RuleDifference] = diff_rules(en, tr)
+        cond_diff: RuleDifference = next(d for d in diffs if d.diff_type == "condition")
 
         # without deduplication, we'd have "condition_a" repeated.
         assert cond_diff.english_snippet == "condition_a, condition_b"

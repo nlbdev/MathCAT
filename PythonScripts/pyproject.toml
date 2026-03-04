@@ -42,5 +42,17 @@ module-root = ""
 target-version = "py314"
 line-length = 130 # easier for some files. maybe decrease in the future
 
+[tool.ruff.lint]
+select = [
+    "F",    # pyflakes — unused imports, undefined names, etc.
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "I",    # isort — import ordering
+    "UP",   # pyupgrade — modernize syntax for target Python version
+    "B",    # flake8-bugbear — common bug patterns
+    "SIM",  # flake8-simplify — unnecessary complexity
+    "RUF",  # ruff-specific rules
+]
+
 [tool.ruff.format]
 docstring-code-format = true

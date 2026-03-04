@@ -119,7 +119,7 @@ def collect_issues(
         issues.append(issue)
 
     for rule, entries in result.untranslated_text:
-        for key, text, line in entries:
+        for _key, text, line in entries:
             issue = issue_base(rule, file_name, language)
             issue.update(
                 issue_type="untranslated_text",

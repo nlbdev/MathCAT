@@ -11,7 +11,7 @@ Read README.md for more details.
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
-from .cli import main
+from .cli import main  # noqa: E402
 
 __all__ = [
     "main",

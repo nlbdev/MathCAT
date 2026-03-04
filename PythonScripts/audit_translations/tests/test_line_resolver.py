@@ -2,7 +2,7 @@
 Unit tests for line_resolver.py.
 """
 
-from ..dataclasses import RuleInfo, RuleDifference
+from ..dataclasses import RuleDifference, RuleInfo
 from ..line_resolver import first_structure_mismatch, resolve_diff_lines
 
 
