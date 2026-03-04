@@ -227,16 +227,13 @@ def print_warnings(
                 for entry in entries:
                     if issue_type == "missing_rule":
                         console.print(f"              [dim]•[/] [dim](line {entry['line_en']} in English)[/]")
-                        issues += 1
                     elif issue_type == "extra_rule":
                         console.print(f"              [dim]•[/] [dim](line {entry['line_tr']} in {target_label})[/]")
-                        issues += 1
                     elif issue_type == "untranslated_text":
                         console.print(
                             f"              [dim]•[/] [dim](line {entry['line_tr']} {target_label})[/] "
                             f'[yellow]"{escape(entry["text"])}"[/]'
                         )
-                        issues += 1
                     else:
                         diff: RuleDifference = entry["diff"]
                         console.print(
@@ -246,6 +243,6 @@ def print_warnings(
                         if verbose:
                             console.print(f"                  [green]en:[/] {escape(diff.english_snippet)}")
                             console.print(f"                  [red]{target_label}:[/] {escape(diff.translated_snippet)}")
-                        issues += 1
+                issues += len(entries)
 
     return issues
