@@ -20,6 +20,18 @@ from .renderer import collect_issues, console, print_warnings
 # Re-export console so existing `from .auditor import console` callers keep working.
 __all__ = ["console"]
 
+GREEN_FILE_COUNT_THRESHOLD = 7
+YELLOW_FILE_COUNT_THRESHOLD = 4
+
+
+def file_count_color(file_count: int) -> str:
+    """Map number of translated YAML files to a display color."""
+    if file_count >= GREEN_FILE_COUNT_THRESHOLD:
+        return "green"
+    if file_count >= YELLOW_FILE_COUNT_THRESHOLD:
+        return "yellow"
+    return "red"
+
 
 def split_language_into_base_and_region(language: str) -> tuple[str, str | None]:
     """Split a language code into base and optional region."""
@@ -272,7 +284,7 @@ def list_languages(rules_dir: str | None = None) -> None:
         if not lang_dir.is_dir() or lang_dir.name == "en":
             continue
         base_count = len(get_yaml_files(lang_dir))
-        color = "green" if base_count >= 7 else "yellow" if base_count >= 4 else "red"
+        color = file_count_color(base_count)
         table.add_row(lang_dir.name, f"[{color}]{base_count}[/] files")
 
         for region_dir in sorted(lang_dir.iterdir()):
@@ -280,7 +292,7 @@ def list_languages(rules_dir: str | None = None) -> None:
                 continue
             code = f"{lang_dir.name}-{region_dir.name}"
             count = len(get_yaml_files(lang_dir, region_dir))
-            region_color = "green" if count >= 7 else "yellow" if count >= 4 else "red"
+            region_color = file_count_color(count)
             table.add_row(code, f"[{region_color}]{count}[/] files")
 
     console.print(table)
