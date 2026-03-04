@@ -276,11 +276,12 @@ def list_languages(rules_dir: str | None = None) -> None:
         table.add_row(lang_dir.name, f"[{color}]{base_count}[/] files")
 
         for region_dir in sorted(lang_dir.iterdir()):
-            if region_dir.is_dir():
-                code = f"{lang_dir.name}-{region_dir.name}"
-                count = len(get_yaml_files(lang_dir, region_dir))
-                region_color = "green" if count >= 7 else "yellow" if count >= 4 else "red"
-                table.add_row(code, f"[{region_color}]{count}[/] files")
+            if not region_dir.is_dir() or region_dir.name.lower() == "sharedrules":
+                continue
+            code = f"{lang_dir.name}-{region_dir.name}"
+            count = len(get_yaml_files(lang_dir, region_dir))
+            region_color = "green" if count >= 7 else "yellow" if count >= 4 else "red"
+            table.add_row(code, f"[{region_color}]{count}[/] files")
 
     console.print(table)
     console.print("\n  [dim]Reference: en (English) - base translation[/]\n")

@@ -234,6 +234,31 @@ def test_list_languages_includes_region_codes(tmp_path) -> None:
     assert "zz-aa" in output
 
 
+def test_list_languages_ignores_sharedrules_as_region(tmp_path) -> None:
+    """
+    Ensures SharedRules is not misreported as a language-region variant.
+    """
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    lang_dir = rules_dir / "zz"
+    region_dir = lang_dir / "aa"
+    shared_rules_dir = lang_dir / "SharedRules"
+    lang_dir.mkdir(parents=True)
+    region_dir.mkdir(parents=True)
+    shared_rules_dir.mkdir(parents=True)
+
+    (lang_dir / "file.yaml").write_text("---", encoding="utf-8")
+    (region_dir / "region.yaml").write_text("---", encoding="utf-8")
+    (shared_rules_dir / "shared.yaml").write_text("---", encoding="utf-8")
+
+    with console.capture() as capture:
+        list_languages(str(rules_dir))
+    output = capture.get()
+
+    assert "zz-aa" in output
+    assert "zz-SharedRules" not in output
+
+
 def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> None:
     """
     Ensure the print_warnings output matches the non-verbose golden snapshot.
