@@ -58,9 +58,7 @@ def test_cli_module_jsonl_output_matches_fixture() -> None:
 
     python_scripts_dir = Path(__file__).resolve().parents[2]
     env = os.environ.copy()
-    env["PYTHONPATH"] = os.pathsep.join(
-        [str(python_scripts_dir), env.get("PYTHONPATH", "")]
-    ).strip(os.pathsep)
+    env["PYTHONPATH"] = os.pathsep.join([str(python_scripts_dir), env.get("PYTHONPATH", "")]).strip(os.pathsep)
 
     result = subprocess.run(
         [sys.executable, "-m", "audit_translations", *args],
@@ -234,9 +232,7 @@ def test_cli_module_rich_output_groups_by_rule_and_type() -> None:
 
     python_scripts_dir = Path(__file__).resolve().parents[2]
     env = os.environ.copy()
-    env["PYTHONPATH"] = os.pathsep.join(
-        [str(python_scripts_dir), env.get("PYTHONPATH", "")]
-    ).strip(os.pathsep)
+    env["PYTHONPATH"] = os.pathsep.join([str(python_scripts_dir), env.get("PYTHONPATH", "")]).strip(os.pathsep)
     env["COLUMNS"] = "80"
 
     result = subprocess.run(

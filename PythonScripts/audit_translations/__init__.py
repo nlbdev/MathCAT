@@ -7,10 +7,12 @@ and properly formatted.
 
 Read README.md for more details.
 """
+
 import sys
-sys.stdout.reconfigure(encoding='utf-8')
+
+sys.stdout.reconfigure(encoding="utf-8")
 from .cli import main
 
 __all__ = [
-    'main',
+    "main",
 ]

@@ -6,8 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from ..auditor import collect_issues, compare_files, console, get_yaml_files, list_languages, print_warnings
+from ..auditor import compare_files, console, get_yaml_files, list_languages
 from ..dataclasses import ComparisonResult, RuleDifference, RuleInfo
+from ..renderer import collect_issues, print_warnings
 
 
 @pytest.fixture()
@@ -336,8 +337,7 @@ def test_missing_else_block_is_still_reported() -> None:
     # CRITICAL: This legitimate difference should still be reported
     # One file has else:, the other doesn't - a clear missing element
     assert len(structure_issues) == 1, (
-        "Expected missing else block to be reported, "
-        f"but found {len(structure_issues)} structure issues"
+        f"Expected missing else block to be reported, but found {len(structure_issues)} structure issues"
     )
 
     # Verify the issue anchors to the last shared structure token ('then:')
@@ -474,9 +474,7 @@ def test_print_warnings_shows_misaligned_structures() -> None:
     output = capture.get()
 
     # Misaligned structure differences should be rendered.
-    assert "Rule structure differs" in output, (
-        "Expected misaligned structure differences to be shown in display"
-    )
+    assert "Rule structure differs" in output, "Expected misaligned structure differences to be shown in display"
 
     # The issues count should include both condition + structure differences.
     condition_diffs = [diff for diff in result.rule_differences if diff.diff_type == "condition"]
@@ -503,9 +501,7 @@ def test_print_warnings_still_shows_missing_else() -> None:
     output = capture.get()
 
     # CRITICAL: This legitimate difference should appear in output
-    assert "Rule structure differs" in output, (
-        "Expected missing else block to be shown in output"
-    )
+    assert "Rule structure differs" in output, "Expected missing else block to be shown in output"
 
     # Should report exactly 1 issue (the structure difference)
     assert issues_count == 1, f"Expected 1 issue but got {issues_count}"

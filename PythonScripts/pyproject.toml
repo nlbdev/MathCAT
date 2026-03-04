@@ -15,6 +15,7 @@ dependencies = [
     "deepl",
     "googletrans",
     "html-table-extractor",
+    "jsonpath-ng>=1.8.0",
     "pyyaml",
     "rich",
     "ruamel.yaml",
@@ -24,7 +25,10 @@ dependencies = [
 audit-translations = "audit_translations.cli:main"
 
 [dependency-groups]
-dev = ["pytest"]
+dev = [
+    "pytest",
+    "ruff>=0.15.4",
+]
 
 [build-system]
 requires = ["uv_build>=0.9.25,<0.10.0"]
@@ -33,3 +37,10 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "audit_translations"
 module-root = ""
+
+[tool.ruff]
+target-version = "py314"
+line-length = 130 # easier for some files. maybe decrease in the future
+
+[tool.ruff.format]
+docstring-code-format = true

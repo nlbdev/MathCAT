@@ -21,7 +21,7 @@ Examples:
     uv run audit-translations es
     uv run audit-translations de --file SharedRules/default.yaml
     uv run audit-translations --list
-        """
+        """,
     )
 
     parser.add_argument("language", nargs="?", help="Language code to audit (e.g., 'es', 'de', 'fi')")
@@ -61,10 +61,7 @@ Examples:
                 allowed = {"missing", "untranslated", "extra", "diffs"}
                 unknown = set(tokens) - allowed
                 if unknown:
-                    console.print(
-                        "\n[red]Error:[/] Unknown issue types: "
-                        + ", ".join(sorted(unknown))
-                    )
+                    console.print("\n[red]Error:[/] Unknown issue types: " + ", ".join(sorted(unknown)))
                     sys.exit(1)
                 issue_filter = set(tokens)
 

@@ -1,6 +1,7 @@
 """
 Tests for parsers.py.
 """
+
 from typing import List
 
 import pytest
