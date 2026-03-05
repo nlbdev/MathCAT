@@ -84,8 +84,7 @@ def print_warnings(
             add_issue(
                 rule,
                 issue_group_key(IssueType.UNTRANSLATED_TEXT),
-                {"line_tr": entry.line or rule.line_number,
-                "text": entry.text}
+                {"line_tr": entry.line or rule.line_number, "text": entry.text},
             )
 
     for diff in result.rule_differences:
