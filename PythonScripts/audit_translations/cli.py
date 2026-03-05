@@ -8,6 +8,7 @@ import argparse
 import sys
 
 from .auditor import audit_language, list_languages
+from .models import AuditError
 from .renderer import console
 
 
@@ -59,10 +60,14 @@ Examples:
                     sys.exit(1)
                 issue_filter = set(tokens)
 
-        audit_language(
-            args.language,
-            args.specific_file,
-            args.rules_dir,
-            issue_filter,
-            args.verbose,
-        )
+        try:
+            audit_language(
+                args.language,
+                args.specific_file,
+                args.rules_dir,
+                issue_filter,
+                args.verbose,
+            )
+        except AuditError as exc:
+            console.print(f"\n[red]✗ Error:[/] {exc}")
+            sys.exit(1)

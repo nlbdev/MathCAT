@@ -6,8 +6,11 @@ Contains dataclasses for representing rules and comparison results.
 
 from dataclasses import dataclass, field
 from enum import StrEnum
-from pathlib import Path
 from typing import Any
+
+
+class AuditError(Exception):
+    """Raised when the audit encounters a configuration or validation error."""
 
 
 class IssueType(StrEnum):
@@ -109,7 +112,6 @@ class ComparisonResult:
     missing_rules: list[RuleInfo]  # Rules in English but not in translation
     extra_rules: list[RuleInfo]  # Rules in translation but not in English
     untranslated_text: list[tuple[RuleInfo, list[UntranslatedEntry]]]
-    file_path: Path | str
     english_rule_count: int
     translated_rule_count: int
     rule_differences: list[RuleDifference] = field(default_factory=list)  # Fine-grained diffs

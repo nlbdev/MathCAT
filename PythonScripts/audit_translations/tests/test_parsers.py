@@ -6,18 +6,10 @@ import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from ..differ import diff_rules
-from ..extractors import (
-    extract_conditions,
-    extract_match_pattern,
-    extract_structure_elements,
-    extract_variables,
-)
-from ..models import RuleDifference, RuleInfo, UntranslatedEntry
+from ..models import UntranslatedEntry
 from ..parsers import (
     build_line_map,
     find_untranslated_text_entries,
-    find_untranslated_text_values,
     has_audit_ignore,
     parse_rules_file,
     parse_unicode_file,
@@ -47,27 +39,27 @@ class TestFindUntranslatedTextKeys:
     def test_finds_lowercase_t(self):
         """Ensure finds lowercase t."""
         content = {"t": "hello world"}
-        assert find_untranslated_text_values(content) == ["hello world"]
+        assert [e.text for e in find_untranslated_text_entries(content)] == ["hello world"]
 
     def test_finds_lowercase_ot(self):
         """Ensure finds lowercase ot."""
         content = {"ot": "open paren"}
-        assert find_untranslated_text_values(content) == ["open paren"]
+        assert [e.text for e in find_untranslated_text_entries(content)] == ["open paren"]
 
     def test_finds_lowercase_ct(self):
         """Ensure finds lowercase ct."""
         content = {"ct": "close paren"}
-        assert find_untranslated_text_values(content) == ["close paren"]
+        assert [e.text for e in find_untranslated_text_entries(content)] == ["close paren"]
 
     def test_finds_multiple(self):
         """Ensure finds multiple."""
         content = {"t": "one", "ot": "two", "ct": "three"}
-        assert set(find_untranslated_text_values(content)) == {"one", "two", "three"}
+        assert {e.text for e in find_untranslated_text_entries(content)} == {"one", "two", "three"}
 
     def test_ignores_uppercase_T(self):
         """Ensure ignores uppercase T."""
         content = {"T": "translated"}
-        assert find_untranslated_text_values(content) == []
+        assert [e.text for e in find_untranslated_text_entries(content)] == []
 
     def test_finds_spell_and_pronounce(self):
         """Detects lowercase spell and pronounce markers.
@@ -75,7 +67,7 @@ class TestFindUntranslatedTextKeys:
         Extends coverage beyond basic t/ot/ct fields.
         Flags auxiliary translation-bearing keys."""
         content = {"spell": "alpha", "pronounce": "beta"}
-        assert set(find_untranslated_text_values(content)) == {"alpha", "beta"}
+        assert {e.text for e in find_untranslated_text_entries(content)} == {"alpha", "beta"}
 
     def test_ignores_uppercase_variants(self):
         """Ignores uppercase variants of extended markers.
@@ -83,22 +75,22 @@ class TestFindUntranslatedTextKeys:
         Honors already-verified spell/pronounce/IfThenElse content.
         Avoids double-reporting translated data."""
         content = {"PRONOUNCE": "gamma", "IFTHENELSE": "delta"}
-        assert find_untranslated_text_values(content) == []
+        assert [e.text for e in find_untranslated_text_entries(content)] == []
 
     def test_ignores_variable_references(self):
         """Ensure ignores variable references."""
         content = {"t": "$variable"}
-        assert find_untranslated_text_values(content) == []
+        assert [e.text for e in find_untranslated_text_entries(content)] == []
 
     def test_ignores_xpath_expressions(self):
         """Ensure ignores xpath expressions."""
         content = {"t": "@attr"}
-        assert find_untranslated_text_values(content) == []
+        assert [e.text for e in find_untranslated_text_entries(content)] == []
 
     def test_ignores_single_punctuation(self):
         """Ensure ignores single punctuation."""
         content = {"t": "."}
-        assert find_untranslated_text_values(content) == []
+        assert [e.text for e in find_untranslated_text_entries(content)] == []
 
     def test_finds_entries_with_lines(self):
         """Ensure finds entries with line numbers."""
@@ -347,62 +339,6 @@ class TestParseUnicodeFile:
         assert rules[1].line_number == 7
 
 
-class TestExtractMatchPattern:
-    def test_extracts_inline_match(self):
-        """Ensure extracts inline match."""
-        data = {"match": "self::m:mo"}
-        assert extract_match_pattern(data) == "self::m:mo"
-
-    def test_extracts_array_match(self):
-        """Ensure extracts array match."""
-        data = {"match": ["self::m:mo", "@intent"]}
-        assert extract_match_pattern(data) == "self::m:mo @intent"
-
-    def test_returns_empty_for_no_match(self):
-        """Ensure returns empty for no match."""
-        data = {"replace": [{"T": "text"}]}
-        assert extract_match_pattern(data) == ""
-
-
-class TestExtractConditions:
-    def test_extracts_single_condition(self):
-        """Ensure extracts single condition."""
-        data = {"if": "$Verbosity"}
-        assert extract_conditions(data) == ["$Verbosity"]
-
-    def test_extracts_multiple_conditions(self):
-        """Ensure extracts multiple conditions."""
-        data = {"if": "condition1", "then": "something", "else_test": {"if": "condition2"}}
-        conditions = extract_conditions(data)
-        assert "condition1" in conditions
-        assert "condition2" in conditions
-
-
-class TestExtractVariables:
-    def test_extracts_variables(self):
-        """Ensure extracts variables."""
-        data = {"variables": [{"name": "value"}, {"other": "val2"}]}
-        variables = extract_variables(data)
-        assert ("name", "value") in variables
-        assert ("other", "val2") in variables
-
-    def test_returns_empty_for_no_variables(self):
-        """Ensure returns empty for no variables."""
-        data = {"match": "."}
-        assert extract_variables(data) == []
-
-
-class TestExtractStructureElements:
-    def test_extracts_test_structure(self):
-        """Ensure extracts test structure."""
-        data = {"test": {"if": "condition", "then": [{"T": "yes"}], "else": [{"T": "no"}]}}
-        elements = extract_structure_elements(data)
-        assert "test:" in elements
-        assert "if:" in elements
-        assert "then:" in elements
-        assert "else:" in elements
-
-
 class TestBuildLineMap:
     def test_builds_line_map_for_rule_elements(self):
         """Ensure line map captures nested element lines."""
@@ -425,142 +361,3 @@ class TestBuildLineMap:
         assert line_map["variables"] == [5]
         assert line_map["structure:test"] == [7]
         assert line_map["structure:if"] == [4, 8]
-
-
-def make_rule(name: str, tag: str, data) -> RuleInfo:
-    """Helper to create RuleInfo for testing"""
-    return RuleInfo(
-        name=name,
-        tag=tag,
-        key=f"{name}|{tag}",
-        line_number=1,
-        raw_content="",
-        data=data,
-    )
-
-
-class TestDiffRules:
-    def test_identical_rules_no_diff(self):
-        """Ensure identical rules no diff."""
-        data = {"name": "test", "tag": "mo", "match": "self::m:mo", "replace": [{"T": "text"}]}
-        en = make_rule("test", "mo", data)
-        tr = make_rule("test", "mo", data)
-        assert diff_rules(en, tr) == []
-
-    def test_detects_match_pattern_difference(self):
-        """Ensure detects match pattern difference."""
-        en = make_rule("test", "mo", {"match": "self::m:mo"})
-        tr = make_rule("test", "mo", {"match": "self::m:mi"})
-        diffs = diff_rules(en, tr)
-        assert len(diffs) == 1
-        assert diffs[0].diff_type == "match"
-        assert "self::m:mo" in diffs[0].english_snippet
-        assert "self::m:mi" in diffs[0].translated_snippet
-
-    def test_detects_condition_difference(self):
-        """Ensure detects condition difference."""
-        en = make_rule("test", "mo", {"if": "condition1"})
-        tr = make_rule("test", "mo", {"if": "condition2"})
-        diffs = diff_rules(en, tr)
-        assert any(d.diff_type == "condition" for d in diffs)
-
-    def test_condition_snippet_preserves_rule_order(self):
-        """
-        Condition snippets should preserve the order seen in each rule.
-        Originally, alphabetical order was used, which is not very helpful.
-        """
-        en = make_rule(
-            "test",
-            "mo",
-            {
-                "test": {
-                    "if": "condition_b",
-                    "then": [
-                        {
-                            "test": {
-                                "if": "condition_a",
-                                "then": [{"T": "x"}],
-                            }
-                        }
-                    ],
-                }
-            },
-        )
-        tr = make_rule("test", "mo", {"if": "condition_c"})
-        diffs: list[RuleDifference] = diff_rules(en, tr)
-        cond_diff: RuleDifference = next(d for d in diffs if d.diff_type == "condition")
-        assert cond_diff.english_snippet == "condition_b, condition_a"
-        assert cond_diff.translated_snippet == "condition_c"
-
-    def test_condition_snippet_deduplicates_repeated_conditions(self):
-        """
-        Repeated conditions should be shown once, in first-seen order.
-        """
-        en = make_rule(
-            "test",
-            "mo",
-            {
-                "test": {
-                    "if": "condition_a",
-                    "then": [
-                        {
-                            "test": {
-                                "if": "condition_a",
-                                "then": [{"T": "x"}],
-                            }
-                        },
-                        {
-                            "test": {
-                                "if": "condition_b",
-                                "then": [{"T": "y"}],
-                            }
-                        },
-                    ],
-                }
-            },
-        )
-        tr = make_rule("test", "mo", {"if": "condition_c"})
-        diffs: list[RuleDifference] = diff_rules(en, tr)
-        cond_diff: RuleDifference = next(d for d in diffs if d.diff_type == "condition")
-
-        # without deduplication, we'd have "condition_a" repeated.
-        assert cond_diff.english_snippet == "condition_a, condition_b"
-        assert cond_diff.translated_snippet == "condition_c"
-
-    def test_detects_missing_condition(self):
-        """Ensure detects missing condition."""
-        en = make_rule("test", "mo", {"if": "condition1"})
-        tr = make_rule("test", "mo", {"replace": [{"T": "text"}]})
-        diffs = diff_rules(en, tr)
-        assert any(d.diff_type == "condition" for d in diffs)
-
-    def test_detects_variable_difference(self):
-        """Ensure detects variable difference."""
-        en = make_rule("test", "mo", {"variables": [{"foo": "bar"}]})
-        tr = make_rule("test", "mo", {"variables": [{"baz": "qux"}]})
-        diffs = diff_rules(en, tr)
-        assert any(d.diff_type == "variables" for d in diffs)
-
-    def test_detects_structure_difference(self):
-        """Ensure detects structure difference."""
-        en = make_rule("test", "mo", {"test": {"if": "cond", "then": [{"T": "yes"}], "else": [{"T": "no"}]}})
-        tr = make_rule("test", "mo", {"test": {"if": "cond", "then": [{"T": "ja"}]}})
-        diffs = diff_rules(en, tr)
-        assert any(d.diff_type == "structure" for d in diffs)
-
-    def test_multiple_differences(self):
-        """Ensure multiple differences."""
-        en = make_rule("test", "mo", {"match": "self::m:mo", "if": "cond1"})
-        tr = make_rule("test", "mo", {"match": "self::m:mi", "if": "cond2"})
-        diffs = diff_rules(en, tr)
-        assert len(diffs) == 2
-        types = {d.diff_type for d in diffs}
-        assert "match" in types
-        assert "condition" in types
-
-    def test_ignores_text_content_differences(self):
-        """Ensure ignores text content differences."""
-        en = make_rule("test", "mo", {"replace": [{"T": "hello"}]})
-        tr = make_rule("test", "mo", {"replace": [{"T": "hallo"}]})
-        diffs = diff_rules(en, tr)
-        assert diffs == []  # text differences are intentional translations

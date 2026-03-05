@@ -130,14 +130,6 @@ def has_audit_ignore(content: str) -> bool:
     return "# audit-ignore" in content
 
 
-def find_untranslated_text_values(node: Any) -> list[str]:
-    """
-    Find lowercase text keys (t, ot, ct, spell, pronounce, ifthenelse) that should be uppercase in translations.
-    Returns list of the untranslated text values found.
-    """
-    return [entry.text for entry in find_untranslated_text_entries(node)]
-
-
 def find_untranslated_text_entries(node: Any) -> list[UntranslatedEntry]:
     """
     Find lowercase text keys (t, ot, ct, spell, pronounce, ifthenelse) and their line numbers.

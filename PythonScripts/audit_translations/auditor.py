@@ -5,11 +5,10 @@ Contains functions for comparing English and translated files,
 and for performing full language audits.
 """
 
-import sys
 from pathlib import Path
 
 from .differ import diff_rules
-from .models import AuditSummary, ComparisonResult, RuleInfo
+from .models import AuditError, AuditSummary, ComparisonResult, RuleInfo
 from .parsers import parse_yaml_file
 from .renderer import console, print_audit_header, print_audit_summary, print_language_list, print_warnings
 
@@ -132,7 +131,6 @@ def compare_files(
         extra_rules=extra_rules,
         untranslated_text=untranslated_text,
         rule_differences=rule_differences,
-        file_path=translated_path,
         english_rule_count=len(english_rules),
         translated_rule_count=len(translated_rules),
     )
@@ -155,16 +153,13 @@ def audit_language(
     english_region_dir = english_dir / region if region else None
 
     if not english_dir.exists():
-        console.print(f"\n[red]✗ Error:[/] English rules directory not found: {english_dir}")
-        sys.exit(1)
+        raise AuditError(f"English rules directory not found: {english_dir}")
 
     if not translated_dir.exists():
-        console.print(f"\n[red]✗ Error:[/] Translation directory not found: {translated_dir}")
-        sys.exit(1)
+        raise AuditError(f"Translation directory not found: {translated_dir}")
 
     if region and not (translated_region_dir and translated_region_dir.exists()):
-        console.print(f"\n[red]✗ Error:[/] Region directory not found: {translated_region_dir}")
-        sys.exit(1)
+        raise AuditError(f"Region directory not found: {translated_region_dir}")
 
     # Get list of files to audit
     files = [specific_file] if specific_file else get_yaml_files(english_dir, english_region_dir)

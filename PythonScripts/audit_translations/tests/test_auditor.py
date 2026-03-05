@@ -93,7 +93,6 @@ def test_comparison_result_object_fields() -> None:
         extra_rules=[extra],
         untranslated_text=[(untranslated, [UntranslatedEntry("t", "x", 31)])],
         rule_differences=[diff],
-        file_path="",
         english_rule_count=1,
         translated_rule_count=1,
     )
@@ -592,7 +591,6 @@ def test_print_warnings_groups_multiple_subgroups_for_single_rule(fixed_console_
         extra_rules=[],
         untranslated_text=[(tr, [UntranslatedEntry("t", "first", 24), UntranslatedEntry("ct", "second", 25)])],
         rule_differences=diffs,
-        file_path="",
         english_rule_count=1,
         translated_rule_count=1,
     )
@@ -644,7 +642,6 @@ def test_print_warnings_groups_missing_and_extra_by_rule(fixed_console_width) ->
         extra_rules=[extra],
         untranslated_text=[],
         rule_differences=[diff],
-        file_path="",
         english_rule_count=2,
         translated_rule_count=2,
     )
@@ -689,7 +686,6 @@ def test_print_warnings_verbose_shows_snippets_only_for_differences(fixed_consol
         extra_rules=[],
         untranslated_text=[(tr_untranslated, [UntranslatedEntry("t", "leave me", 21)])],
         rule_differences=[diff],
-        file_path="",
         english_rule_count=2,
         translated_rule_count=2,
     )
