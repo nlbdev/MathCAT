@@ -7,11 +7,14 @@ Handles argument parsing and the main entry point.
 import argparse
 import sys
 
-from .auditor import audit_language, console, list_languages
+from .auditor import audit_language, list_languages
+from .models import AuditError
+from .renderer import console
 
 
 def main() -> None:
     """Main entry point for the audit tool"""
+    sys.stdout.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(
         description="Audit MathCAT translation files against English originals",
@@ -58,14 +61,14 @@ Examples:
                     sys.exit(1)
                 issue_filter = set(tokens)
 
-        audit_language(
-            args.language,
-            args.specific_file,
-            args.rules_dir,
-            issue_filter,
-            args.verbose,
-        )
-
-
-if __name__ == "__main__":
-    main()
+        try:
+            audit_language(
+                args.language,
+                args.specific_file,
+                args.rules_dir,
+                issue_filter,
+                args.verbose,
+            )
+        except AuditError as exc:
+            console.print(f"\n[red]✗ Error:[/] {exc}")
+            sys.exit(1)

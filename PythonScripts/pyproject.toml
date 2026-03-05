@@ -10,7 +10,6 @@ license = "MIT"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "attrs",
     "beautifulsoup4",
     "deepl",
     "googletrans",

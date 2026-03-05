@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from ..auditor import compare_files, console, get_yaml_files, list_languages
-from ..dataclasses import ComparisonResult, DiffType, RuleDifference, RuleInfo
+from ..auditor import compare_files, get_yaml_files, list_languages
 from ..line_resolver import resolve_diff_lines
-from ..renderer import print_warnings
+from ..models import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
+from ..renderer import console, print_warnings
 
 
 @pytest.fixture()
@@ -57,12 +57,12 @@ def aggregate_issue_counts(
     missing = untranslated = extra = diffs = total = 0
     for file_name in files:
         result = compare_files(
-            str(english_dir / file_name),
-            str(translated_dir / file_name),
+            english_dir / file_name,
+            translated_dir / file_name,
             issue_filter,
         )
         missing += len(result.missing_rules)
-        untranslated += sum(len(entries) for _, entries in result.untranslated_text)
+        untranslated += sum(len(entries) for _rule, entries in result.untranslated_text)
         extra += len(result.extra_rules)
         diffs += len(result.rule_differences)
         total += len(result.missing_rules) + len(result.extra_rules) + len(result.rule_differences)
@@ -91,9 +91,8 @@ def test_comparison_result_object_fields() -> None:
     result = ComparisonResult(
         missing_rules=[missing],
         extra_rules=[extra],
-        untranslated_text=[(untranslated, [("t", "x", 31)])],
+        untranslated_text=[(untranslated, [UntranslatedEntry("t", "x", 31)])],
         rule_differences=[diff],
-        file_path="",
         english_rule_count=1,
         translated_rule_count=1,
     )
@@ -101,7 +100,7 @@ def test_comparison_result_object_fields() -> None:
     assert result.missing_rules[0].line_number == 10
     assert result.extra_rules[0].line_number == 20
     assert result.untranslated_text[0][0].line_number == 30
-    assert result.untranslated_text[0][1] == [("t", "x", 31)]
+    assert result.untranslated_text[0][1] == [UntranslatedEntry("t", "x", 31)]
     assert result.rule_differences[0].diff_type is DiffType.MATCH
     assert resolve_diff_lines(result.rule_differences[0]) == (40, 41)
 
@@ -187,10 +186,10 @@ def test_compare_files_merges_region_rules(tmp_path) -> None:
     )
 
     result = compare_files(
-        str(english_file),
-        str(translated_file),
+        english_file,
+        translated_file,
         None,
-        str(translated_region_file),
+        translated_region_file,
     )
 
     assert result.missing_rules == []
@@ -227,7 +226,7 @@ def test_compare_files_skips_untranslated_and_diffs_when_audit_ignored(tmp_path)
         encoding="utf-8",
     )
 
-    result = compare_files(str(english_file), str(translated_file))
+    result = compare_files(english_file, translated_file)
 
     assert result.missing_rules == []
     assert result.extra_rules == []
@@ -315,8 +314,8 @@ def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> 
     fixtures_dir = base_dir / "fixtures"
     golden_path = base_dir / "golden" / "rich" / "structure_diff_nonverbose.golden"
     result = compare_files(
-        str(fixtures_dir / "en" / "structure_diff.yaml"),
-        str(fixtures_dir / "de" / "structure_diff.yaml"),
+        fixtures_dir / "en" / "structure_diff.yaml",
+        fixtures_dir / "de" / "structure_diff.yaml",
     )
 
     with console.capture() as capture:
@@ -336,8 +335,8 @@ def test_print_warnings_includes_snippets_when_verbose(fixed_console_width) -> N
     fixtures_dir = base_dir / "fixtures"
     golden_path = base_dir / "golden" / "rich" / "structure_diff_verbose.golden"
     result = compare_files(
-        str(fixtures_dir / "en" / "structure_diff.yaml"),
-        str(fixtures_dir / "de" / "structure_diff.yaml"),
+        fixtures_dir / "en" / "structure_diff.yaml",
+        fixtures_dir / "de" / "structure_diff.yaml",
     )
 
     with console.capture() as capture:
@@ -359,8 +358,8 @@ def test_misaligned_structure_differences_are_reported() -> None:
     fixtures_dir = base_dir / "fixtures"
 
     result = compare_files(
-        str(fixtures_dir / "en" / "structure_misaligned.yaml"),
-        str(fixtures_dir / "de" / "structure_misaligned.yaml"),
+        fixtures_dir / "en" / "structure_misaligned.yaml",
+        fixtures_dir / "de" / "structure_misaligned.yaml",
     )
 
     # The result should detect that structures differ
@@ -384,8 +383,8 @@ def test_missing_else_block_is_still_reported() -> None:
     fixtures_dir = base_dir / "fixtures"
 
     result = compare_files(
-        str(fixtures_dir / "en" / "structure_missing_else.yaml"),
-        str(fixtures_dir / "de" / "structure_missing_else.yaml"),
+        fixtures_dir / "en" / "structure_missing_else.yaml",
+        fixtures_dir / "de" / "structure_missing_else.yaml",
     )
 
     # Should detect structure difference
@@ -434,7 +433,7 @@ def test_structure_diff_uses_position_aware_token_occurrence_for_missing_block(t
         encoding="utf-8",
     )
 
-    result = compare_files(str(english_file), str(translated_file))
+    result = compare_files(english_file, translated_file)
     lines_by_type = resolved_diff_lines_by_type(result)
     assert len(lines_by_type.get("structure", [])) == 1
     assert lines_by_type["structure"][0] == (7, 7)
@@ -469,7 +468,7 @@ def test_structure_substitution_diff_is_reported(tmp_path) -> None:
         encoding="utf-8",
     )
 
-    result = compare_files(str(english_file), str(translated_file))
+    result = compare_files(english_file, translated_file)
     assert any(diff.diff_type == "structure" for diff in result.rule_differences)
 
     lines_by_type = resolved_diff_lines_by_type(result)
@@ -487,7 +486,7 @@ def test_structure_per_fraction_should_anchor_to_replace_lines_expected_behavior
     """
     base_dir = Path(__file__).parent
     path = base_dir / "fixtures" / "repro"
-    result = compare_files(str(path / "en" / "per_fraction.yaml"), str(path / "nb" / "per_fraction.yaml"))
+    result = compare_files(path / "en" / "per_fraction.yaml", path / "nb" / "per_fraction.yaml")
 
     lines_by_type = resolved_diff_lines_by_type(result)
     assert len(lines_by_type.get("structure", [])) == 1
@@ -502,8 +501,8 @@ def test_print_warnings_shows_misaligned_structures() -> None:
     fixtures_dir = base_dir / "fixtures"
 
     result = compare_files(
-        str(fixtures_dir / "en" / "structure_misaligned.yaml"),
-        str(fixtures_dir / "de" / "structure_misaligned.yaml"),
+        fixtures_dir / "en" / "structure_misaligned.yaml",
+        fixtures_dir / "de" / "structure_misaligned.yaml",
     )
 
     # Raw result should have structure differences detected
@@ -533,8 +532,8 @@ def test_print_warnings_still_shows_missing_else() -> None:
     fixtures_dir = base_dir / "fixtures"
 
     result = compare_files(
-        str(fixtures_dir / "en" / "structure_missing_else.yaml"),
-        str(fixtures_dir / "de" / "structure_missing_else.yaml"),
+        fixtures_dir / "en" / "structure_missing_else.yaml",
+        fixtures_dir / "de" / "structure_missing_else.yaml",
     )
 
     with console.capture() as capture:
@@ -590,9 +589,8 @@ def test_print_warnings_groups_multiple_subgroups_for_single_rule(fixed_console_
     result = ComparisonResult(
         missing_rules=[],
         extra_rules=[],
-        untranslated_text=[(tr, [("t", "first", 24), ("ct", "second", 25)])],
+        untranslated_text=[(tr, [UntranslatedEntry("t", "first", 24), UntranslatedEntry("ct", "second", 25)])],
         rule_differences=diffs,
-        file_path="",
         english_rule_count=1,
         translated_rule_count=1,
     )
@@ -644,7 +642,6 @@ def test_print_warnings_groups_missing_and_extra_by_rule(fixed_console_width) ->
         extra_rules=[extra],
         untranslated_text=[],
         rule_differences=[diff],
-        file_path="",
         english_rule_count=2,
         translated_rule_count=2,
     )
@@ -687,9 +684,8 @@ def test_print_warnings_verbose_shows_snippets_only_for_differences(fixed_consol
     result = ComparisonResult(
         missing_rules=[missing],
         extra_rules=[],
-        untranslated_text=[(tr_untranslated, [("t", "leave me", 21)])],
+        untranslated_text=[(tr_untranslated, [UntranslatedEntry("t", "leave me", 21)])],
         rule_differences=[diff],
-        file_path="",
         english_rule_count=2,
         translated_rule_count=2,
     )
