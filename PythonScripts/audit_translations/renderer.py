@@ -9,9 +9,11 @@ from typing import Any
 
 from rich.console import Console
 from rich.markup import escape
+from rich.panel import Panel
+from rich.table import Table
 
 from .line_resolver import resolve_diff_lines
-from .models import ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
+from .models import AuditSummary, ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
 
 console = Console()
 
@@ -138,3 +140,61 @@ def print_warnings(
                 issues += len(entries)
 
     return issues
+
+
+GREEN_FILE_COUNT_THRESHOLD = 7
+YELLOW_FILE_COUNT_THRESHOLD = 4
+
+
+def file_count_color(file_count: int) -> str:
+    """Map number of translated YAML files to a display color."""
+    if file_count >= GREEN_FILE_COUNT_THRESHOLD:
+        return "green"
+    if file_count >= YELLOW_FILE_COUNT_THRESHOLD:
+        return "yellow"
+    return "red"
+
+
+def print_audit_header(language: str, file_count: int) -> None:
+    """Print the audit header panel."""
+    console.print(Panel(f"MathCAT Translation Audit: {language.upper()}", style="bold cyan"))
+    console.print("\n  [dim]Comparing against English (en) reference files[/]")
+    console.print(f"  [dim]Files to check: {file_count}[/]")
+
+
+def print_audit_summary(summary: AuditSummary) -> None:
+    """Print the audit summary table."""
+    table = Table(title="SUMMARY", title_style="bold", box=None, show_header=False, padding=(0, 2))
+    table.add_column(width=30)
+    table.add_column()
+    for label, value, color in [
+        ("Files checked", summary.files_checked, None),
+        ("Files with issues", summary.files_with_issues, "yellow" if summary.files_with_issues else "green"),
+        ("Files OK", summary.files_ok, "green" if summary.files_ok else None),
+        ("Missing rules", summary.total_missing, "red" if summary.total_missing else "green"),
+        ("Untranslated text", summary.total_untranslated, "yellow" if summary.total_untranslated else "green"),
+        ("Rule differences", summary.total_differences, "magenta" if summary.total_differences else "green"),
+        ("Extra rules", summary.total_extra, "blue" if summary.total_extra else None),
+    ]:
+        table.add_row(label, f"[{color}]{value}[/]" if color else str(value))
+    console.print(Panel(table, style="cyan"))
+
+
+def print_language_list(languages: list[tuple[str, int]]) -> None:
+    """Print the available languages table.
+
+    Args:
+        languages: List of (language_code, yaml_file_count) tuples.
+    """
+    console.print(Panel("Available Languages", style="bold cyan"))
+
+    table = Table(show_header=True, header_style="dim")
+    table.add_column("Language", justify="center", style="cyan")
+    table.add_column("YAML files", justify="right")
+
+    for code, count in languages:
+        color = file_count_color(count)
+        table.add_row(code, f"[{color}]{count}[/] files")
+
+    console.print(table)
+    console.print("\n  [dim]Reference: en (English) - base translation[/]\n")

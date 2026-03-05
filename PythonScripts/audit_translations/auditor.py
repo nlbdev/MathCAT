@@ -8,25 +8,10 @@ and for performing full language audits.
 import sys
 from pathlib import Path
 
-from rich.panel import Panel
-from rich.table import Table
-
-from .models import ComparisonResult, RuleInfo
 from .differ import diff_rules
+from .models import AuditSummary, ComparisonResult, RuleInfo
 from .parsers import parse_yaml_file
-from .renderer import console, print_warnings
-
-GREEN_FILE_COUNT_THRESHOLD = 7
-YELLOW_FILE_COUNT_THRESHOLD = 4
-
-
-def file_count_color(file_count: int) -> str:
-    """Map number of translated YAML files to a display color."""
-    if file_count >= GREEN_FILE_COUNT_THRESHOLD:
-        return "green"
-    if file_count >= YELLOW_FILE_COUNT_THRESHOLD:
-        return "yellow"
-    return "red"
+from .renderer import console, print_audit_header, print_audit_summary, print_language_list, print_warnings
 
 
 def split_language_into_base_and_region(language: str) -> tuple[str, str | None]:
@@ -184,10 +169,7 @@ def audit_language(
     # Get list of files to audit
     files = [specific_file] if specific_file else get_yaml_files(english_dir, english_region_dir)
 
-    # Print header
-    console.print(Panel(f"MathCAT Translation Audit: {language.upper()}", style="bold cyan"))
-    console.print("\n  [dim]Comparing against English (en) reference files[/]")
-    console.print(f"  [dim]Files to check: {len(files)}[/]")
+    print_audit_header(language, len(files))
 
     total_issues = 0
     total_missing = 0
@@ -228,48 +210,36 @@ def audit_language(
         total_extra += len(result.extra_rules)
         total_differences += len(result.rule_differences)
 
-    # Summary
-    table = Table(title="SUMMARY", title_style="bold", box=None, show_header=False, padding=(0, 2))
-    table.add_column(width=30)
-    table.add_column()
-    for label, value, color in [
-        ("Files checked", len(files), None),
-        ("Files with issues", files_with_issues, "yellow" if files_with_issues else "green"),
-        ("Files OK", files_ok, "green" if files_ok else None),
-        ("Missing rules", total_missing, "red" if total_missing else "green"),
-        ("Untranslated text", total_untranslated, "yellow" if total_untranslated else "green"),
-        ("Rule differences", total_differences, "magenta" if total_differences else "green"),
-        ("Extra rules", total_extra, "blue" if total_extra else None),
-    ]:
-        table.add_row(label, f"[{color}]{value}[/]" if color else str(value))
-    console.print(Panel(table, style="cyan"))
+    print_audit_summary(
+        AuditSummary(
+            files_checked=len(files),
+            files_with_issues=files_with_issues,
+            files_ok=files_ok,
+            total_missing=total_missing,
+            total_untranslated=total_untranslated,
+            total_extra=total_extra,
+            total_differences=total_differences,
+            total_issues=total_issues,
+        )
+    )
 
     return total_issues
 
 
 def list_languages(rules_dir: str | None = None) -> None:
     """List available languages for auditing"""
-    console.print(Panel("Available Languages", style="bold cyan"))
-
-    table = Table(show_header=True, header_style="dim")
-    table.add_column("Language", justify="center", style="cyan")
-    table.add_column("YAML files", justify="right")
-
     rules_dir_path = get_rules_dir(rules_dir)
+
+    languages: list[tuple[str, int]] = []
     for lang_dir in sorted(rules_dir_path.iterdir()):
         if not lang_dir.is_dir() or lang_dir.name == "en":
             continue
-        base_count = len(get_yaml_files(lang_dir))
-        color = file_count_color(base_count)
-        table.add_row(lang_dir.name, f"[{color}]{base_count}[/] files")
+        languages.append((lang_dir.name, len(get_yaml_files(lang_dir))))
 
         for region_dir in sorted(lang_dir.iterdir()):
             if not region_dir.is_dir() or region_dir.name.lower() == "sharedrules":
                 continue
             code = f"{lang_dir.name}-{region_dir.name}"
-            count = len(get_yaml_files(lang_dir, region_dir))
-            region_color = file_count_color(count)
-            table.add_row(code, f"[{region_color}]{count}[/] files")
+            languages.append((code, len(get_yaml_files(lang_dir, region_dir))))
 
-    console.print(table)
-    console.print("\n  [dim]Reference: en (English) - base translation[/]\n")
+    print_language_list(languages)
