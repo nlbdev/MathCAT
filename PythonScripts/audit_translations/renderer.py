@@ -1,8 +1,7 @@
 """
-Rich console rendering and issue serialization.
+Rich console rendering.
 
-Handles all output concerns: rich terminal display, JSONL issue normalization,
-and the IssueWriter interface.
+Handles rich terminal display for grouped translation issues.
 """
 
 from pathlib import Path
@@ -41,99 +40,6 @@ def rule_label(rule: RuleInfo) -> str:
         return f'[yellow]"{escape(rule.key)}"[/]'
     tag = rule.tag or "unknown"
     return f"[cyan]{escape(rule.name)}[/] [dim]({escape(tag)})[/]"
-
-
-def issue_base(rule: RuleInfo, file_name: str, language: str) -> dict:
-    return {
-        "language": language,
-        "file": Path(file_name).as_posix(),
-        "rule_name": rule.name or "",
-        "rule_tag": rule.tag or "",
-        "rule_key": rule.key,
-        "issue_line_en": None,
-        "issue_line_tr": None,
-        "rule_line_en": None,
-        "rule_line_tr": None,
-    }
-
-
-def collect_issues(
-    result: ComparisonResult,
-    file_name: str,
-    language: str,
-) -> list[dict]:
-    """
-    Flatten a ComparisonResult into one normalized dictionary per issue.
-
-    This is the canonical bridge from parser/diff objects to serializable
-    records consumed by JSONL output, snapshot tests, and line-level assertions.
-    """
-    issues = []
-
-    for rule in result.missing_rules:
-        issue = issue_base(rule, file_name, language)
-        issue.update(
-            issue_type=IssueType.MISSING_RULE.value,
-            diff_type="",
-            issue_line_en=rule.line_number,
-            rule_line_en=rule.line_number,
-            description="Rule present in English but missing in translation",
-            english_snippet="",
-            translated_snippet="",
-            untranslated_texts=[],
-        )
-        issues.append(issue)
-
-    for rule in result.extra_rules:
-        issue = issue_base(rule, file_name, language)
-        issue.update(
-            issue_type=IssueType.EXTRA_RULE.value,
-            diff_type="",
-            issue_line_tr=rule.line_number,
-            rule_line_tr=rule.line_number,
-            description="Rule present in translation but missing in English",
-            english_snippet="",
-            translated_snippet="",
-            untranslated_texts=[],
-        )
-        issues.append(issue)
-
-    for rule, entries in result.untranslated_text:
-        for _key, text, line in entries:
-            issue = issue_base(rule, file_name, language)
-            issue.update(
-                issue_type=IssueType.UNTRANSLATED_TEXT.value,
-                diff_type="",
-                issue_line_tr=line or rule.line_number,
-                rule_line_tr=rule.line_number,
-                description="Lowercase t/ot/ct keys indicate untranslated text",
-                english_snippet="",
-                translated_snippet="",
-                untranslated_texts=[text],
-            )
-            issues.append(issue)
-
-    for diff in result.rule_differences:
-        lines = resolve_diff_lines(diff)
-        if lines is None:
-            continue
-        issue_line_en, issue_line_tr = lines
-        issue = issue_base(diff.english_rule, file_name, language)
-        issue.update(
-            issue_type=IssueType.RULE_DIFFERENCE.value,
-            diff_type=diff.diff_type.value,
-            issue_line_en=issue_line_en,
-            issue_line_tr=issue_line_tr,
-            rule_line_en=diff.english_rule.line_number,
-            rule_line_tr=diff.translated_rule.line_number,
-            description=diff.description,
-            english_snippet=diff.english_snippet,
-            translated_snippet=diff.translated_snippet,
-            untranslated_texts=[],
-        )
-        issues.append(issue)
-
-    return issues
 
 
 def print_warnings(

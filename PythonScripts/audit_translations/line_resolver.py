@@ -150,8 +150,8 @@ def resolve_diff_lines(diff: RuleDifference) -> tuple[int | None, int | None] | 
     Resolve issue line numbers for a rule difference.
 
     Returns (line_en, line_tr), or None only for unresolvable structure diffs.
-    This is the single entry point used by both collect_issues and print_warnings
-    to avoid duplicating the structure vs non-structure branching logic.
+    This is the single entry point used by the renderer to avoid duplicating
+    the structure vs non-structure branching logic.
     """
     if diff.diff_type == "structure":
         return resolve_structure_issue_lines(diff)

@@ -29,20 +29,13 @@ Examples:
     parser.add_argument("--list", action="store_true", help="List available languages")
     parser.add_argument("--rules-dir", help="Override Rules/Languages directory path")
     parser.add_argument(
-        "--format",
-        choices=["rich", "jsonl"],
-        default="rich",
-        help="Output format (default: rich)",
-    )
-    parser.add_argument("--output", help="Write output to a file instead of stdout")
-    parser.add_argument(
         "--only",
         help="Comma-separated issue types: missing, untranslated, extra, diffs, all",
     )
     parser.add_argument(
         "--verbose",
         action="store_true",
-        help="Show detailed output including rule snippets (only affects rich format)",
+        help="Show detailed output including rule snippets",
     )
 
     args = parser.parse_args()
@@ -68,8 +61,6 @@ Examples:
         audit_language(
             args.language,
             args.specific_file,
-            args.format,
-            args.output,
             args.rules_dir,
             issue_filter,
             args.verbose,

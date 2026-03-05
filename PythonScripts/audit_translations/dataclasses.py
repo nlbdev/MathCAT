@@ -10,7 +10,7 @@ from typing import Any
 
 
 class IssueType(StrEnum):
-    """Top-level issue categories serialized to JSONL."""
+    """Top-level issue categories used by the audit renderer."""
 
     MISSING_RULE = "missing_rule"
     UNTRANSLATED_TEXT = "untranslated_text"
@@ -48,8 +48,7 @@ class RuleInfo:
         Parsed YAML node for the rule; used for structural diffs.
     untranslated_entries : list[tuple[str, str, int | None]]
         List of (key, text, line) entries extracted from lowercase translation keys.
-        This drives per-issue JSONL output so each untranslated string can report
-        the specific YAML line number where it appears.
+        This preserves exact text fragments and YAML line numbers for diagnostics.
     line_map : dict[str, list[int]]
         Mapping of element type to line numbers for rule components like match,
         conditions, variables, and structural tokens. This is used to point
