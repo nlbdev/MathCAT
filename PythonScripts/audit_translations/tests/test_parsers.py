@@ -2,7 +2,6 @@
 Tests for parsers.py.
 """
 
-
 import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
@@ -304,7 +303,6 @@ class TestParseUnicodeFile:
         data = yaml.load(content)
         rules = parse_unicode_file(content, data)
         assert len(rules) == 2
-
 
     def test_returns_empty_for_non_list_data(self):
         """Non-list YAML data returns no rules."""
