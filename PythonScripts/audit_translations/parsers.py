@@ -13,7 +13,7 @@ from jsonpath_ng.jsonpath import Fields
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from .dataclasses import RuleDifference, RuleInfo
+from .dataclasses import DiffType, RuleDifference, RuleInfo
 
 _yaml = YAML()
 _yaml.preserve_quotes = True
@@ -313,7 +313,7 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
             RuleDifference(
                 english_rule=english_rule,
                 translated_rule=translated_rule,
-                diff_type="match",
+                diff_type=DiffType.MATCH,
                 description="Match pattern differs",
                 english_snippet=en_match,
                 translated_snippet=translated_match,
@@ -333,7 +333,7 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
                 RuleDifference(
                     english_rule=english_rule,
                     translated_rule=translated_rule,
-                    diff_type="condition",
+                    diff_type=DiffType.CONDITION,
                     description="Conditions differ",
                     english_snippet=", ".join(dedup_list(en_conditions)) or "(none)",
                     translated_snippet=", ".join(dedup_list(tr_conditions)) or "(none)",
@@ -351,7 +351,7 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
                 RuleDifference(
                     english_rule=english_rule,
                     translated_rule=translated_rule,
-                    diff_type="variables",
+                    diff_type=DiffType.VARIABLES,
                     description="Variable definitions differ",
                     english_snippet=", ".join(sorted(en_var_names)) or "(none)",
                     translated_snippet=", ".join(sorted(tr_var_names)) or "(none)",
@@ -366,7 +366,7 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
             RuleDifference(
                 english_rule=english_rule,
                 translated_rule=translated_rule,
-                diff_type="structure",
+                diff_type=DiffType.STRUCTURE,
                 description="Rule structure differs (test/if/then/else blocks)",
                 english_snippet=" ".join(en_structure),
                 translated_snippet=" ".join(tr_structure),

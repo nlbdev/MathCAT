@@ -11,10 +11,29 @@ from typing import Any
 from rich.console import Console
 from rich.markup import escape
 
-from .dataclasses import ComparisonResult, RuleDifference, RuleInfo
+from .dataclasses import ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
 from .line_resolver import resolve_diff_lines
 
 console = Console()
+
+
+type IssueGroupKey = tuple[IssueType, DiffType | None]
+
+
+def issue_group_key(issue_type: IssueType, diff_type: DiffType | None = None) -> IssueGroupKey:
+    return issue_type, diff_type
+
+
+ISSUE_GROUP_SPECS: list[tuple[IssueGroupKey, str]] = [
+    (issue_group_key(IssueType.MISSING_RULE), "Missing in Translation"),
+    (issue_group_key(IssueType.UNTRANSLATED_TEXT), "Untranslated Text"),
+    (issue_group_key(IssueType.RULE_DIFFERENCE, DiffType.MATCH), "Match Pattern Differences"),
+    (issue_group_key(IssueType.RULE_DIFFERENCE, DiffType.CONDITION), "Condition Differences"),
+    (issue_group_key(IssueType.RULE_DIFFERENCE, DiffType.VARIABLES), "Variable Differences"),
+    (issue_group_key(IssueType.RULE_DIFFERENCE, DiffType.STRUCTURE), "Structure Differences"),
+    (issue_group_key(IssueType.EXTRA_RULE), "Extra in Translation"),
+]
+ISSUE_GROUP_LABELS = {key: label for key, label in ISSUE_GROUP_SPECS}
 
 
 def rule_label(rule: RuleInfo) -> str:
@@ -22,45 +41,6 @@ def rule_label(rule: RuleInfo) -> str:
         return f'[yellow]"{escape(rule.key)}"[/]'
     tag = rule.tag or "unknown"
     return f"[cyan]{escape(rule.name)}[/] [dim]({escape(tag)})[/]"
-
-
-def issue_type_sort_key(issue_type: str) -> tuple[int, str]:
-    """
-    Stable ordering for per-rule issue groups.
-
-    The first tuple element defines user-facing priority (missing/untranslated/
-    match/condition/variables/structure/extra). The second element keeps sorting
-    deterministic for unknown keys.
-    """
-    order = {
-        "missing_rule": 0,
-        "untranslated_text": 1,
-        "rule_difference:match": 2,
-        "rule_difference:condition": 3,
-        "rule_difference:variables": 4,
-        "rule_difference:structure": 5,
-        "extra_rule": 6,
-    }
-    return order.get(issue_type, 99), issue_type
-
-
-def issue_type_label(issue_type: str) -> str:
-    """
-    Return the display label used in rich grouped output.
-
-    Unknown issue types fall back to their raw key so renderer behavior remains
-    robust when new categories are introduced.
-    """
-    labels = {
-        "missing_rule": "Missing in Translation",
-        "untranslated_text": "Untranslated Text",
-        "rule_difference:match": "Match Pattern Differences",
-        "rule_difference:condition": "Condition Differences",
-        "rule_difference:variables": "Variable Differences",
-        "rule_difference:structure": "Structure Differences",
-        "extra_rule": "Extra in Translation",
-    }
-    return labels.get(issue_type, issue_type)
 
 
 def issue_base(rule: RuleInfo, file_name: str, language: str) -> dict:
@@ -93,7 +73,7 @@ def collect_issues(
     for rule in result.missing_rules:
         issue = issue_base(rule, file_name, language)
         issue.update(
-            issue_type="missing_rule",
+            issue_type=IssueType.MISSING_RULE.value,
             diff_type="",
             issue_line_en=rule.line_number,
             rule_line_en=rule.line_number,
@@ -107,7 +87,7 @@ def collect_issues(
     for rule in result.extra_rules:
         issue = issue_base(rule, file_name, language)
         issue.update(
-            issue_type="extra_rule",
+            issue_type=IssueType.EXTRA_RULE.value,
             diff_type="",
             issue_line_tr=rule.line_number,
             rule_line_tr=rule.line_number,
@@ -122,7 +102,7 @@ def collect_issues(
         for _key, text, line in entries:
             issue = issue_base(rule, file_name, language)
             issue.update(
-                issue_type="untranslated_text",
+                issue_type=IssueType.UNTRANSLATED_TEXT.value,
                 diff_type="",
                 issue_line_tr=line or rule.line_number,
                 rule_line_tr=rule.line_number,
@@ -140,8 +120,8 @@ def collect_issues(
         issue_line_en, issue_line_tr = lines
         issue = issue_base(diff.english_rule, file_name, language)
         issue.update(
-            issue_type="rule_difference",
-            diff_type=diff.diff_type,
+            issue_type=IssueType.RULE_DIFFERENCE.value,
+            diff_type=diff.diff_type.value,
             issue_line_en=issue_line_en,
             issue_line_tr=issue_line_tr,
             rule_line_en=diff.english_rule.line_number,
@@ -185,17 +165,17 @@ def print_warnings(
 
     grouped_issues: dict[str, dict[str, Any]] = {}
 
-    def add_issue(rule: RuleInfo, issue_type: str, payload: dict[str, Any]) -> None:
+    def add_issue(rule: RuleInfo, group_key: IssueGroupKey, payload: dict[str, Any]) -> None:
         if rule.key not in grouped_issues:
             grouped_issues[rule.key] = {"rule": rule, "by_type": {}}
-        grouped_issues[rule.key]["by_type"].setdefault(issue_type, []).append(payload)
+        grouped_issues[rule.key]["by_type"].setdefault(group_key, []).append(payload)
 
     for rule in result.missing_rules:
-        add_issue(rule, "missing_rule", {"line_en": rule.line_number})
+        add_issue(rule, issue_group_key(IssueType.MISSING_RULE), {"line_en": rule.line_number})
 
     for rule, entries in result.untranslated_text:
         for _, text, line in entries:
-            add_issue(rule, "untranslated_text", {"line_tr": line or rule.line_number, "text": text})
+            add_issue(rule, issue_group_key(IssueType.UNTRANSLATED_TEXT), {"line_tr": line or rule.line_number, "text": text})
 
     for diff in result.rule_differences:
         lines = resolve_diff_lines(diff)
@@ -204,12 +184,12 @@ def print_warnings(
         line_en, line_tr = lines
         add_issue(
             diff.english_rule,
-            f"rule_difference:{diff.diff_type}",
+            issue_group_key(IssueType.RULE_DIFFERENCE, diff.diff_type),
             {"line_en": line_en, "line_tr": line_tr, "diff": diff},
         )
 
     for rule in result.extra_rules:
-        add_issue(rule, "extra_rule", {"line_tr": rule.line_number})
+        add_issue(rule, issue_group_key(IssueType.EXTRA_RULE), {"line_tr": rule.line_number})
 
     if grouped_issues:
         total_grouped_issues = sum(len(entries) for group in grouped_issues.values() for entries in group["by_type"].values())
@@ -219,17 +199,19 @@ def print_warnings(
         )
         for group in grouped_issues.values():
             rule = group["rule"]
-            by_type: dict[str, list[dict[str, Any]]] = group["by_type"]
+            by_type: dict[IssueGroupKey, list[dict[str, Any]]] = group["by_type"]
             console.print(f"      [dim]•[/] {rule_label(rule)}")
-            for issue_type in sorted(by_type.keys(), key=issue_type_sort_key):
-                entries = by_type[issue_type]
-                console.print(f"          [dim]{issue_type_label(issue_type)} [{len(entries)}][/]")
+            ordered_group_keys = [group_key for group_key, _ in ISSUE_GROUP_SPECS if group_key in by_type]
+            for group_key in ordered_group_keys:
+                entries = by_type[group_key]
+                issue_type, _diff_type = group_key
+                console.print(f"          [dim]{ISSUE_GROUP_LABELS[group_key]} [{len(entries)}][/]")
                 for entry in entries:
-                    if issue_type == "missing_rule":
+                    if issue_type is IssueType.MISSING_RULE:
                         console.print(f"              [dim]•[/] [dim](line {entry['line_en']} in English)[/]")
-                    elif issue_type == "extra_rule":
+                    elif issue_type is IssueType.EXTRA_RULE:
                         console.print(f"              [dim]•[/] [dim](line {entry['line_tr']} in {target_label})[/]")
-                    elif issue_type == "untranslated_text":
+                    elif issue_type is IssueType.UNTRANSLATED_TEXT:
                         console.print(
                             f"              [dim]•[/] [dim](line {entry['line_tr']} {target_label})[/] "
                             f'[yellow]"{escape(entry["text"])}"[/]'
