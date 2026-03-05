@@ -14,6 +14,7 @@ from .renderer import console
 
 def main() -> None:
     """Main entry point for the audit tool"""
+    sys.stdout.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(
         description="Audit MathCAT translation files against English originals",
