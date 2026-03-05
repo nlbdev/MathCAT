@@ -302,23 +302,27 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
     Compare two rules and return fine-grained differences.
     Ignores text content differences (T/t values) but catches structural changes.
     """
-    differences = []
-    # Check match pattern differences
-    en_match_raw = extract_match_pattern(english_rule.data)
-    translated_match_raw = extract_match_pattern(translated_rule.data)
-    en_match = normalize_xpath(en_match_raw)
-    translated_match = normalize_xpath(translated_match_raw)
-    if en_match != translated_match and en_match and translated_match:
+    differences: list[RuleDifference] = []
+
+    def add_difference(diff_type: DiffType, description: str, english_snippet: str, translated_snippet: str) -> None:
         differences.append(
             RuleDifference(
-                english_rule=english_rule,
-                translated_rule=translated_rule,
-                diff_type=DiffType.MATCH,
-                description="Match pattern differs",
-                english_snippet=en_match,
-                translated_snippet=translated_match,
+                english_rule,
+                translated_rule,
+                diff_type,
+                description,
+                english_snippet,
+                translated_snippet,
             )
         )
+
+    # Check match pattern differences
+    en_match_raw = extract_match_pattern(english_rule.data)
+    tr_match_raw = extract_match_pattern(translated_rule.data)
+    en_match = normalize_xpath(en_match_raw)
+    tr_match = normalize_xpath(tr_match_raw)
+    if en_match != tr_match and en_match and tr_match:
+        add_difference(DiffType.MATCH, "Match pattern differs", en_match, tr_match)
 
     # Check condition differences
     en_conditions_raw = extract_conditions(english_rule.data)
@@ -329,15 +333,11 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
         # Find specific differences
         en_set, tr_set = set(en_conditions), set(tr_conditions)
         if en_set != tr_set:
-            differences.append(
-                RuleDifference(
-                    english_rule=english_rule,
-                    translated_rule=translated_rule,
-                    diff_type=DiffType.CONDITION,
-                    description="Conditions differ",
-                    english_snippet=", ".join(dedup_list(en_conditions)) or "(none)",
-                    translated_snippet=", ".join(dedup_list(tr_conditions)) or "(none)",
-                )
+            add_difference(
+                DiffType.CONDITION,
+                "Conditions differ",
+                ", ".join(dedup_list(en_conditions)) or "(none)",
+                ", ".join(dedup_list(tr_conditions)) or "(none)",
             )
 
     # Check variable differences
@@ -347,30 +347,22 @@ def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDi
         en_var_names = {v[0] for v in en_vars}
         tr_var_names = {v[0] for v in tr_vars}
         if en_var_names != tr_var_names:
-            differences.append(
-                RuleDifference(
-                    english_rule=english_rule,
-                    translated_rule=translated_rule,
-                    diff_type=DiffType.VARIABLES,
-                    description="Variable definitions differ",
-                    english_snippet=", ".join(sorted(en_var_names)) or "(none)",
-                    translated_snippet=", ".join(sorted(tr_var_names)) or "(none)",
-                )
+            add_difference(
+                DiffType.VARIABLES,
+                "Variable definitions differ",
+                ", ".join(sorted(en_var_names)) or "(none)",
+                ", ".join(sorted(tr_var_names)) or "(none)",
             )
 
     # Check structural differences (test/if/then/else blocks)
     en_structure = extract_structure_elements(english_rule.data)
     tr_structure = extract_structure_elements(translated_rule.data)
     if en_structure != tr_structure:
-        differences.append(
-            RuleDifference(
-                english_rule=english_rule,
-                translated_rule=translated_rule,
-                diff_type=DiffType.STRUCTURE,
-                description="Rule structure differs (test/if/then/else blocks)",
-                english_snippet=" ".join(en_structure),
-                translated_snippet=" ".join(tr_structure),
-            )
+        add_difference(
+            DiffType.STRUCTURE,
+            "Rule structure differs (test/if/then/else blocks)",
+            " ".join(en_structure),
+            " ".join(tr_structure),
         )
 
     return differences
