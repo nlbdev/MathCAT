@@ -10,8 +10,8 @@ from typing import Any
 from rich.console import Console
 from rich.markup import escape
 
-from .models import ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo, UntranslatedEntry
 from .line_resolver import resolve_diff_lines
+from .models import ComparisonResult, DiffType, IssueType, RuleDifference, RuleInfo
 
 console = Console()
 
@@ -81,7 +81,12 @@ def print_warnings(
 
     for rule, entries in result.untranslated_text:
         for entry in entries:
-            add_issue(rule, issue_group_key(IssueType.UNTRANSLATED_TEXT), {"line_tr": entry.line or rule.line_number, "text": entry.text})
+            add_issue(
+                rule,
+                issue_group_key(IssueType.UNTRANSLATED_TEXT),
+                {"line_tr": entry.line or rule.line_number,
+                "text": entry.text}
+            )
 
     for diff in result.rule_differences:
         lines = resolve_diff_lines(diff)

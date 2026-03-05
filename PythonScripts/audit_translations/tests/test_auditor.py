@@ -7,10 +7,9 @@ from pathlib import Path
 import pytest
 
 from ..auditor import compare_files, get_yaml_files, list_languages
-from ..renderer import console
-from ..models import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
 from ..line_resolver import resolve_diff_lines
-from ..renderer import print_warnings
+from ..models import ComparisonResult, DiffType, RuleDifference, RuleInfo, UntranslatedEntry
+from ..renderer import console, print_warnings
 
 
 @pytest.fixture()
