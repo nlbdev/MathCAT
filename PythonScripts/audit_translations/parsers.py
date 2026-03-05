@@ -4,22 +4,17 @@ YAML file parsing functions.
 Handles parsing of rule files and unicode files to extract rule information.
 """
 
-from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
-from jsonpath_ng.ext import parse
-from jsonpath_ng.jsonpath import Fields
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from .models import DiffType, RuleDifference, RuleInfo, UntranslatedEntry
+from .extractors import iter_field_matches, mapping_key_line
+from .models import RuleInfo, UntranslatedEntry
 
 _yaml = YAML()
 _yaml.preserve_quotes = True
-
-_ALL_FIELDS_EXPR = parse("$..*")  # '..' is recursive descent
-_MATCH_EXPR = parse("$.match")
 
 
 def is_unicode_file(file_path: Path) -> bool:
@@ -71,30 +66,6 @@ def build_raw_blocks(lines: list[str], starts: list[int]) -> list[str]:
         end = starts[idx + 1] if idx + 1 < len(starts) else len(lines)
         blocks.append("\n".join(lines[start:end]))
     return blocks
-
-
-def mapping_key_line(mapping: Any, key: str) -> int | None:
-    """
-    - 'lc' is line and column in YAML file: https://yaml.dev/doc/ruamel.yaml/detail/
-    """
-    if hasattr(mapping, "lc") and hasattr(mapping.lc, "data"):
-        line_info = mapping.lc.data.get(key)
-        return line_info[0] + 1
-    return None
-
-
-def iter_field_matches(node: Any) -> Iterator[tuple[str, Any, Any]]:
-    """
-    Iterate nested mapping fields using jsonpath.
-
-    Returns tuples of (key, child_value, parent_mapping) in traversal order.
-    """
-    for match in _ALL_FIELDS_EXPR.find(node):
-        path = match.path
-        if isinstance(path, Fields) and len(path.fields) == 1:
-            key = path.fields[0]
-            parent = match.context.value if match.context is not None else None
-            yield key, match.value, parent
 
 
 def _extract_item_fields(item: Any, is_unicode: bool) -> tuple[str, str | None, str | None, Any] | None:
@@ -222,146 +193,3 @@ def build_line_map(node: Any) -> dict[str, list[int]]:
         if key in structure_tokens:
             add_line(f"structure:{key}", mapping_key_line(parent, key))
     return line_map
-
-
-def normalize_match(value: Any) -> str:
-    if isinstance(value, list):
-        return " ".join(str(item) for item in value)
-    if isinstance(value, str):
-        return value
-    return ""
-
-
-def normalize_xpath(value: str) -> str:
-    return " ".join(value.split())
-
-
-def dedup_list(values: list[str]) -> list[str]:
-    """
-    Return a list without duplicates while preserving first-seen order.
-    Originally, rule differences were stored as sets, losing their original order,
-    which is not helpful and why it changed with the help of this function.
-
-    Example:
-        >>> dedup_list(["if:a", "if:b", "if:a"])
-        ['if:a', 'if:b']
-    """
-    return list(dict.fromkeys(values))  # dict preserves insertion order (guaranteed in Python 3.7+)
-
-
-def extract_match_pattern(rule_data: Any) -> str:
-    if isinstance(rule_data, dict):
-        matches = _MATCH_EXPR.find(rule_data)
-        if matches:
-            return normalize_match(matches[0].value)
-    return ""
-
-
-def extract_conditions(rule_data: Any) -> list[str]:
-    """Extract all if/else conditions from a rule"""
-    conditions: list[str] = []
-    for key, child, _ in iter_field_matches(rule_data):
-        if key in ("if", "else_if") and isinstance(child, str):
-            conditions.append(child)
-    return conditions
-
-
-def extract_variables(rule_data: Any) -> list[tuple[str, str]]:
-    """Extract variable definitions from a rule"""
-    variables: list[tuple[str, str]] = []
-
-    def add_from_value(value: Any) -> None:
-        if isinstance(value, dict):
-            for name, expr in value.items():
-                variables.append((str(name), str(expr)))
-        elif isinstance(value, list):
-            for item in value:
-                if isinstance(item, dict):
-                    for name, expr in item.items():
-                        variables.append((str(name), str(expr)))
-
-    for key, child, _ in iter_field_matches(rule_data):
-        if key == "variables":
-            add_from_value(child)
-    return variables
-
-
-def extract_structure_elements(rule_data: Any) -> list[str]:
-    """Extract structural elements (test, with, replace blocks) ignoring text content"""
-    elements: list[str] = []
-    tokens = {"test", "if", "else_if", "then", "else", "then_test", "else_test", "with", "replace", "intent"}
-    for key, _, _ in iter_field_matches(rule_data):
-        if key in tokens:
-            elements.append(f"{key}:")
-    return elements
-
-
-def diff_rules(english_rule: RuleInfo, translated_rule: RuleInfo) -> list[RuleDifference]:
-    """
-    Compare two rules and return fine-grained differences.
-    Ignores text content differences (T/t values) but catches structural changes.
-    """
-    differences: list[RuleDifference] = []
-
-    def add_difference(diff_type: DiffType, description: str, english_snippet: str, translated_snippet: str) -> None:
-        differences.append(
-            RuleDifference(
-                english_rule,
-                translated_rule,
-                diff_type,
-                description,
-                english_snippet,
-                translated_snippet,
-            )
-        )
-
-    # Check match pattern differences
-    en_match_raw = extract_match_pattern(english_rule.data)
-    tr_match_raw = extract_match_pattern(translated_rule.data)
-    en_match = normalize_xpath(en_match_raw)
-    tr_match = normalize_xpath(tr_match_raw)
-    if en_match != tr_match and en_match and tr_match:
-        add_difference(DiffType.MATCH, "Match pattern differs", en_match, tr_match)
-
-    # Check condition differences
-    en_conditions_raw = extract_conditions(english_rule.data)
-    tr_conditions_raw = extract_conditions(translated_rule.data)
-    en_conditions = [normalize_xpath(c) for c in en_conditions_raw]
-    tr_conditions = [normalize_xpath(c) for c in tr_conditions_raw]
-    if en_conditions != tr_conditions:
-        # Find specific differences
-        en_set, tr_set = set(en_conditions), set(tr_conditions)
-        if en_set != tr_set:
-            add_difference(
-                DiffType.CONDITION,
-                "Conditions differ",
-                ", ".join(dedup_list(en_conditions)) or "(none)",
-                ", ".join(dedup_list(tr_conditions)) or "(none)",
-            )
-
-    # Check variable differences
-    en_vars = extract_variables(english_rule.data)
-    tr_vars = extract_variables(translated_rule.data)
-    if en_vars != tr_vars:
-        en_var_names = {v[0] for v in en_vars}
-        tr_var_names = {v[0] for v in tr_vars}
-        if en_var_names != tr_var_names:
-            add_difference(
-                DiffType.VARIABLES,
-                "Variable definitions differ",
-                ", ".join(sorted(en_var_names)) or "(none)",
-                ", ".join(sorted(tr_var_names)) or "(none)",
-            )
-
-    # Check structural differences (test/if/then/else blocks)
-    en_structure = extract_structure_elements(english_rule.data)
-    tr_structure = extract_structure_elements(translated_rule.data)
-    if en_structure != tr_structure:
-        add_difference(
-            DiffType.STRUCTURE,
-            "Rule structure differs (test/if/then/else blocks)",
-            " ".join(en_structure),
-            " ".join(tr_structure),
-        )
-
-    return differences

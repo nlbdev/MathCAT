@@ -12,7 +12,8 @@ from rich.panel import Panel
 from rich.table import Table
 
 from .models import ComparisonResult, RuleInfo
-from .parsers import diff_rules, parse_yaml_file
+from .differ import diff_rules
+from .parsers import parse_yaml_file
 from .renderer import console, print_warnings
 
 GREEN_FILE_COUNT_THRESHOLD = 7

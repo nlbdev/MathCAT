@@ -6,14 +6,16 @@ import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from ..models import RuleDifference, RuleInfo, UntranslatedEntry
-from ..parsers import (
-    build_line_map,
-    diff_rules,
+from ..differ import diff_rules
+from ..extractors import (
     extract_conditions,
     extract_match_pattern,
     extract_structure_elements,
     extract_variables,
+)
+from ..models import RuleDifference, RuleInfo, UntranslatedEntry
+from ..parsers import (
+    build_line_map,
     find_untranslated_text_entries,
     find_untranslated_text_values,
     has_audit_ignore,
