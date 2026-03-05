@@ -7,8 +7,9 @@ from pathlib import Path
 import pytest
 
 from ..auditor import compare_files, console, get_yaml_files, list_languages
-from ..dataclasses import ComparisonResult, RuleDifference, RuleInfo
-from ..renderer import collect_issues, print_warnings
+from ..dataclasses import ComparisonResult, DiffType, RuleDifference, RuleInfo
+from ..line_resolver import resolve_diff_lines
+from ..renderer import print_warnings
 
 
 @pytest.fixture()
@@ -30,13 +31,54 @@ def make_rule(name: str, tag: str, line: int, raw: str) -> RuleInfo:
     )
 
 
-def test_collect_issues_fields() -> None:
-    """Ensure collect issues fields."""
+def resolved_diff_lines_by_type(result: ComparisonResult) -> dict[str, list[tuple[int | None, int | None]]]:
+    lines_by_type: dict[str, list[tuple[int | None, int | None]]] = {}
+    for diff in result.rule_differences:
+        lines = resolve_diff_lines(diff)
+        if lines is None:
+            continue
+        lines_by_type.setdefault(diff.diff_type.value, []).append(lines)
+    return lines_by_type
+
+
+def fixture_rules_dir() -> Path:
+    return Path(__file__).resolve().parent / "fixtures" / "Rules" / "Languages"
+
+
+def aggregate_issue_counts(
+    language: str,
+    issue_filter: set[str] | None = None,
+) -> tuple[int, int, int, int, int]:
+    rules_dir = fixture_rules_dir()
+    english_dir = rules_dir / "en"
+    translated_dir = rules_dir / language
+    files = get_yaml_files(english_dir)
+
+    missing = untranslated = extra = diffs = total = 0
+    for file_name in files:
+        result = compare_files(
+            str(english_dir / file_name),
+            str(translated_dir / file_name),
+            issue_filter,
+        )
+        missing += len(result.missing_rules)
+        untranslated += sum(len(entries) for _, entries in result.untranslated_text)
+        extra += len(result.extra_rules)
+        diffs += len(result.rule_differences)
+        total += len(result.missing_rules) + len(result.extra_rules) + len(result.rule_differences)
+        total += sum(len(entries) for _, entries in result.untranslated_text)
+    return missing, untranslated, extra, diffs, total
+
+
+def test_comparison_result_object_fields() -> None:
+    """Ensure comparison objects keep expected field-level values."""
     missing = make_rule("missing", "mo", 10, "missing raw")
     extra = make_rule("extra", "mi", 20, "extra raw")
     untranslated = make_rule("untranslated", "mn", 30, "untranslated raw")
     diff_en = make_rule("diff", "mrow", 40, "diff en raw")
     diff_tr = make_rule("diff", "mrow", 41, "diff tr raw")
+    diff_en.line_map = {"match": [40]}
+    diff_tr.line_map = {"match": [41]}
 
     diff = RuleDifference(
         english_rule=diff_en,
@@ -46,7 +88,6 @@ def test_collect_issues_fields() -> None:
         english_snippet="a",
         translated_snippet="b",
     )
-
     result = ComparisonResult(
         missing_rules=[missing],
         extra_rules=[extra],
@@ -57,32 +98,38 @@ def test_collect_issues_fields() -> None:
         translated_rule_count=1,
     )
 
-    issues = collect_issues(result, "file.yaml", "xx")
-    by_type = {issue["issue_type"]: issue for issue in issues}
+    assert result.missing_rules[0].line_number == 10
+    assert result.extra_rules[0].line_number == 20
+    assert result.untranslated_text[0][0].line_number == 30
+    assert result.untranslated_text[0][1] == [("t", "x", 31)]
+    assert result.rule_differences[0].diff_type is DiffType.MATCH
+    assert resolve_diff_lines(result.rule_differences[0]) == (40, 41)
 
-    assert by_type["missing_rule"]["issue_line_en"] == 10
-    assert by_type["missing_rule"]["issue_line_tr"] is None
-    assert by_type["missing_rule"]["rule_line_en"] == 10
-    assert by_type["missing_rule"]["rule_line_tr"] is None
-    assert "english_raw" not in by_type["missing_rule"]
 
-    assert by_type["extra_rule"]["issue_line_tr"] == 20
-    assert by_type["extra_rule"]["rule_line_tr"] == 20
-    assert "translated_raw" not in by_type["extra_rule"]
+def test_compare_files_fixture_issue_counts_match_expected() -> None:
+    """
+    Ensure object-level findings on fixture rules match expected totals.
 
-    assert by_type["untranslated_text"]["untranslated_texts"] == ["x"]
-    assert by_type["untranslated_text"]["issue_line_tr"] == 31
-    assert by_type["untranslated_text"]["rule_line_tr"] == 30
-    assert "translated_raw" not in by_type["untranslated_text"]
+    Replaces removed JSONL count coverage with direct ComparisonResult checks.
+    """
+    missing, untranslated, extra, diffs, total = aggregate_issue_counts("es")
+    assert total == 19
+    assert missing == 4
+    assert extra == 3
+    assert untranslated == 6
+    assert diffs == 6
 
-    assert by_type["rule_difference"]["diff_type"] == "match"
-    assert by_type["rule_difference"]["english_snippet"] == "a"
-    assert by_type["rule_difference"]["translated_snippet"] == "b"
-    assert by_type["rule_difference"]["issue_line_en"] == 40
-    assert by_type["rule_difference"]["issue_line_tr"] == 41
-    assert by_type["rule_difference"]["rule_line_en"] == 40
-    assert by_type["rule_difference"]["rule_line_tr"] == 41
-    assert "english_raw" not in by_type["rule_difference"]
+
+def test_compare_files_fixture_filter_missing_extra_matches_expected() -> None:
+    """
+    Ensure object-level filtering mirrors the old missing/extra JSONL scenario.
+    """
+    missing, untranslated, extra, diffs, total = aggregate_issue_counts("es", {"missing", "extra"})
+    assert total == 7
+    assert missing == 4
+    assert extra == 3
+    assert untranslated == 0
+    assert diffs == 0
 
 
 def test_compare_files_merges_region_rules(tmp_path) -> None:
@@ -186,7 +233,6 @@ def test_compare_files_skips_untranslated_and_diffs_when_audit_ignored(tmp_path)
     assert result.extra_rules == []
     assert result.untranslated_text == []
     assert result.rule_differences == []
-    assert collect_issues(result, "de.yaml", "de") == []
 
 
 def test_get_yaml_files_includes_region(tmp_path) -> None:
@@ -232,6 +278,31 @@ def test_list_languages_includes_region_codes(tmp_path) -> None:
 
     assert "zz" in output
     assert "zz-aa" in output
+
+
+def test_list_languages_ignores_sharedrules_as_region(tmp_path) -> None:
+    """
+    Ensures SharedRules is not misreported as a language-region variant.
+    """
+    rules_dir = tmp_path / "Rules" / "Languages"
+    (rules_dir / "en").mkdir(parents=True)
+    lang_dir = rules_dir / "zz"
+    region_dir = lang_dir / "aa"
+    shared_rules_dir = lang_dir / "SharedRules"
+    lang_dir.mkdir(parents=True)
+    region_dir.mkdir(parents=True)
+    shared_rules_dir.mkdir(parents=True)
+
+    (lang_dir / "file.yaml").write_text("---", encoding="utf-8")
+    (region_dir / "region.yaml").write_text("---", encoding="utf-8")
+    (shared_rules_dir / "shared.yaml").write_text("---", encoding="utf-8")
+
+    with console.capture() as capture:
+        list_languages(str(rules_dir))
+    output = capture.get()
+
+    assert "zz-aa" in output
+    assert "zz-SharedRules" not in output
 
 
 def test_print_warnings_omits_snippets_when_not_verbose(fixed_console_width) -> None:
@@ -296,18 +367,10 @@ def test_misaligned_structure_differences_are_reported() -> None:
     assert len(result.rule_differences) > 0
     assert any(diff.diff_type == "structure" for diff in result.rule_differences)
 
-    # Collecting issues should include a structure issue.
-    issues = collect_issues(result, "structure_misaligned.yaml", "de")
-    structure_issues = [i for i in issues if i["diff_type"] == "structure"]
-
-    assert len(structure_issues) == 1
-    issue = structure_issues[0]
-    assert issue["issue_line_en"] == 11
-    assert issue["issue_line_tr"] == 11
-
-    # Other differences (like conditions) should still be reported
-    condition_issues = [i for i in issues if i["diff_type"] == "condition"]
-    assert len(condition_issues) > 0, "Expected condition differences to still be reported"
+    lines_by_type = resolved_diff_lines_by_type(result)
+    assert len(lines_by_type.get("structure", [])) == 1
+    assert lines_by_type["structure"][0] == (11, 11)
+    assert len(lines_by_type.get("condition", [])) > 0, "Expected condition differences to still be reported"
 
 
 def test_missing_else_block_is_still_reported() -> None:
@@ -330,20 +393,9 @@ def test_missing_else_block_is_still_reported() -> None:
     structure_diffs = [diff for diff in result.rule_differences if diff.diff_type == "structure"]
     assert len(structure_diffs) == 1
 
-    # This case has one token None (missing else), so it should still be reported
-    issues = collect_issues(result, "structure_missing_else.yaml", "de")
-    structure_issues = [i for i in issues if i["diff_type"] == "structure"]
-
-    # CRITICAL: This legitimate difference should still be reported
-    # One file has else:, the other doesn't - a clear missing element
-    assert len(structure_issues) == 1, (
-        f"Expected missing else block to be reported, but found {len(structure_issues)} structure issues"
-    )
-
-    # Verify the issue anchors to the last shared structure token ('then:')
-    issue = structure_issues[0]
-    assert issue["issue_line_en"] == 7
-    assert issue["issue_line_tr"] == 7
+    lines_by_type = resolved_diff_lines_by_type(result)
+    assert len(lines_by_type.get("structure", [])) == 1, "Expected missing else block to be reported"
+    assert lines_by_type["structure"][0] == (7, 7)
 
 
 def test_structure_diff_uses_position_aware_token_occurrence_for_missing_block(tmp_path) -> None:
@@ -383,13 +435,9 @@ def test_structure_diff_uses_position_aware_token_occurrence_for_missing_block(t
     )
 
     result = compare_files(str(english_file), str(translated_file))
-    issues = collect_issues(result, "repeated-structure.yaml", "tr")
-    structure_issues = [i for i in issues if i["diff_type"] == "structure"]
-
-    assert len(structure_issues) == 1
-    issue = structure_issues[0]
-    assert issue["issue_line_en"] == 7
-    assert issue["issue_line_tr"] == 7
+    lines_by_type = resolved_diff_lines_by_type(result)
+    assert len(lines_by_type.get("structure", [])) == 1
+    assert lines_by_type["structure"][0] == (7, 7)
 
 
 def test_structure_substitution_diff_is_reported(tmp_path) -> None:
@@ -424,12 +472,9 @@ def test_structure_substitution_diff_is_reported(tmp_path) -> None:
     result = compare_files(str(english_file), str(translated_file))
     assert any(diff.diff_type == "structure" for diff in result.rule_differences)
 
-    issues = collect_issues(result, "substitution-structure.yaml", "tr")
-    structure_issues = [i for i in issues if i["diff_type"] == "structure"]
-    assert len(structure_issues) == 1
-    issue = structure_issues[0]
-    assert issue["issue_line_en"] == 7
-    assert issue["issue_line_tr"] == 7
+    lines_by_type = resolved_diff_lines_by_type(result)
+    assert len(lines_by_type.get("structure", [])) == 1
+    assert lines_by_type["structure"][0] == (7, 7)
 
 
 def test_structure_per_fraction_should_anchor_to_replace_lines_expected_behavior() -> None:
@@ -444,13 +489,9 @@ def test_structure_per_fraction_should_anchor_to_replace_lines_expected_behavior
     path = base_dir / "fixtures" / "repro"
     result = compare_files(str(path / "en" / "per_fraction.yaml"), str(path / "nb" / "per_fraction.yaml"))
 
-    issues = collect_issues(result, "per_fraction.yaml", "nb")
-    structure_issues = [i for i in issues if i["diff_type"] == "structure"]
-
-    assert len(structure_issues) == 1
-    issue = structure_issues[0]
-    assert issue["issue_line_en"] == 8
-    assert issue["issue_line_tr"] == 8
+    lines_by_type = resolved_diff_lines_by_type(result)
+    assert len(lines_by_type.get("structure", [])) == 1
+    assert lines_by_type["structure"][0] == (8, 8)
 
 
 def test_print_warnings_shows_misaligned_structures() -> None:

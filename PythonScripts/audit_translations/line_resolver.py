@@ -4,18 +4,14 @@ Line number resolution for rule differences.
 Maps rule diff types and structure tokens to precise YAML source line numbers.
 """
 
-from .dataclasses import RuleInfo, RuleDifference
+from .dataclasses import DiffType, RuleDifference, RuleInfo
 from .parsers import extract_structure_elements
 
 
-def _get_line_map_lines(rule: RuleInfo, kind: str, token: str | None = None) -> list[int]:
+def _get_line_map_lines(rule: RuleInfo, kind: DiffType | str, token: str | None = None) -> list[int]:
     """Return the line-number list for a given element kind from the rule's line map."""
-    if kind == "match":
-        return rule.line_map.get("match", [])
-    if kind == "condition":
-        return rule.line_map.get("condition", [])
-    if kind == "variables":
-        return rule.line_map.get("variables", [])
+    if kind in ("match", "condition", "variables"):
+        return rule.line_map.get(kind, [])
     if kind == "structure" and token:
         return rule.line_map.get(f"structure:{token.rstrip(':')}", [])
     return []
@@ -44,7 +40,7 @@ def first_structure_mismatch(
 
 def resolve_issue_line_at_position(
     rule: RuleInfo,
-    kind: str,
+    kind: DiffType | str,
     token: str | None = None,
     position: int = 0,
 ) -> int | None:
@@ -64,7 +60,7 @@ def resolve_issue_line_at_position(
     return lines[position] if position < len(lines) else None
 
 
-def resolve_issue_line(rule: RuleInfo, kind: str, token: str | None = None) -> int | None:
+def resolve_issue_line(rule: RuleInfo, kind: DiffType | str, token: str | None = None) -> int | None:
     """
     Resolve the line number for an issue within a rule.
 
@@ -150,8 +146,8 @@ def resolve_diff_lines(diff: RuleDifference) -> tuple[int | None, int | None] | 
     Resolve issue line numbers for a rule difference.
 
     Returns (line_en, line_tr), or None only for unresolvable structure diffs.
-    This is the single entry point used by both collect_issues and print_warnings
-    to avoid duplicating the structure vs non-structure branching logic.
+    This is the single entry point used by the renderer to avoid duplicating
+    the structure vs non-structure branching logic.
     """
     if diff.diff_type == "structure":
         return resolve_structure_issue_lines(diff)

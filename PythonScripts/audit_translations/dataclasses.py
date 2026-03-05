@@ -5,7 +5,26 @@ Contains dataclasses for representing rules and comparison results.
 """
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import Any
+
+
+class IssueType(StrEnum):
+    """Top-level issue categories used by the audit renderer."""
+
+    MISSING_RULE = "missing_rule"
+    UNTRANSLATED_TEXT = "untranslated_text"
+    RULE_DIFFERENCE = "rule_difference"
+    EXTRA_RULE = "extra_rule"
+
+
+class DiffType(StrEnum):
+    """Rule-difference subcategories used for fine-grained diagnostics."""
+
+    MATCH = "match"  # `match` XPath differs between English and translation.
+    CONDITION = "condition"  # `if` / `test` condition expressions differ.
+    VARIABLES = "variables"  # Variable names defined in `variables` differ.
+    STRUCTURE = "structure"  # Control-flow block shape/order differs (if/then/else/with/replace).
 
 
 @dataclass
@@ -29,8 +48,7 @@ class RuleInfo:
         Parsed YAML node for the rule; used for structural diffs.
     untranslated_entries : list[tuple[str, str, int | None]]
         List of (key, text, line) entries extracted from lowercase translation keys.
-        This drives per-issue JSONL output so each untranslated string can report
-        the specific YAML line number where it appears.
+        This preserves exact text fragments and YAML line numbers for diagnostics.
     line_map : dict[str, list[int]]
         Mapping of element type to line numbers for rule components like match,
         conditions, variables, and structural tokens. This is used to point
@@ -64,10 +82,14 @@ class RuleDifference:
 
     english_rule: RuleInfo
     translated_rule: RuleInfo
-    diff_type: str  # 'match', 'condition', 'structure', 'variables'
+    diff_type: DiffType
     description: str
     english_snippet: str
     translated_snippet: str
+
+    def __post_init__(self) -> None:
+        if isinstance(self.diff_type, str):
+            self.diff_type = DiffType(self.diff_type)
 
 
 @dataclass
