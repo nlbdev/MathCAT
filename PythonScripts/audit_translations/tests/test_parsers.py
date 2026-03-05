@@ -6,7 +6,7 @@ import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from ..dataclasses import RuleDifference, RuleInfo
+from ..models import RuleDifference, RuleInfo, UntranslatedEntry
 from ..parsers import (
     build_line_map,
     diff_rules,
@@ -108,7 +108,7 @@ class TestFindUntranslatedTextKeys:
 """
         data = yaml.load(content)
         entries = find_untranslated_text_entries(data[0])
-        assert entries == [("t", "not translated", 4)]
+        assert entries == [UntranslatedEntry("t", "not translated", 4)]
 
 
 class TestParseRulesFile:
@@ -159,7 +159,7 @@ class TestParseRulesFile:
         rules = parse_rules_file(content, data)
         assert rules[0].has_untranslated_text
         assert "not translated" in rules[0].untranslated_keys
-        assert rules[0].untranslated_entries == [("t", "not translated", 4)]
+        assert rules[0].untranslated_entries == [UntranslatedEntry("t", "not translated", 4)]
 
     def test_detects_audit_ignore(self):
         """Ensure detects audit ignore."""
@@ -248,7 +248,7 @@ class TestParseRulesFile:
         file_path.write_text(content, encoding="utf-8")
         from ..parsers import parse_yaml_file
 
-        rules, _ = parse_yaml_file(str(file_path))
+        rules, _ = parse_yaml_file(file_path)
         assert len(rules) == 1
         assert rules[0].name == "tabbed"
 
@@ -265,7 +265,7 @@ class TestParseRulesFile:
         from ..parsers import parse_yaml_file
 
         with pytest.raises(ScannerError):
-            parse_yaml_file(str(file_path), strict=True)
+            parse_yaml_file(file_path, strict=True)
 
 
 class TestParseUnicodeFile:

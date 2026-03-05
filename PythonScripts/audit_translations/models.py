@@ -6,6 +6,7 @@ Contains dataclasses for representing rules and comparison results.
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from pathlib import Path
 from typing import Any
 
 
@@ -28,6 +29,15 @@ class DiffType(StrEnum):
 
 
 @dataclass
+class UntranslatedEntry:
+    """A single untranslated text fragment found in a rule."""
+
+    key: str
+    text: str
+    line: int | None
+
+
+@dataclass
 class RuleInfo:
     """
     Information about a single rule parsed from a YAML file.
@@ -46,9 +56,9 @@ class RuleInfo:
         Raw YAML block for this rule (used for reporting/snippets).
     data : Any | None
         Parsed YAML node for the rule; used for structural diffs.
-    untranslated_entries : list[tuple[str, str, int | None]]
-        List of (key, text, line) entries extracted from lowercase translation keys.
-        This preserves exact text fragments and YAML line numbers for diagnostics.
+    untranslated_entries : list[UntranslatedEntry]
+        Entries extracted from lowercase translation keys.
+        Preserves exact text fragments and YAML line numbers for diagnostics.
     line_map : dict[str, list[int]]
         Mapping of element type to line numbers for rule components like match,
         conditions, variables, and structural tokens. This is used to point
@@ -63,7 +73,7 @@ class RuleInfo:
     line_number: int
     raw_content: str
     data: Any | None = None
-    untranslated_entries: list[tuple[str, str, int | None]] = field(default_factory=list)
+    untranslated_entries: list[UntranslatedEntry] = field(default_factory=list)
     line_map: dict[str, list[int]] = field(default_factory=dict)
     audit_ignore: bool = False
 
@@ -73,7 +83,7 @@ class RuleInfo:
 
     @property
     def untranslated_keys(self) -> list[str]:
-        return [entry[1] for entry in self.untranslated_entries]
+        return [entry.text for entry in self.untranslated_entries]
 
 
 @dataclass
@@ -98,8 +108,8 @@ class ComparisonResult:
 
     missing_rules: list[RuleInfo]  # Rules in English but not in translation
     extra_rules: list[RuleInfo]  # Rules in translation but not in English
-    untranslated_text: list[tuple[RuleInfo, list[tuple[str, str, int | None]]]]  # Rules with lowercase t/ot/ct
-    file_path: str
+    untranslated_text: list[tuple[RuleInfo, list[UntranslatedEntry]]]
+    file_path: Path | str
     english_rule_count: int
     translated_rule_count: int
     rule_differences: list[RuleDifference] = field(default_factory=list)  # Fine-grained diffs

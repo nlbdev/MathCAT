@@ -4,7 +4,7 @@ Line number resolution for rule differences.
 Maps rule diff types and structure tokens to precise YAML source line numbers.
 """
 
-from .dataclasses import DiffType, RuleDifference, RuleInfo
+from .models import DiffType, RuleDifference, RuleInfo
 from .parsers import extract_structure_elements
 
 

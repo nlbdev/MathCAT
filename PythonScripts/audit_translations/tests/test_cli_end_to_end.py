@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from .. import cli as audit_cli
-from ..auditor import console
+from ..renderer import console
 
 
 def fixture_rules_dir() -> Path:

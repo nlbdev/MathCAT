@@ -13,7 +13,7 @@ from jsonpath_ng.jsonpath import Fields
 from ruamel.yaml import YAML
 from ruamel.yaml.scanner import ScannerError
 
-from .dataclasses import DiffType, RuleDifference, RuleInfo
+from .models import DiffType, RuleDifference, RuleInfo, UntranslatedEntry
 
 _yaml = YAML()
 _yaml.preserve_quotes = True
@@ -22,13 +22,12 @@ _ALL_FIELDS_EXPR = parse("$..*")  # '..' is recursive descent
 _MATCH_EXPR = parse("$.match")
 
 
-def is_unicode_file(file_path: str) -> bool:
+def is_unicode_file(file_path: Path) -> bool:
     """Check if this is a unicode.yaml or unicode-full.yaml file"""
-    basename = Path(file_path).name
-    return basename in ("unicode.yaml", "unicode-full.yaml")
+    return file_path.name in ("unicode.yaml", "unicode-full.yaml")
 
 
-def parse_yaml_file(file_path: str, strict: bool = False) -> tuple[list[RuleInfo], str]:
+def parse_yaml_file(file_path: Path, strict: bool = False) -> tuple[list[RuleInfo], str]:
     """
     Parse a YAML file and extract rules.
     Returns list of RuleInfo and the raw file content.
@@ -165,15 +164,15 @@ def find_untranslated_text_values(node: Any) -> list[str]:
     Find lowercase text keys (t, ot, ct, spell, pronounce, ifthenelse) that should be uppercase in translations.
     Returns list of the untranslated text values found.
     """
-    return [entry[1] for entry in find_untranslated_text_entries(node)]
+    return [entry.text for entry in find_untranslated_text_entries(node)]
 
 
-def find_untranslated_text_entries(node: Any) -> list[tuple[str, str, int | None]]:
+def find_untranslated_text_entries(node: Any) -> list[UntranslatedEntry]:
     """
     Find lowercase text keys (t, ot, ct, spell, pronounce, ifthenelse) and their line numbers.
-    Returns list of (key, text, line_number) entries. Line number is 1-based when available.
+    Returns list of UntranslatedEntry. Line number is 1-based when available.
     """
-    entries: list[tuple[str, str, int | None]] = []
+    entries: list[UntranslatedEntry] = []
     translation_keys = {"t", "ot", "ct", "spell", "pronounce", "ifthenelse"}
 
     def should_add(text: str) -> bool:
@@ -185,7 +184,7 @@ def find_untranslated_text_entries(node: Any) -> list[tuple[str, str, int | None
 
     for key, child, parent in iter_field_matches(node):
         if key.lower() in translation_keys and not key.isupper() and isinstance(child, str) and should_add(child):
-            entries.append((key, child, mapping_key_line(parent, key)))
+            entries.append(UntranslatedEntry(key, child, mapping_key_line(parent, key)))
     return entries
 
 

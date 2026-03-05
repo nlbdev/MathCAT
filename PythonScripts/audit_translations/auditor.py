@@ -11,12 +11,9 @@ from pathlib import Path
 from rich.panel import Panel
 from rich.table import Table
 
-from .dataclasses import ComparisonResult, RuleInfo
+from .models import ComparisonResult, RuleInfo
 from .parsers import diff_rules, parse_yaml_file
 from .renderer import console, print_warnings
-
-# Re-export console so existing `from .auditor import console` callers keep working.
-__all__ = ["console"]
 
 GREEN_FILE_COUNT_THRESHOLD = 7
 YELLOW_FILE_COUNT_THRESHOLD = 4
@@ -72,16 +69,16 @@ def get_yaml_files(lang_dir: Path, region_dir: Path | None = None) -> list[Path]
 
 
 def compare_files(
-    english_path: str,
-    translated_path: str,
+    english_path: Path,
+    translated_path: Path,
     issue_filter: set[str] | None = None,
-    translated_region_path: str | None = None,
-    english_region_path: str | None = None,
+    translated_region_path: Path | None = None,
+    english_region_path: Path | None = None,
 ) -> ComparisonResult:
     """Compare English and translated YAML files"""
 
-    def load_rules(path: str | None) -> list[RuleInfo]:
-        if path and Path(path).exists():
+    def load_rules(path: Path | None) -> list[RuleInfo]:
+        if path and path.exists():
             rules, _ = parse_yaml_file(path)
             return rules
         return []
@@ -210,11 +207,11 @@ def audit_language(
             continue
 
         result = compare_files(
-            str(english_path),
-            str(translated_path),
+            english_path,
+            translated_path,
             issue_filter,
-            str(translated_region_path) if translated_region_path and translated_region_path.exists() else None,
-            str(english_region_path) if english_region_path and english_region_path.exists() else None,
+            translated_region_path if translated_region_path and translated_region_path.exists() else None,
+            english_region_path if english_region_path and english_region_path.exists() else None,
         )
 
         if result.has_issues:
@@ -226,7 +223,7 @@ def audit_language(
             files_ok += 1
 
         total_missing += len(result.missing_rules)
-        total_untranslated += sum(len(entries) for _, entries in result.untranslated_text)
+        total_untranslated += sum(len(entries) for _rule, entries in result.untranslated_text)
         total_extra += len(result.extra_rules)
         total_differences += len(result.rule_differences)
 

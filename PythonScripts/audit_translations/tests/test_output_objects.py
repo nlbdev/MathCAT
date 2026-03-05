@@ -16,8 +16,8 @@ def collect_issue_tuples(language: str = "de", issue_filter: set[str] | None = N
     for english_path in sorted(english_dir.glob("*.yaml")):
         file_name = english_path.name
         result = compare_files(
-            str(english_path),
-            str(translated_dir / file_name),
+            english_path,
+            translated_dir / file_name,
             issue_filter,
         )
 
@@ -28,8 +28,8 @@ def collect_issue_tuples(language: str = "de", issue_filter: set[str] | None = N
             rows.append((file_name, "extra_rule", rule.key, "", None, rule.line_number, ""))
 
         for rule, entries in result.untranslated_text:
-            for _key, text, line in entries:
-                rows.append((file_name, "untranslated_text", rule.key, "", None, line or rule.line_number, text))
+            for entry in entries:
+                rows.append((file_name, "untranslated_text", rule.key, "", None, entry.line or rule.line_number, entry.text))
 
         for diff in result.rule_differences:
             lines = resolve_diff_lines(diff)

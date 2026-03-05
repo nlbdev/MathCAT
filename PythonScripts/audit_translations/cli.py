@@ -7,7 +7,8 @@ Handles argument parsing and the main entry point.
 import argparse
 import sys
 
-from .auditor import audit_language, console, list_languages
+from .auditor import audit_language, list_languages
+from .renderer import console
 
 
 def main() -> None:
@@ -65,7 +66,3 @@ Examples:
             issue_filter,
             args.verbose,
         )
-
-
-if __name__ == "__main__":
-    main()
