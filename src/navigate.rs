@@ -491,7 +491,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             };
         }
         // we should always find the start node.
-        // however, if were were navigating by character, then switched the NavMode, the intent tree might not have that node in it
+        // however, if we were navigating by character, then switched the NavMode, the intent tree might not have that node in it
         let start_node = match get_start_node(nav_intent, nav_state) {
             Ok(node) => node,
             Err(_) => {
@@ -2585,7 +2585,7 @@ mod tests {
             </math>";
         
         set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        for lang in get_supported_languages() {
+        for lang in get_supported_languages().unwrap_or_default() {
             test_language(&lang, mathml_str);
         }
         return Ok( () );

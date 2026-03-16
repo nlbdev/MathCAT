@@ -6,7 +6,7 @@ is a library that supports conversion of MathML to:
 * Braille (Nemeth, UEB Technical, and eventually other braille math codes)
 * Navigation of math (in multiple ways including overviews)
 
-A goal of MathCAT is to be an easy to use library for screen readers and other assistive technology to use to produce high quality speech and/or braille from MathML. It is a follow-on project from MathPlayer (see below) and uses lessons learned from it to do to produce even higher quality speech, navigation, and braille. MathCAT takes advantage of some new ideas the [MathML Working Group](https://mathml-refresh.github.io/charter-drafts/math-2020.html) is developing to allow authors to express their intent when they use a notation. E.g., $(3, 6)$ could be a point in the plane or an open interval, or even a shorthand notation for the greatest common divisor. When that information is conveyed in the MathML, MathCAT will use it to generate more natural sounding speech.
+A goal of MathCAT is to be an easy to use library for screen readers and other assistive technology to use to produce high quality speech and/or braille from MathML. It is a follow-on project from MathPlayer (see below) and uses lessons learned from it to produce even higher quality speech, navigation, and braille. MathCAT takes advantage of some new ideas the [MathML Working Group](https://mathml-refresh.github.io/charter-drafts/math-2020.html) is developing to allow authors to express their intent when they use a notation. E.g., $(3, 6)$ could be a point in the plane or an open interval, or even a shorthand notation for the greatest common divisor. When that information is conveyed in the MathML, MathCAT will use it to generate more natural sounding speech.
 
 Todo: incorporation of third party libraries to support a common subset of TeX math commands along with ASCIIMath.
 
@@ -185,6 +185,7 @@ Several people helped out in various ways with the project. I am very grateful f
 * Elaine A. Moore -- helped me to figure out what should and should not be said for chemistry, along with what makes sense as chemistry and what doesn't.
 * Richard Orme -- did all the work for the MathCAT NVDA settings dialog.
 * Sam Dooley, Murray Sargent, and Volker Sorge -- provided tables of Nemeth translations of characters and Nemeth tests
+* Moritz Groß ([Math4VIP](https://www.math4vip.de/)) -- worked on various parts of the Rust code base, and built the Python tool for tracking localization progress.
 
 Translators:
 

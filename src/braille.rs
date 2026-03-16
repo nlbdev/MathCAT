@@ -14,11 +14,11 @@ use crate::canonicalize::get_parent;
 use std::borrow::Cow;
 use std::ops::Range;
 use std::sync::LazyLock;
-use log::error;
+use log::{debug, error};
 
-static UEB_PREFIXES: phf::Set<char> = phf_set! {
-    '⠼', '⠈', '⠘', '⠸', '⠐', '⠨', '⠰', '⠠',
-};
+fn is_ueb_prefix(ch: char) -> bool {
+    matches!(ch, '⠼' | '⠈' | '⠘' | '⠸' | '⠐' | '⠨' | '⠰' | '⠠')
+}
 
 /// Returns the braille *char* at the given position in the braille string.
 fn braille_at(braille: &str, index: usize) -> char {
@@ -52,6 +52,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
             "Swedish" => swedish_cleanup(pref_manager, braille_string),
             "LaTeX" => LaTeX_cleanup(pref_manager, braille_string),
             "ASCIIMath" => ASCIIMath_cleanup(pref_manager, braille_string),
+            "ASCIIMath-fi" => ASCIIMath_cleanup(pref_manager, braille_string),
             _ => braille_string.trim_matches('⠀').to_string(),    // probably needs cleanup if someone has another code, but this will have to get added by hand
         };
 
@@ -179,13 +180,13 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
 
     /// Given a position in a Nemeth string, what is the position character that starts it (e.g, the prev char for capital letter)
     fn i_start_nemeth(braille_prefix: &str, first_ch: char) -> usize {
-        static NEMETH_NUMBERS: phf::Set<char> = phf_set! {
-            '⠂', '⠆', '⠒', '⠲', '⠢', '⠖', '⠶', '⠦', '⠔', '⠴', '⠨' // 1, 2, ...9, 0, decimal pt
-        };
+        fn is_nemeth_number(ch: char) -> bool {
+            matches!(ch, '⠂' | '⠆' | '⠒' | '⠲' | '⠢' | '⠖' | '⠶' | '⠦' | '⠔' | '⠴' | '⠨')
+        }
         let mut n_chars = 0;
         let prefix = &mut braille_prefix.chars().rev().peekable();
         if prefix.peek() == Some(&'⠠') ||  // cap indicator
-           (prefix.peek() == Some(&'⠼') && NEMETH_NUMBERS.contains(&first_ch)) ||  // number indicator
+           (prefix.peek() == Some(&'⠼') && is_nemeth_number(first_ch)) ||  // number indicator
            [Some(&'⠸'), Some(&'⠈'), Some(&'⠨')].contains(&prefix.peek()) {         // bold, script/blackboard, italic indicator
             n_chars += 1;
             prefix.next();
@@ -212,7 +213,7 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
         let prefix = &mut braille_prefix.chars().rev().peekable();
         let mut n_chars = 0;
         while let Some(ch) = prefix.next() {
-            if UEB_PREFIXES.contains(&ch) {
+            if is_ueb_prefix(ch) {
                 n_chars += 1;
             } else if ch == '⠆' {
                 let n_typeform_chars = check_for_typeform(prefix);
@@ -230,16 +231,16 @@ pub fn braille_mathml(mathml: Element, nav_node_id: &str) -> Result<(String, usi
 
     
     fn check_for_typeform(prefix: &mut dyn std::iter::Iterator<Item=char>) -> usize {
-        static UEB_TYPEFORM_PREFIXES: phf::Set<char> = phf_set! {
-            '⠈', '⠘', '⠸', '⠨',
-        };
+        fn is_ueb_typeform_prefix(ch: char) -> bool {
+            matches!(ch, '⠈' | '⠘' | '⠸' | '⠨')
+        }
 
         if let Some(typeform_indicator) = prefix.next() {
-            if UEB_TYPEFORM_PREFIXES.contains(&typeform_indicator) {
+            if is_ueb_typeform_prefix(typeform_indicator) {
                 return 2;
             } else if typeform_indicator == '⠼' &&
                       let Some(user_defined_typeform_indicator) = prefix.next() &&
-                      (UEB_TYPEFORM_PREFIXES.contains(&user_defined_typeform_indicator) || user_defined_typeform_indicator == '⠐') {
+                      (is_ueb_typeform_prefix(user_defined_typeform_indicator) || user_defined_typeform_indicator == '⠐') {
                         return 3;
                     }
         }
@@ -255,13 +256,14 @@ fn is_highlighted(ch: char) -> bool {
 }
 
 fn highlight(ch: char) -> char {
+    // safe because we have checked the range
     return unsafe{char::from_u32_unchecked(ch as u32 | 0xC0)};    // 0x28C0..0x28FF all have dots 7 & 8 on
 }
 
 fn unhighlight(ch: char) -> char {
     let ch_as_u32 = ch as u32;
     if (0x28C0..0x28FF).contains(&ch_as_u32) {              // 0x28C0..0x28FF all have dots 7 & 8 on
-        return unsafe{char::from_u32_unchecked(ch_as_u32 & 0x283F)};
+        return unsafe{char::from_u32_unchecked(ch_as_u32 & 0x283F)};  // safe because we have checked the range
     } else {
         return ch;
     }
@@ -816,9 +818,9 @@ static UEB_INDICATOR_REPLACEMENTS: phf::Map<&str, &str> = phf_map! {
 //     '⠝', '⠕', '⠏', '⠟', '⠗', '⠎', '⠞', '⠥', '⠧', '⠺', '⠭', '⠽', '⠵',
 // };
 
-static LETTER_NUMBERS: phf::Set<char> = phf_set! {
-    '⠁', '⠃', '⠉', '⠙', '⠑', '⠋', '⠛', '⠓', '⠊', '⠚',
-};
+fn is_letter_number(ch: char) -> bool {
+    matches!(ch, '⠁' | '⠃' | '⠉' | '⠙' | '⠑' | '⠋' | '⠛' | '⠓' | '⠊' | '⠚')
+}
 
 static SHORT_FORMS: phf::Set<&str> = phf_set! {
     "L⠁L⠃", "L⠁L⠃L⠧", "L⠁L⠉", "L⠁L⠉L⠗", "L⠁L⠋",
@@ -836,9 +838,9 @@ static SHORT_FORMS: phf::Set<&str> = phf_set! {
      "L⠆L⠽", "L⠒L⠉L⠧", "L⠒L⠉L⠧L⠛", "L⠐L⠕L⠋"
 };
 
-static LETTER_PREFIXES: phf::Set<char> = phf_set! {
-    'B', 'I', '𝔹', 'S', 'T', 'D', 'C', '𝐶', '𝑐',
-};
+fn is_letter_prefix(ch: char) -> bool {
+    matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | '𝑐')
+}
 
 // Trim braille spaces before and after braille indicators
 // In order: fraction, /, cancellation, letter, baseline
@@ -910,7 +912,7 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             return remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade1, UEB_Duration::Passage);
         }
         let grade2 = remove_unneeded_mode_changes(raw_braille, UEB_Mode::Grade2, UEB_Duration::Symbol);
-        // debug!("Symbol mode:  '{}'", grade2);
+        debug!("Symbol mode:  '{}'", grade2);
 
         if is_grade2_string_ok(&grade2) {
             return grade2;
@@ -919,7 +921,7 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             // A conversation with Ms. DeAndrea from BANA said that they mean use passage mode if ≥3 "segments" (≥2 blanks)
             // The G1 Word mode might not be at the start (iceb.rs:omission_3_6_7)
             let grade1_word = try_grade1_word_mode(raw_braille);
-            // debug!("Word mode:    '{}'", grade1_word);
+            debug!("Word mode:    '{}'", grade1_word);
             if !grade1_word.is_empty() {
                 return grade1_word;
             } else {
@@ -1036,12 +1038,12 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
             // A '1' is forced if 'a-j' follows a digit
             assert_eq!(chars[i], '1', "'is_forced_grade1' didn't start with '1'");
             // check that a-j follows the '1' -- we have '1Lx' where 'x' is the letter to check
-            if i+2 < chars.len() && LETTER_NUMBERS.contains(&unhighlight(chars[i+2])) {
+            if i+2 < chars.len() && is_letter_number(unhighlight(chars[i+2])) {
                 // check for a number before the '1'
                 // this will be 'N' followed by LETTER_NUMBERS or the number ".", ",", or " "
                 for j in (0..i).rev() {
                     let ch = chars[j];
-                    if !(LETTER_NUMBERS.contains(&unhighlight(ch)) || ".,W𝐖".contains(ch)) {
+                    if !(is_letter_number(unhighlight(ch)) || ".,W𝐖".contains(ch)) {
                         return ch == 'N'
                     }
                 }
@@ -1050,16 +1052,16 @@ fn ueb_cleanup(pref_manager: Ref<PreferenceManager>, raw_braille: String) -> Str
         }
 
         fn is_single_letter_on_right(chars: &[char], i: usize) -> bool {
-            static SKIP_CHARS: phf::Set<char> = phf_set! {
-                'B', 'I', '𝔹', 'S', 'T', 'D', 'C', '𝐶', 's', 'w'   // indicators
-            };
+            fn is_skip_char(ch: char) -> bool {
+                matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | 's' | 'w')
+            }
 
             // find the first char (if any)
             let mut count = 0;      // how many letters
             let mut i = i+1;
             while i < chars.len() {
                 let ch = chars[i];
-                if !SKIP_CHARS.contains(&ch) {
+                if !is_skip_char(ch) {
                     if ch == 'L' {
                         if count == 1 {
                             return false;   // found a second letter in the sequence
@@ -1249,7 +1251,7 @@ fn capitals_to_word_mode(braille: &str) -> String {
                             return false;
                         }
                     }
-                    if ch == 'L' || ch == 'N' || !LETTER_PREFIXES.contains(&ch) {
+                    if ch == 'L' || ch == 'N' || !is_letter_prefix(ch) {
                         return false;
                     }
                 }
@@ -1268,7 +1270,7 @@ fn find_next_char(chars: &[char], target: char) -> Option<usize> {
             // stop when L/N signals past potential target or we hit some non L/N char (actual braille)
             // debug!("   after L/N '{}'", chars[i_end+2..].iter().collect::<String>());
             for (i, &ch) in chars.iter().enumerate().skip(i_end+2) {
-                if ch == 'L' || ch == 'N' || !LETTER_PREFIXES.contains(&ch) {
+                if ch == 'L' || ch == 'N' || !is_letter_prefix(ch) {
                     return None;
                 } else if ch == target {
                     // debug!("   found target");
@@ -1305,10 +1307,9 @@ enum UEB_Duration {
 }
 
 // used to determine standing alone (on left side)
-static LEFT_INTERVENING_CHARS: phf::Set<char> = phf_set! {  // see RUEB 2.6.2
-    'B', 'I', '𝔹', 'S', 'T', 'D', 'C', '𝐶', 's', 'w',     // indicators
-    // opening chars have prefix 'o', so not in set ['(', '{', '[', '"', '\'', '“', '‘', '«'] 
-};
+fn is_left_intervening_char(ch: char) -> bool {
+    matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | 's' | 'w')
+}
 
 /// Return value for use_g1_word_mode()
 #[derive(Debug, PartialEq)]
@@ -1359,7 +1360,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                     'L' => {
                         // terminate numeric mode -- duration doesn't change
                         // let the default case handle pushing on the chars for the letter
-                        if LETTER_NUMBERS.contains(&unhighlight(chars[i+1])) {
+                        if is_letter_number(unhighlight(chars[i+1])) {
                             result.push('1');   // need to distinguish a-j from a digit
                         }
                         result.push(ch);
@@ -1378,7 +1379,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                     '#' => {
                         // terminate numeric mode -- duration doesn't change
                         i += 1;
-                        if i+1 < chars.len() && chars[i] == 'L' && LETTER_NUMBERS.contains(&unhighlight(chars[i+1])) {
+                        if i+1 < chars.len() && chars[i] == 'L' && is_letter_number(unhighlight(chars[i+1])) {
                             // special case where the script was numeric and a letter follows, so need to put out G1 indicator
                             result.push('1');
                             // the G1 case should work with 'L' now
@@ -1451,7 +1452,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                     _ => {
                         result.push(ch);
                         i += 1;
-                        if duration == UEB_Duration::Symbol && !LETTER_PREFIXES.contains(&ch) {
+                        if duration == UEB_Duration::Symbol && !is_letter_prefix(ch) {
                             mode = start_mode;
                         }
                     }
@@ -1541,7 +1542,7 @@ fn remove_unneeded_mode_changes(raw_braille: &str, start_mode: UEB_Mode, start_d
                         }
                         result.push(ch);
                         i += 1;
-                        if !LEFT_INTERVENING_CHARS.contains(&ch) {
+                        if !is_left_intervening_char(ch) {
                             cap_word_mode = false;
                             i_g2_start = Some(i);
                         }
@@ -1618,7 +1619,7 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
     }
     return (is_alone, &chars[i..i+2+n_right_matched], n_letters);
 
-    /// chars before before 'L'
+    /// chars before 'L'
     fn left_side_stands_alone(chars: &[char]) -> bool {
         // scan backwards to skip letters and intervening chars
         // once we hit an intervening char, only intervening chars are allowed if standing alone
@@ -1633,7 +1634,7 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
                (prev_ch == 'o' || prev_ch == 'b') {
                 intervening_chars_mode = true;
                 i -= 1;       // ignore 'Lx' and also ignore 'ox'
-            } else if LEFT_INTERVENING_CHARS.contains(&ch) {
+            } else if is_left_intervening_char(ch) {
                 intervening_chars_mode = true;
             } else {
                 return "W𝐖-—―".contains(ch);
@@ -1646,11 +1647,9 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
     // chars after character we are testing
     fn right_side_stands_alone(chars: &[char]) -> (bool, usize, usize) {
         // see RUEB 2.6.3
-        static RIGHT_INTERVENING_CHARS: phf::Set<char> = phf_set! {
-            'B', 'I', '𝔹', 'S', 'T', 'D', 'C', '𝐶', 's', 'w', 'e',   // indicators
-            // ')', '}', ']', '\"', '\'', '”', '’', '»',      // closing chars
-            // ',', ';', ':', '.', '…', '!', '?'              // punctuation           
-        };
+        fn is_right_intervening_char(ch: char) -> bool {
+            matches!(ch, 'B' | 'I' | '𝔹' | 'S' | 'T' | 'D' | 'C' | '𝐶' | 's' | 'w' | 'e')
+        }
         // scan forward to skip letters and intervening chars
         // once we hit an intervening char, only intervening chars are allowed if standing alone ('c' and 'b' are part of them)
         let mut intervening_chars_mode = false; // true when we are on the final stretch
@@ -1664,7 +1663,7 @@ fn stands_alone(chars: &[char], i: usize) -> (bool, &[char], usize) {
                 i += 1;       // ignore 'Lx' and also ignore 'ox'
             } else if ch == 'c' || ch == 'b' {
                 i += 1;       // ignore 'Lx' and also ignore 'ox'
-            } else if RIGHT_INTERVENING_CHARS.contains(&ch) {  
+            } else if is_right_intervening_char(ch) {  
                 intervening_chars_mode = true;
             } else {
                 return if "W𝐖-—―".contains(ch) {(true, n_letters, i)} else {(false, n_letters, i)};
@@ -2309,7 +2308,7 @@ impl Function for NemethNestingChars {
             } else if name == "msqrt" || name == "mroot" {
                 return Ok( Value::String( NemethNestingChars::nemeth_root_value(el, &repeat_char)? ) );
             } else {
-                panic!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name);
+                return Err(XPathError::Other(format!("NestingChars chars should be used only on 'mfrac'. '{}' was passed in", name)));
             }
         } else {
             // not an element, so nothing to do
@@ -2561,7 +2560,7 @@ impl BrailleChars {
                 (None, None) => (),
                 (Some(dot), Some(comma)) => {
                     if comma < dot {
-                        // switch dot/comma -- using "\x01" as a temp when switching the the two chars
+                        // switch dot/comma -- using "\x01" as a temp when switching the two chars
                         let switched = text.replace('.', "\x01").replace(',', ".").replace('\x01', ",");
                         mn_node.set_text(&switched);
                     }

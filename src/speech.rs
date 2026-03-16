@@ -586,8 +586,8 @@ struct Intent {
 
 impl fmt::Display for Intent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = if self.name.is_some() {
-            self.name.as_ref().unwrap().to_string()
+        let name = if let Some(name) = &self.name {
+            name.to_string()
         } else {
             self.xpath.as_ref().unwrap().to_string()
         };
@@ -649,7 +649,7 @@ impl Intent {
             }
         }
         if self.name.is_none() && self.xpath.is_none() {
-            panic!("Intent::replace: internal error -- neither 'name' nor 'xpath' is set");
+            bail!("Intent::replace: internal error -- neither 'name' nor 'xpath' is set");
         };
         
         for attr in mathml.attributes() {
@@ -2042,7 +2042,7 @@ impl FilesAndTimes {
         }
 
 
-        // check the time stamp on the included files -- if the head file hasn't changed, the the paths for the included files will the same
+        // check the time stamp on the included files -- if the head file hasn't changed, the paths for the included files will be the same
         for file in &self.ft {
             if !file.is_up_to_date() {
                 return false;
@@ -2559,7 +2559,7 @@ impl<'c, 's:'c, 'r, 'm:'c> SpeechRulesWithContext<'c, 's,'m> {
         fn add_dots_to_braille_char(ch: char, baseline_indicator_hack: bool) -> char {
             let as_u32 = ch as u32;
             if (0x2800..0x28FF).contains(&as_u32) {
-                return unsafe {char::from_u32_unchecked(as_u32 | 0xC0)};
+                return unsafe {char::from_u32_unchecked(as_u32 | 0xC0)};  // safe because we have checked the range
             } else if baseline_indicator_hack && ch == 'b' {
                 return '𝑏'
             } else {
