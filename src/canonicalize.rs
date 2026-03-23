@@ -639,9 +639,10 @@ impl CanonicalizeContext {
 		}
 		if matches!(element_name, "mtd" | "mtr" | "mlabeledtr")  {
 			let parent_name = name(get_parent(mathml));
+			debug!("assure_mathml: {} is a child of {}", element_name, parent_name);
 			if (element_name == "mtr" || element_name == "mlabeledtr") && parent_name != "mtable" {
 				bail!("Illegal MathML: {} is not a child of mtable. Parent is {}", element_name, mml_to_string(get_parent(mathml)));
-			} else if element_name == "mtd" && (parent_name != "mtr" || parent_name != "mlabeledtr") {
+			} else if element_name == "mtd" && !(parent_name == "mtr" || parent_name == "mlabeledtr") {
 				bail!("Illegal MathML: mtd is not a child of {}. Parent is {}", parent_name, mml_to_string(get_parent(mathml)));
 			}
 		}
@@ -4760,27 +4761,27 @@ mod canonicalize_tests {
 		use crate::interface::*;
         let test_str = "<math>
 			<mtable>
-			<mtr>
-				<mtd>
-				<mtext></mtext>
-				</mtd>
-				<mtd>
-				<mrow>
-				<mi>E</mi>
-				<mo>=</mo>
-				<mrow>
-					<mi>m</mi>
-					<mo>⁢<!--INVISIBLE TIMES--></mo>
-					<msup>
-					<mi>c</mi>
-					<mn>2</mn>
-					</msup>
+				<mtr>
+					<mtd>
+					<mtext></mtext>
+					</mtd>
+					<mrow>
+					<mi>E</mi>
+					<mo>=</mo>
+					<mrow>
+					<mtd>
+						<mi>m</mi>
+						<mo>⁢<!--INVISIBLE TIMES--></mo>
+						<msup>
+						<mi>c</mi>
+						<mn>2</mn>
+						</msup>
+						</mtd></mrow>
 					</mrow>
-				</mrow>
-				</mtd>
-			</mtr>
+					
+				</mtr>
 			</mtable>
-			</math>";
+		</math>";
         let package1 = &parser::parse(test_str).expect("Failed to parse test input");
 		let mathml = get_element(package1);
 		trim_element(mathml, false);
