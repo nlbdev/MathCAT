@@ -639,7 +639,6 @@ impl CanonicalizeContext {
 		}
 		if matches!(element_name, "mtd" | "mtr" | "mlabeledtr")  {
 			let parent_name = name(get_parent(mathml));
-			debug!("assure_mathml: {} is a child of {}", element_name, parent_name);
 			if (element_name == "mtr" || element_name == "mlabeledtr") && parent_name != "mtable" {
 				bail!("Illegal MathML: {} is not a child of mtable. Parent is {}", element_name, mml_to_string(get_parent(mathml)));
 			} else if element_name == "mtd" && !(parent_name == "mtr" || parent_name == "mlabeledtr") {
