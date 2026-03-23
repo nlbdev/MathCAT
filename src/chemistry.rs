@@ -1430,7 +1430,7 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
                 }
                 likelihood += likely_chem_superscript(pre_superscript);
             } else if pre_superscript_name == "mn" { // must have a pre-superscript (neutrons + protons)
-                if let Some(mass) = as_text(pre_superscript).parse::<u32>().ok() {
+                if let Ok(mass) = as_text(pre_superscript).parse::<u32>() {
                     // "drip line" is 1.5 * mass < 3.5 * mass -- it is possible to outside of this range, but VERY unlikely
                     // to avoid floating point, we multiply by 2 and compare to 3 and 7
                     if 3*atomic_number < 2*mass && 2*mass < 7*atomic_number {
