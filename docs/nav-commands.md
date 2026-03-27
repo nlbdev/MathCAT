@@ -1,3 +1,6 @@
+---
+layout: default
+---
 # MathCAT Navigation Commands and their Key Bindings
 
 There are two modes, each of which can set:
