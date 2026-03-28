@@ -39,7 +39,9 @@ English, German, Spanish, Finnish, Indonesian, Norwegian, Swedish, Vietnamese, a
 
 MathCAT's Nemeth braille is substantially better than that provided by MathPlayer and other MathML → Nemeth translators. It also includes integration with navigation (uses dots 7 and 8 to indicate the navigation node) along with braille cursor routing during navigation. Because of the high quality braille output, [BrailleBlaster](https://www.brailleblaster.org/) uses MathCAT for Nemeth and UEB braille generation from MathML.
 
-A number of other assistive technologies are working to incorporate MathCAT into their products. Notable among these groups is Vispero/JAWS. JAWS currently supports MathCAT in English and Spanish, with Nemeth Braille. UEB is on the way, so stay tuned. You can use all speech, navigation, and Braille navigation commands that MathCAT provides from within the JAWS Math Viewer. MathCAT settings are available through the JAWS Settings Center. Some other screen readers that use MathCAT:
+A number of other assistive technologies have incorporated MathCAT into their products. Notable among these is Vispero/JAWS. JAWS currently supports MathCAT's speech in English and Spanish; braille support includes Nemeth and UEB. Other languages and braille codes are on the way, so stay tuned. You can use all speech, navigation, and braille navigation commands that MathCAT provides from within the JAWS Math Viewer. MathCAT settings are available through the JAWS Settings Center.
+
+Some other screen readers that use MathCAT:
 
 * The Linux Orca screen reader incorporates MathCAT for speech, navigation, and braille.
 * Dolphin EasyReader uses MathCAT.
