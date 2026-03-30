@@ -37,6 +37,21 @@ fn determinant_1x1() -> Result<()> {
 
 }
 
+#[test]
+fn single_line_with_label() -> Result<()> {
+    let expr = r#"<math>
+  <mtable class="gather" displaystyle="true" intent=":system-of-equations">
+    <mtr>
+      <mtd intent=":equation-label"><mtext>(2)</mtext></mtd>
+      <mtd><mi>𝑏</mi><mo>=</mo><mn>2</mn></mtd>
+    </mtr>
+  </mtable>
+  </math>"#;
+    test_prefs("de", "ClearSpeak", vec![("Verbosity", "Terse")],
+        expr, "1 zeile, mit Beschriftung 2; b ist gleich 2")?;
+    Ok(())
+}
+
 
 /*
 #[test]
