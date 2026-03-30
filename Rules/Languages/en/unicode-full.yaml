@@ -2496,6 +2496,20 @@
  - "㉞": [t: "circled number thirty four"]          # 0x325e
  - "㉟": [t: "circled number thirty five"]          # 0x325f
  - "㊱": [t: "circled number thirty six"]           # 0x32b1
+ - "㊲": [t: "circled number thirty seven"]         # 0x32b2  (GPT-5.4 translation)
+ - "㊳": [t: "circled number thirty eight"]         # 0x32b3  (GPT-5.4 translation)
+ - "㊴": [t: "circled number thirty nine"]          # 0x32b4  (GPT-5.4 translation)
+ - "㊵": [t: "circled number forty"]                # 0x32b5  (GPT-5.4 translation)
+ - "㊶": [t: "circled number forty one"]            # 0x32b6  (GPT-5.4 translation)
+ - "㊷": [t: "circled number forty two"]            # 0x32b7  (GPT-5.4 translation)
+ - "㊸": [t: "circled number forty three"]          # 0x32b8  (GPT-5.4 translation)
+ - "㊹": [t: "circled number forty four"]           # 0x32b9  (GPT-5.4 translation)
+ - "㊺": [t: "circled number forty five"]           # 0x32ba  (GPT-5.4 translation)
+ - "㊻": [t: "circled number forty six"]            # 0x32bb  (GPT-5.4 translation)
+ - "㊼": [t: "circled number forty seven"]          # 0x32bc  (GPT-5.4 translation)
+ - "㊽": [t: "circled number forty eight"]          # 0x32bd  (GPT-5.4 translation)
+ - "㊾": [t: "circled number forty nine"]           # 0x32be  (GPT-5.4 translation)
+ - "㊿": [t: "circled number fifty"]                # 0x32bf  (GPT-5.4 translation)
  - "㋌": [t: "mercury"]                             # 0x32cc
  - "㋍": [t: "ergs"]                                # 0x32cd
  - "㋎": [t: "electron volts"]                      # 0x32ce
