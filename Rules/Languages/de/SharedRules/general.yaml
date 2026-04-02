@@ -668,8 +668,8 @@
   - T: "Zeile"      # phrase(the 1 by 4 'row' matrix)
   - test:
       if: "$ClearSpeak_Matrix = 'Vector' or $ClearSpeak_Matrix = 'EndVector'"
-      then: [T: "die 1 mal"]      # phrase('the 1 by' 2 row 'vector')
-      else: [T: "die 1 mal"]      # phrase('the 1 by' 2 'matrix')
+      then: [T: "vektor"]      # phrase('the 1 by' 2 row 'vector')
+      else: [T: "matrix"]      # phrase('the 1 by' 2 'matrix')
   - pause: long
   - x: "*/*"
   - test:

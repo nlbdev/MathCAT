@@ -52,6 +52,31 @@ fn single_line_with_label() -> Result<()> {
     Ok(())
 }
 
+// Added after a rule review found the German 1xN row-matrix rule repeated `die 1 mal` instead of saying `matrix`/`vektor`.
+#[test]
+fn matrix_1x2_row_regression() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow>
+      <mrow><mo>(</mo>
+        <mtable>
+          <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>5</mn>
+          </mtd>
+          </mtr>
+        </mtable>
+      <mo>)</mo></mrow></mrow>
+    </math>
+                                ";
+    test("de", "ClearSpeak",  expr, "die 1 mal 2 Zeile matrix; 3, 5")?;
+    test("de", "SimpleSpeak", expr, "die 1 mal 2 Zeile matrix; 3, 5")?;
+    Ok(())
+}
+
 
 /*
 #[test]
