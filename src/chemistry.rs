@@ -635,7 +635,7 @@ fn is_changed_after_unmarking_chemistry(mathml: Element) -> bool {
         let split_child = as_element(children_of_script[0]);
         new_script_children.append(&mut children_of_script);
         mathml.replace_children(new_script_children);     // temporarily has bad number of children 
-        debug!("After making bad script:\n{}", mml_to_string(mathml));
+        // debug!("After making bad script:\n{}", mml_to_string(mathml));
         if let Err(err) = merge_element(split_child) {
             panic!("{}", err);
         }

@@ -2302,6 +2302,7 @@ impl CanonicalizeContext {
 					while name(base) == "mrow" && base.children().len() == 1 {
 						// the base may be wrapped with mrows
 						base = as_element(base.children()[0]);
+						base.remove_attribute(SPLIT_TOKEN);
 					}
 					base.set_text(text);
 					return Some(last_child);
@@ -6485,6 +6486,13 @@ mod canonicalize_tests {
 				</msub>
 				</mrow>
 			</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn merge_mi_bug_545() -> Result<()> {
+        let test_str = "<math><mi>S</mi><mi>I</mi><msup><mi>N</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
+        let target_str = "<math><msup><mi mathvariant='normal'>SIN</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
