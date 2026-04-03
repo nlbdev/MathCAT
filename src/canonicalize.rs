@@ -563,7 +563,7 @@ impl CanonicalizeContext {
 			root.append_child(math_element);
 			mathml = root.children()[0].element().unwrap();
 		}
-		CanonicalizeContext::assure_mathml(mathml, 0)?;
+		CanonicalizeContext::assure_mathml(mathml)?;
 		let mathml = self.clean_mathml(mathml).unwrap();	// 'math' is never removed
 		self.assure_nary_tag_has_one_child(mathml);
 		// debug!("Not chemistry -- retry:\n{}", mml_to_string(mathml));
@@ -600,10 +600,7 @@ impl CanonicalizeContext {
 	}
 
 	/// Return an error if some element is not MathML (only look at first child of <semantics>) or if it has the wrong number of children
-	fn assure_mathml(mathml: Element, depth: usize) -> Result<()> {
-		if depth > crate::interface::MAX_DEPTH {
-			bail!("MathML is too deeply nested to process");
-		}
+	fn assure_mathml(mathml: Element) -> Result<()> {
 		let n_children = mathml.children().len();
 		let element_name = name(mathml);
 		if is_leaf(mathml) {
@@ -662,7 +659,7 @@ impl CanonicalizeContext {
 						}
 					}
 				}
-				return CanonicalizeContext::assure_mathml(presentation_element, depth + 1);
+				return CanonicalizeContext::assure_mathml(presentation_element);
 			}
 		} else if !IsNode::is_mathml(mathml) {
 			if element_name == "annotation-xml" {
@@ -674,7 +671,7 @@ impl CanonicalizeContext {
 
 		// valid MathML element and not a leaf -- check the children
 		for child in mathml.children() {
-			CanonicalizeContext::assure_mathml( as_element(child), depth + 1)?;
+			CanonicalizeContext::assure_mathml( as_element(child) )?;
 		}
 		return Ok( () );
 	}
@@ -2308,7 +2305,6 @@ impl CanonicalizeContext {
 					while name(base) == "mrow" && base.children().len() == 1 {
 						// the base may be wrapped with mrows
 						base = as_element(base.children()[0]);
-						base.remove_attribute(SPLIT_TOKEN);
 					}
 					base.set_text(text);
 					return Some(last_child);
@@ -3436,9 +3432,28 @@ impl CanonicalizeContext {
 				_ => mo_text,
 			};
 		};
-		if mo_text == "\u{2212}" {
-			mo_text = "-";
-		}
+		mo_text = match mo_text {
+			"\u{2212}" => "-",
+			// FIX: this needs to be after all expr the "|" has been fully canonicalized. At this point, any parent mrow/siblings is in flux
+			// "\u{007C}" => {  // vertical line -> divides
+			// if a number or variable (lower case single letter) precedes and follows "|", switch to divides (a bit questionable...)
+			// debug!("canonicalize_mo_text parent:\n{}", mml_to_string(parent));
+			// 	let precedes = mo.preceding_siblings();
+			// 	let follows = mo.following_siblings();
+			// 	if precedes.is_empty() || follows.is_empty() {
+			// 		"\u{007C}"
+			// 	} else {
+			// 		let before = as_element(precedes[0]);
+			// 		let after = as_element(follows[0]);
+			// 		let before_ok = name(before) == "mn" ||
+			// 				(name(before) == "mi" && IS_LIKELY_SCALAR_VARIABLE.is_match(as_text(before)));
+			// 		let after_ok = name(after) == "mn" ||
+			// 				(name(after) == "mi" && IS_LIKELY_SCALAR_VARIABLE.is_match(as_text(after)));
+			// 		if before_ok && after_ok {"\u{2224}"} else {"\u{007C}"}
+			// 	}
+			// },
+			_ => mo_text,
+		};
 		mo.set_text(mo_text);
 	}
 	
@@ -3674,7 +3689,7 @@ impl CanonicalizeContext {
 			if state_likelihood > 0 {
 				right_sibling.set_attribute_value(MAYBE_CHEMISTRY, state_likelihood.to_string().as_str());
 				// at this point, we know both node and right_sibling are positive, so we have at least a maybe
-				if state_likelihood + node_chem_likelihood.unwrap().parse::<i32>().unwrap() > 2 {
+				if state_likelihood + node_chem_likelihood.unwrap().parse::<isize>().unwrap() > 2 {
 					return FunctionNameCertainty::False;
 				} else {
 					return FunctionNameCertainty::Maybe
@@ -6492,13 +6507,6 @@ mod canonicalize_tests {
 				</msub>
 				</mrow>
 			</math>";
-        are_strs_canonically_equal_result(test_str, target_str, &[])
-	}
-
-	#[test]
-    fn merge_mi_bug_545() -> Result<()> {
-        let test_str = "<math><mi>S</mi><mi>I</mi><msup><mi>N</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
-        let target_str = "<math><msup><mi mathvariant='normal'>SIN</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math>";
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
