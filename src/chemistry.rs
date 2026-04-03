@@ -1374,7 +1374,7 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
 
     let mut empty_superscript = false;
     if tag_name == "msup" || tag_name == "msubsup" {
-        debug!("likely_adorned_chem_formula: mathml\n{}", mml_to_string(mathml));
+        // debug!("likely_adorned_chem_formula: mathml\n{}", mml_to_string(mathml));
         let superscript = as_element(children[if tag_name == "msup" {1} else {2}]);
         empty_superscript = name(superscript) == "mtext" && as_text(superscript).trim().is_empty();
         if !empty_superscript {
@@ -1485,7 +1485,7 @@ pub fn likely_adorned_chem_formula(mathml: Element) -> isize {
         likelihood += likely_chem_formula(base);
     }
     
-    debug!("returning from likely_adorned_chem_formula: likelihood={}, mathml\n{}", likelihood, mml_to_string(mathml));
+    // debug!("returning from likely_adorned_chem_formula: likelihood={}, mathml\n{}", likelihood, mml_to_string(mathml));
     return likelihood;
 
 
