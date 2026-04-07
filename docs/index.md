@@ -45,7 +45,7 @@ Some other screen readers that use MathCAT:
 
 * The Linux Orca screen reader incorporates MathCAT for speech, navigation, and braille.
 * Dolphin EasyReader uses MathCAT.
-* Kurzweil 3000 makes use of MathCAT, and that support includes synchronized highlighting as the math is spoken.
+* Kurzweil 3000 incorporates MathCAT’s speech and highlights the matching subexpression in dual colors as it is spoken, providing clear visual tracking for sighted users.
 * Microsoft Narrator has announced they will be using MathCAT in an upcoming version.
 
 [_Other companies_: if you have incorporated MathCAT into your product and would like to be mentioned here, please contact me by email or add an issue to update the documentation]
