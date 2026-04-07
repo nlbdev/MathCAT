@@ -41,7 +41,7 @@ MathCAT's Nemeth braille is substantially better than that provided by MathPlaye
 
 A number of other assistive technologies have incorporated MathCAT into their products. Notable among these is Vispero/JAWS. JAWS currently supports MathCAT's speech in English and Spanish; braille support includes Nemeth and UEB. Other languages and braille codes are on the way, so stay tuned. You can use all speech, navigation, and braille navigation commands that MathCAT provides from within the JAWS Math Viewer. MathCAT settings are available through the JAWS Settings Center.
 
-Some other screen readers that use MathCAT:
+Other assistive technology that use MathCAT:
 
 * The Linux Orca screen reader incorporates MathCAT for speech, navigation, and braille.
 * Dolphin EasyReader uses MathCAT.
