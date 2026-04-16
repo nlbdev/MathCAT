@@ -13,9 +13,9 @@
 #   for readability, spaces can be used around any of the delimiter characters
 # Note: if there are multiple fixities, the first one is used if the fixity is not given in the intent
 - IntentMappings: {
-    "indexed-by": "infix= ; senket: senket: nedre indeks; slutt senket: slutt senket: slutt nedre indeks",
+    "indexed-by": "infix= ; senka: senka: nedre indeks; slutt senka: slutt senka: slutt nedre indeks",
     "modified-variable": "silent= ",
-    "say-super": "infix=opphøyd: øvre indeks: øvre indeks",   # used with 'mo' for superscripts (e.g, "<")
+    "say-super": "infix=opphøgd: øvre indeks: øvre indeks",   # used with 'mo' for superscripts (e.g, "<")
     "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
 
     "absolute-value": "function= ; absoluttverdien; slutt absoluttverdi",
@@ -26,7 +26,7 @@
     "limit": "prefix=grenseverdien når",
     "lim-sup": "prefix=den øvre grenseverdien når", 
     "lim-inf": "prefix=den nedre grenseverdien når", 
-    "logarithm-with-base": "prefix=log med grunntall: logaritmen med grunntall: logaritmen med grunntall",
+    "logarithm-with-base": "prefix=log med grunntal: logaritmen med grunntal: logaritmen med grunntal",
     #"natural-logarithm": "function=l n: den naturlige logaritmen: den naturlige logaritmen",
     "minus": "infix=minus || prefix=minus",
     "plus": "infix=pluss || prefix=pluss",
@@ -50,8 +50,8 @@
 
 - NavigationParts: {
     "large-op": "base; nedre grense; øvre grense",
-    "mfrac": "teller;nevner",
-    "fraction": "teller;nevner",
+    "mfrac": "teljar;nemnar",
+    "fraction": "teljar;nemnar",
     "msqrt": "rot",
     "square-root": "rot",
     "mroot": "rot;rotindeks",
@@ -59,8 +59,8 @@
     "msub": "base;nedre indeks",
     "sub": "base;nedre indeks",
     "msup": "base;øvre indeks",
-    "say-super": "base;opphøyd",
-    "skip-super": "base;opphøyd",
+    "say-super": "base;opphøgd",
+    "skip-super": "base;opphøgd",
     "power": "base;eksponent",
     "msubsup": "base;nedre indeks;øvre indeks",
     "munder": "base;nedre grense",
@@ -119,14 +119,14 @@
     "t": "tonn",           # should only take positive powers
     "Da": "dalton",
     "Np": "neper",               # should only take negative powers
-    "u": "atommasseenhet",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
+    "u": "atommasseeining",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
     "eV": "elektronvolt",
     "rad": "radian",             # should only take negative powers
     "sr": "steradian",          # should only take negative powers      
   
     # others that take a prefix
     "a": "annuum",               # should only take positive powers
-    "as": "buesekund",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
+    "as": "bogesekund",          # see en.wikipedia.org/wiki/Minute_and_second_of_arc
 
     # technically wrong, but used in practice with SI Units
     "b": "bit",               # should only take positive powers
@@ -141,20 +141,20 @@
     "′": "minutt", "'": "minutt", "min": "minutt",
     "h": "time", "hr": "time", "Hr": "time", "t": "time",     #NORWEGIAN: t is often used for hour, but t is officially the symbol for "tonn". Added to rule "per-fraction" in SimpleSpeak and ClearSpeak
     "d": "dag", "dy": "dag",                                
-    "w": "uke", "wk": "uke",                    
+    "w": "veke", "wk": "veke",                    
     "y": "år", "yr": "år",                                  
 
     # angles
     "°": "grad", "deg": "grad", # should only take negative powers
-    "arcmin": "bueminutt",                                  
-    "amin": "bueminutt",                                   
-    "am": "bueminutt",                                      
-    "MOA": "bueminutt",                                    
-    "arcsec": "buesekund",
-    "asec": "buesekund",
+    "arcmin": "bogeminutt",                                  
+    "amin": "bogeminutt",                                   
+    "am": "bogeminutt",                                      
+    "MOA": "bogeminutt",                                    
+    "arcsec": "bogesekund",
+    "asec": "bogesekund",
 
     # distance
-    "au": "astronomisk enhet", "AU": "astronomisk enhet", "a.u.": "astronomisk enhet",
+    "au": "astronomisk eining", "AU": "astronomisk eining", "a.u.": "astronomisk eining",
     "ltyr": "lysår", "ly": "lysår", "l.y.": "lysår",
     "pc": "parsec",
     "Å": "ångstrøm", "Å": "ångstrøm",           # U+00C5 and U+212B
@@ -165,7 +165,7 @@
     # "B": "bel",    # "B" more commonly means bytes
     "dB": "desibel", # already logarithmic, so not used with SI prefixes
 
-    "amu": "atommasseenhet",
+    "amu": "atommasseeining",
     "atm": "atmosfære",
     "bar": "bar",
     "cal": "kalori",
@@ -173,7 +173,7 @@
     "grad": "gon",                                        
     "M": "molar",
     "R": "røntgen",
-    "rpm": "omdreining per minutt",
+    "rpm": "omdreiing per minutt",
     "℧": "m-h-o",
     "dyn": "dyn",
     "erg": "erg",
@@ -209,8 +209,8 @@
     "bbl": "fat", "BBL": "fat",
     "pk": "peck",
     "bu": "bushel",
-    "tsp": "teskje", "tsk": "teskje", "ts": "teskje",
-    "tbl": "spiseskje", "tbsp": "spiseskje", "ss": "spiseskje",
+    "tsp": "teskei", "tsk": "teskei", "ts": "teskei",
+    "tbl": "spiseskei", "tbsp": "spiseskei", "ss": "spiseskei",
 
     # liquid
     "fl dr": "fluid dram",
@@ -229,7 +229,7 @@
     "cwt": "hundredweight",
     "dwt": "pennyweight",
     "oz t": "ounce troy",
-    "lb t": "pound troy",
+    "lb t": "ounce troy",
 
     # energy
     "hp": "hestekraft", "hk": "hestekraft",
@@ -243,40 +243,17 @@
 
 - PluralForms: {
   # SWEDISH: this should be complete. Units not listed here are not modified when pluralised. /Tim
-    "sekund": "sekunder",
     "grad celsius": "grader celsius",
-    "atommasseenhet": "atommasseenheter",
-    "radian": "radianer",
-    "steradian": "steradianer",
-    "buesekund": "buesekunder",
-    #"bit": "bits",
-    #"byte": "bytes",
-    "baud": "bauder",
-    "minutt": "minutter",
-    "time": "timer",
-    "dag": "dager",
-    "uke": "uker",
+    "atommasseining": "atommasseeiningar",
+    "radian": "radianar",
+    "steradian": "steradianar",
+    "time": "timar",
+    "dag": "dagar",
+    "veke": "veker",
     "grad": "grader",
-    "bueminutt": "bueminutter",
-    "astronomisk enhet": "astronomiske enheter",
-    "atmosfære": "atmosfærer",
-    "kalori": "kalorier",
-    #"kibibit": "kibibits", 
-    #"mebibit": "mebibits", 
-    #"gibibit": "gibibits", 
-    #"tebibit": "tebibits",
-    #"pebibit": "pebibits",
-    #"exbibit": "exbibits", 
-    #"zebibit": "zebibits", 
-    #"yobibit": "yobibits",
-    #"kibibyte": "kibibytes",
-    #"mebibyte": "mebibytes",
-    #"gibibyte": "gibibytes", 
-    #"tebibyte": "tebibytes",
-    #"pebibyte": "pebibytes", 
-    #"exbibyte": "exbibytes", 
-    #"zebibyte": "zebibytes",
-    #"yobibyte": "yobibytes",
+    "astronomisk eining": "astronomiske einingar",
+    "atmosfære": "atmosfærar",
+    "kalori": "kaloriar",
     "mile": "miles",
     "rod": "rods",
     "link": "links",
@@ -284,27 +261,33 @@
     "kvadratmile": "kvadratmiles",
     "engelsk acre": "engelske acre",
     "bushel": "bushels",
-    "teskje": "teskjeer",
-    "spiseskje": "spiseskjeer",
-    #"fluid dram": "fluid drams",
-    "fluid ounce": "fluid ouncer",
-    "ounce": "ouncer",
-    "kopp": "kopper",
+    "teskei": "teskeier",
+    "spiseskei": "spiseskeier",
+    "fluid ounce": "fluid ouncar",
+    "ounce": "ouncar",
+    "kopp": "koppar",
     "pint": "pints",
-    "quart": "quarts",
+    "quart": "quartar",
     "grain": "grains",
-    #"hundredweight": "hundredweights",
-    #"pennyweight": "pennyweights",
     "hestekraft": "hestekrefter",
     "grad fahrenheit": "grader fahrenheit",
     "mile per hour": "miles per hour",
     "mile per gallon": "miles per gallon",
-    "tomme": "tommer",
-    "kvadrattomme": "kvadrattommer",
-    "kubikktomme": "kubikktommer",
-    "omdreining per minutt": "omdreininger per minutt",
-    "curie": "curier",
-    "annuum": "annua",
+    "tomme": "tommar",
+    "kvadrattomme": "kvadrattommar",
+    "kubikktomme": "kubikktommar",
+    "omdreiing per minutt": "omdreiingar per minutt",
+    "curie": "curiar",
+    kelvin: "kelvinar",
+    farad: "faradar", 
+    siemens: "siemensar",
+    tesla: "teslaar",
+    desibel: "desibelar",
+    røntgen: "røntgenar",
+
+
+
+
     
   }
 
@@ -321,10 +304,24 @@
     "arcmin", "amin", "am", "MOA":,                                    
     "arcsec", "asec",
     "ltyr", "ly", "l.y.",
+    "ha",
+
     
     #EnglishUnits
     "bbl", "BBL", "lb",
   }
+
+#- FeminineUnits: {
+  #SIUnits
+  #"°C", "℃", "u", 
+  #}
+
+#- FeminineUnitsWithoutPrefixes: {
+  #"°", "deg","w", "wk", "au", "AU", "a.u.", "amu", "rpm", 
+
+  #EnglishUnits
+  #"tsp", "tsk", "ts", "tbl", "tbsp", "ss", "hp", "hk", "°F", "℉", 
+  #}
 
     # stop when regularity begins
 - OrdinalFractionalDenominatorsForUnits: {
@@ -361,15 +358,15 @@
 # For English, a regular pattern starts at twenty
 # NORWEGIAN: Added in front of the numbers in "NumbersOrdinalLarge" and "NumbersLarge". Easiest to just remove "én", but you will probably never see these big ordinal numbers. 
 - NumbersOnes: [
-         "null", "én", "to", "tre", "fire", "fem", "seks", "sju", "åtte", "ni",
+         "null", "éin", "to", "tre", "fire", "fem", "seks", "sju", "åtte", "ni",
          "ti", "elleve", "tolv", "tretten", "fjorten", "femten", "seksten",
          "sytten", "atten", "nitten"
     ]
 
 - NumbersOrdinalOnes: [
-         "nullte", "første", "andre", "tredje", "fjerde", "femte", "sjette", "sjuende", "åttende", "niende",
-         "tiende", "ellevte", "tolvte", "trettende", "fjortende", "femtende", "sekstende",
-         "syttende", "attende", "nittende"
+         "nullte", "første", "andre", "tredje", "fjerde", "femte", "sjette", "sjuande", "åttande", "niande",
+         "tiande", "ellevte", "tolvte", "trettande", "fjortande", "femtande", "sekstande",
+         "syttande", "attande", "nittande"
     ]
 
 # NORWEGIAN: Should be changed to "", "endeler", "todeler"...Then, for example, the fraction 2/24 will be "2 tjue firedeler"
@@ -381,15 +378,15 @@
 
     # stop when regularity begins
 - NumbersOrdinalFractionalOnes: [
-         "nulldel", "hel", "halv", "tredjedel", "fjerdedel", "femtedel", "sjettedel", "sjudel", "åttedel", "nidel", "tidel", "ellevedel",
+         "nulldel", "heil", "halv", "tredjedel", "fjerdedel", "femtedel", "sjettedel", "sjudel", "åttedel", "nidel", "tidel", "ellevedel",
          "tolvdel", "trettendel", "fjortendel", "femtendel", "sekstendel", "syttendel", "attendel", "nittendel"
     ]
 
     # stop when regularity begins
 - NumbersOrdinalFractionalPluralOnes: [
-         "nulldeler", "hele", "halve", "tredjedeler", "fjerdedeler", "femtedeler", "sjettedeler", "sjudeler", "åttedeler", "nideler",
-         "tideler", "ellevedeler", "tolvdeler", "trettendeler", "fjortendeler", "femtendeler", "sekstendeler",
-         "syttendeler", "attendeler", "nittendeler"
+         "nulldeler", "heile", "halve", "tredjedelar", "fjerdedelar", "femtedelar", "sjettedelar", "sjudelar", "åttedelar", "nidelar",
+         "tidelar", "ellevedelar", "tolvdelar", "trettendelar", "fjortendelar", "femtendelar", "sekstendelar",
+         "syttendelar", "attendelar", "nittendelar"
     ]
     
     # What to use for multiples of 10
@@ -398,11 +395,11 @@
     ]
 
 - NumbersOrdinalTens: [
-         "", "tiende", "tjuende", "trettiende", "førtiende", "femtiende", "sekstiende", "syttiende", "åttiende", "nittiende"
+         "", "tiande", "tjuande", "trettiande", "førtiande", "femtiande", "sekstiande", "syttiande", "åttiande", "nittiande"
     ]
 
 - NumbersOrdinalPluralTens: [
-         "", "tideler", "tjuedeler", "trettideler", "førtideler", "femtideler", "sekstideler", "syttideler", "åttideler", "nittideler"
+         "", "tidelar", "tjuedelar", "trettidelar", "førtidelar", "femtidelar", "sekstidelar", "syttidelar", "åttidelar", "nittidelar"
     ]
 
 - NumbersHundreds: [
@@ -416,8 +413,8 @@
     ]
 
 - NumbersOrdinalPluralHundreds: [
-       "", "hundredeler", "to hundredeler", "tre hundredeler", "fire hundredeler", "fem hundredeler",
-         "seks hundredeler", "sju hundredeler", "åtte hundredeler", "ni hundredeler"
+       "", "hundredelar", "to hundredelar", "tre hundredelar", "fire hundredelar", "fem hundredelar",
+         "seks hundredelar", "sju hundredelar", "åtte hundredelar", "ni hundredelar"
     ]
       
     # At this point, hopefully the language is regular. If not, code needs to be written
@@ -450,10 +447,10 @@
     #]
       
 - NumbersOrdinalPluralLarge: [
-         "", "tusendeler", "milliondeler", "milliarddeler", "billiondeler", "billiarddeler",
-         "trilliondeler", "trilliarddeler", "kvadrilliondeler", "kvadrilliarddeler", "kvintilliondeler",
-         "kvintilliarddeler","sekstilliondeler","sekstilliarddeler","septilliondeler","septilliarddeler",
-         "oktilliondeler","oktilliarddeler","nonilliondeler","nonilliarddeler","desilliondeler"
+         "", "tusendelar", "milliondelar", "milliarddelar", "billiondelar", "billiarddelar",
+         "trilliondelar", "trilliarddelar", "kvadrilliondelar", "kvadrilliarddelar", "kvintilliondelar",
+         "kvintilliarddelar","sekstilliondelar","sekstilliarddelar","septilliondelar","septilliarddelar",
+         "oktilliondelar","oktilliarddelar","nonilliondelar","nonilliarddelar","desilliondelar"
     ]
          
          #"desilliarddeler","undesilliondeler","undesilliarddeler","duodesilliondeler","tredesilliondeler",

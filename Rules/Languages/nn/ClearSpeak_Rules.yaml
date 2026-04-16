@@ -496,7 +496,7 @@
   # SWEDISH/NORWEGIAN: Differentiate between the initial and ending declaration of the terms.
   # NORWEGIAN: Say "kardinaliteten til", but "absoluttverdien av"
   variables:
-  - WordToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Cardinality', 'kardinaliteten til', 'absoluttverdien av')"
+  - WordToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Cardinality', 'kardinaliteten til', 'absoluttverdien av')"    #Gunhild: kardinaliteten eller kardinaliteta
   - EndToSay: "IFTHENELSE($ClearSpeak_AbsoluteValue = 'Cardinality', 'kardinalitet', 'absoluttverdi')"
   replace:
   - x: "$WordToSay"

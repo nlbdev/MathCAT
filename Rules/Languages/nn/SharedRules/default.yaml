@@ -117,7 +117,7 @@
   tag: msqrt
   match: "."
   replace:
-  - T: "roten av"
+  - T: "rota av"
   - x: "*[1]"
   - pause: short
   - test:
@@ -130,7 +130,7 @@
   tag: mroot
   match: "."
   replace:
-  - T: "rottegn"
+  - T: "rotteikn"
   - T: "med grad"      # phrase("the root of x 'with index' 5")
   - x: "*[2]"
   - pause: short
@@ -142,7 +142,7 @@
   - pause: short
   - test:
       if: "not(IsNode(*[2],'leaf'))"
-      then: [T: "slutt rottegn"] # phrase("root of x 'end root symbol'")
+      then: [T: "slutt rotteikn"] # phrase("root of x 'end root symbol'")
 
 
 - name: simple-sub
@@ -163,7 +163,7 @@
   replace:
   - x: "*[1]"
   - pause: short
-  - T: "senket"
+  - T: "senka"
   - x: "*[2]"
   - pause: short
 
@@ -174,7 +174,7 @@
   - x: "*[1]"
   - test:
       if: "not($Verbosity='Terse' and *[2][self::m:mn and not(translate(., '.,', '')!=.)])"  # say "x 1" for terse vs "x sub 1". Say "x sub 1,2"
-      then: [T: "senket"]      # phrase(x 'sub' 2)
+      then: [T: "senka"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
 - name: literal
@@ -185,7 +185,7 @@
   - test:
       if: "name(.)='msubsup'"
       then:
-      - T: "senket"          # phrase(x 'sub' 2)
+      - T: "senka"          # phrase(x 'sub' 2)
       - x: "*[2]"
   - test:
       if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
@@ -193,13 +193,13 @@
       else_test:
           if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  # FIX: is this test necessary?
           then:
-          - T: "hevet"      # phrase(x 'super' 2)
+          - T: "heva"      # phrase(x 'super' 2)
           - x: "*[last()]"
           - test:
               if: "not(IsNode(*[last()], 'simple'))"
-              then: [T: "slutt hevet"]      # phrase(x super 2 'end of super')
+              then: [T: "slutt heva"]      # phrase(x super 2 'end of super')
           else:
-          - T: "opphøyd i"            # phrase(5 'raised to the' second power equals 25)
+          - T: "opphøgd i"            # phrase(5 'raised to the' second power equals 25)
           - x: "*[last()]"
           # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
 
@@ -275,8 +275,8 @@
       then:
       - with:
           variables:
-          - PreSubscript: "IFTHENELSE($Verbosity='Verbose', 'senket', 'senket')"
-          - PreSuperscript: "IFTHENELSE($Verbosity='Verbose', 'hevet', 'hevet')"
+          - PreSubscript: "IFTHENELSE($Verbosity='Verbose', 'senka', 'senka')"
+          - PreSuperscript: "IFTHENELSE($Verbosity='Verbose', 'heva', 'heva')"
           replace:
           - test: # only bother announcing if there is more than one prescript
               if: "count($Prescripts) > 2"
@@ -321,7 +321,7 @@
               - test:
                   if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
                   then:
-                  - T: "og resterende venstre indeks"      # phrase(in this case there are values 'and alternating prescripts')
+                  - T: "og resterande venstre indeks"      # phrase(in this case there are values 'and alternating prescripts')
                   - x: "$Prescripts[position() > 4]"
                   - T: "slutt venstre indeks"      # phrase(This is where 'end prescripts' occurs)
   - test:
@@ -329,8 +329,8 @@
       then:
       - with:
           variables:
-          - PostSubscript: "IFTHENELSE($Verbosity='Verbose', 'senket', 'senket')"
-          - PostSuperscript: "IFTHENELSE($Verbosity='Verbose', 'hevet', 'hevet')"
+          - PostSubscript: "IFTHENELSE($Verbosity='Verbose', 'senka', 'senka')"
+          - PostSuperscript: "IFTHENELSE($Verbosity='Verbose', 'heva', 'heva')"
           replace:
           - test: # only bother announcing if there is more than one postscript
               if: "count($Postscripts) > 2"
@@ -340,7 +340,7 @@
                   then: [T: "og"]      # phrase(10 is greater than 8 'and' less than 15)
               - T: "med"      # phrase(substitute x 'with' y)
               - x: "count($Postscripts) div 2"
-              - T: "høyre indeks"      # phrase(this material includes several 'postscripts')
+              - T: "høgre indeks"      # phrase(this material includes several 'postscripts')
               - pause: short
           - test:
               if: "not($Postscripts[1][self::m:none])"
@@ -414,7 +414,7 @@
                       - test:
                           if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
                           then:
-                          - T: "og resterende høyre indeks"      # phrase(this situation involves complexities 'and alternating scripts')
+                          - T: "og resterande høgre indeks"      # phrase(this situation involves complexities 'and alternating scripts')
                           - x: "$Postscripts[position() > 8]"
                           - T: "slutt indeks"      # phrase(At this point 'end scripts' occurs)
 
@@ -437,7 +437,7 @@
   - test:
       if: "NumColumns=1"
       then: [T: "kolonne"]      # phrase(the table with 3 rows and 1 'column')
-      else: [T: "kolonner"]      # phrase(the table with 3 rows and 4 'columns')
+      else: [T: "kolonnar"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
   - x: "*"
 
@@ -516,7 +516,7 @@
           then: [T: "venstre", pause: short]      # phrase(line on 'left' of the expression)
       - test:
           if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' right ')]"
-          then: [T: "høyre", pause: short]      # phrase(line on 'right' of the expression)
+          then: [T: "høgre", pause: short]      # phrase(line on 'right' of the expression)
       - test:
           if: ".[contains(@notation,'top')]"
           then: [T: "over", pause: short]      # phrase(line on 'top' of the expression)
@@ -555,13 +555,13 @@
       then: [T: "venstrepil", pause: short]      # phrase(the 'left arrow' indicates going back)
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' rightarrow ')]"
-      then: [T: "høyrepil", pause: short]      # phrase(the 'right arrow' indicates moving forward)
+      then: [T: "høgrepil", pause: short]      # phrase(the 'right arrow' indicates moving forward)
   - test:
       if: ".[contains(@notation,'northeastarrow')]"
-      then: [T: "nordøst-pil", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
+      then: [T: "nordaust-pil", pause: short]      # phrase(direction is indicated by the 'northeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southeastarrow ')]"
-      then: [T: "sørøst-pil", pause: short]      # phrase(direction is shown by the 'southeast arrow')
+      then: [T: "søraust-pil", pause: short]      # phrase(direction is shown by the 'southeast arrow')
   - test:
       if: ".[contains(concat(' ', normalize-space(@notation), ' '), ' southwestarrow ')]"
       then: [T: "sørvest-pil", pause: short]      # phrase(direction is shown by the 'southwest arrow')
@@ -570,16 +570,16 @@
       then: [T: "nordvest-pil", pause: short]      # phrase(direction is shown by the 'northwest arrow')
   - test:
       if: ".[contains(@notation,'updownarrow')]"
-      then: [T: "dobbelendet vertikal pil", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
+      then: [T: "dobbelenda vertikal pil", pause: short]      # phrase(upward movement is indicated by the 'double ended vertical arrow')
   - test:
       if: ".[contains(@notation,'leftrightarrow')]"
-      then: [T: "dobbelendet horisontal pil", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
+      then: [T: "dobbelenda horisontal pil", pause: short]      # phrase(progress is indicated by the 'double ended horizontal arrow')
   - test:
       if: ".[contains(@notation,'northeastsouthwestarrow')]"
-      then: [T: "dobbelendet diagonal oppoverpil", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
+      then: [T: "dobbelenda diagonal oppoverpil", pause: short]      # phrase(trend is indicated by the 'double ended up diagonal arrow')
   - test:
       if: ".[contains(@notation,'northwestsoutheastarrow')]"
-      then: [T: "dobbelendet diagonal nedoverpil", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
+      then: [T: "dobbelenda diagonal nedoverpil", pause: short]      # phrase(trend is indicated by the 'double ended down diagonal arrow')
   - test:
       if: ".[contains(@notation,'actuarial')]"
       then: [T: "aktuarielt symbol", pause: short]      # phrase(the 'actuarial symbol' represents a specific quantity)
@@ -595,14 +595,14 @@
   - test:
       if: ".[contains(@notation,'radical')]"
       then: [T: "kvadratrot", pause: short]      # phrase(5 is the 'square root' of 25)
-  - T: "omslutter"      # phrase(parentheses are 'enclosing' part of the equation)
+  - T: "omgir"      # phrase(parentheses are 'enclosing' part of the equation)
   - test:
       if: "*[self::m:mtext and .=' ']"
       then: [T: "mellomrom"]     # otherwise there is complete silence      # phrase(there is a 'space' between the words)   # SWEDISH: is this reasonable?
       else: [x: "*"]
   - test:
       if: "$Impairment = 'Blindness' and ( $SpeechStyle != 'SimpleSpeak' or not(IsNode(*[1], 'leaf')) )"
-      then: [pause: short, T: "slutt omslutning"]      # phrase(reached the 'end enclosure' point)
+      then: [pause: short, T: "slutt innramming"]      # phrase(reached the 'end enclosure' point)
   - pause: short
 
 - name: semantics

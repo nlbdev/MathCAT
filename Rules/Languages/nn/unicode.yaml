@@ -38,15 +38,15 @@
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  #NORWEGIAN: Changed from ":structure" to be equal to English translation
         then_test:
             if: "$Verbosity = 'Terse'"
-            then: [T: "utropstegn"]            #  0x21 (en: 'bang', google translation)
-            else: [T: "utropstegn"]            #  0x21 (en: 'exclamation point')
+            then: [T: "utropsteikn"]            #  0x21 (en: 'bang', google translation)
+            else: [T: "utropsteikn"]            #  0x21 (en: 'exclamation point')
         else: [T: "fakultet"]                    #  0x21 (en: 'factorial')
           
- - "\"": [T: "anførselstegn"]                  #  0x22 (en: 'quotation mark')
- - "#": [T: "nummertegn"]                      #  0x23 (en: 'number', MathPlayer: 'numeriskt tecken', google: 'siffra')
+ - "\"": [T: "hermeteikn"]                  #  0x22 (en: 'quotation mark')
+ - "#": [T: "nummerteikn"]                      #  0x23 (en: 'number', MathPlayer: 'numeriskt tecken', google: 'siffra')
  - "$": [T: "dollar"]                            #  0x24 (en: 'dollars')
  - "%": [T: "prosent"]                           #  0x25 (en: 'percent')
- - "&": [T: "og-tegn"]                         #  0x26 (en: 'ampersand')
+ - "&": [T: "og-teikn"]                         #  0x26 (en: 'ampersand')
  - "'": [T: "apostrof"]                          #  0x27 (en: 'apostrophe')
  - "(":                                          #  0x28
     - test:
@@ -65,13 +65,13 @@
             if: "$Verbosity='Terse'"
             then: [T: "sluttparentes"]                   #  0x29 (en: 'close', google translation)
             else: [T: "sluttparentes"]          #  0x29 (en: 'close paren')
-        else: [T: "høyreparentes"]              #  0x29 (en: 'right paren')
+        else: [T: "høgreparentes"]              #  0x29 (en: 'right paren')
 
  - "*":                                          #  0x2a
     test:
         if: "parent::*[name(.)='msup' or name(.)='msubsup' or name(.)='skip-super']"
         then: [T: "stjerne"]                    #  0x2a (en: 'star', google translation)
-        else: [T: "ganger"]                      #  0x2a (en: 'times')
+        else: [T: "gongar"]                      #  0x2a (en: 'times')
  - "+": [T: "pluss"]                              #  0x2b
  - ",":                                          #  0x2c
     # the following deals with the interaction of "," with "…" which sometimes wants the ',' to be silent
@@ -117,7 +117,7 @@
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                         #  (en: 'is', google translation)
      - T: "større enn"                            #  (en: 'greater than')
- - "?": [T: "spørsmålstegn"]                       #  0x3f (en: 'question mark')
+ - "?": [T: "spørsmålsteikn"]                       #  0x3f (en: 'question mark')
  - "@": [T: "krøllalfa"]                          #  0x40 (en: 'at sign')
  - "[":                                          #  0x5b
     - test:
@@ -131,7 +131,7 @@
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "slutt hakeparentes"]           #  (en: 'close bracket', google translation)
-        else: [T: "høyre hakeparentes"]           #  (en: 'right bracket')
+        else: [T: "høgre hakeparentes"]           #  (en: 'right bracket')
  - "^": [T: "hatt"]                               #  0x5e (en: 'hat')
  - "_": [T: "understrek"]                       #  0x5f (en: 'under bar', MathPlayer: 'streck under', google: 'under bar')
  - "`": [T: "grav aksent"]                       #  0x60 (en: 'grave')
@@ -168,7 +168,7 @@
     - test:
         if: $SpeechStyle = 'ClearSpeak' or $SpeechStyle = 'SimpleSpeak'
         then: [T: "slutt krøllparentes"]       #  (en: 'close brace', google translation)
-        else: [T: "høyre krøllparentes"]       #  (en: 'right brace')
+        else: [T: "høgre krøllparentes"]       #  (en: 'right brace')
 
  - "~": [T: "tilde"]                             #  0x7e
  - " ":                                          #  0xa0
@@ -177,7 +177,7 @@
         then: [T: "tom"]                       #  want to say something for fraction (etc) with empty child (en: 'empty', google translation)
         else: [T: ""]                            
 
- - "¬": [T: "ikke"]                              #  0xac (en: 'not')
+ - "¬": [T: "ikkje"]                              #  0xac (en: 'not')
  - "°": [T: "grader"]                              #  0xb0 (en: 'degrees')
  - "±": [T: "pluss minus"]                        #  0xb1 (en: 'plus or minus')
  - "´": [T: "akutt aksent"]                       #  0xb4 (en: 'acute')
@@ -185,14 +185,14 @@
     - test:
         if: "$SpeechStyle = 'LiteralSpeak' or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
         then: [T: "midtstilt prikk"]                       #  (en: 'times', google translation)                        
-        else: [T: "ganger"]               #  (en: 'dot', MathPlayer: 'mellanpunkt', google: 'punkt')             
+        else: [T: "gongar"]               #  (en: 'dot', MathPlayer: 'mellanpunkt', google: 'punkt')             
  - "×":                                          #  0xd7
     - test:
         if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [T: "ganger"]                       #  (en: 'times', google translation)
+        then: [T: "gongar"]                       #  (en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
-            then: [T: "ganger"]                   #  (en: 'by', google translation)
+            then: [T: "gongar"]                   #  (en: 'by', google translation)
             else: [T: "kryss"]                  #  (en: 'cross')
  - "÷": [T: "delt på"]                          #  0xf7 (en: 'divided by')
  - "̀": [T: "grav aksent"]                #  0x300 (en: 'grave accent embellishment', google: 'allvarlig accentutsmyckning')
@@ -269,8 +269,8 @@
         then: [T: "prikk prikk prikk"]           #  (en: 'dot dot dot', google translation)
         else_test:                               #  must have $ClearSpeak_Ellipses = 'AndSoOn'
             if: "count(following-sibling::*) = 0"
-            then: [T: "og så videre"]           #  (en: 'and so on', google translation)
-            else: [T: "og så videre opp til"]       #  (en: 'and so on up to')
+            then: [T: "og så vidare"]           #  (en: 'and so on', google translation)
+            else: [T: "og så vidare opp til"]       #  (en: 'and so on up to')
 
  - "⁡":                                          #  0x2061 #NORWEGIAN: Changed to literal. Didn't add the test with "TrigFunctionName, cause want to say "sinus hyperbolicus av"
     - test:
@@ -289,12 +289,12 @@
  - "⁢": [T: ""]                                  #  0x2062
  - "⁣": [T: ""]                                  #  0x2063
  - "⁤": [T: "og"]                              #  0x2064 (en: 'and', google: 'og')
- - "′": [T: "primtegn"]                              #  0x2032 (en: 'prime')
- - "″": [T: "dobbelt primtegn"]                               #  0x2033 (en: 'double prime')
- - "‴": [T: "trippelt primtegn"]                              #  0x2034 (en: 'triple prime')
+ - "′": [T: "primteikn"]                              #  0x2032 (en: 'prime')
+ - "″": [T: "dobbelt primteikn"]                               #  0x2033 (en: 'double prime')
+ - "‴": [T: "trippelt primteikn"]                              #  0x2034 (en: 'triple prime')
 
  - "ℂℕℚℝℤ":                                      #  here we rely on this running through the table again to speak "cap xxx"
-    - T: "dobbeltstreket"                          #  (en: 'double-struck')
+    - T: "dobbeltstreka"                          #  (en: 'double-struck')
     - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [T: "grader celsius"]                    #  0x2103 (en: 'degrees celsius')
@@ -311,7 +311,7 @@
  - "K": [T: "kelvin"]                     #  0x212a (en: 'kelvin')
  - "Å": [T: "ångstrøm"]                         #  0x212b
  - "ⅆⅇⅈⅉ":                                       #  0x2146-9
-    - T: "dobbeltstreket kursiv"                 #  (en: 'double-struck italic')
+    - T: "dobbeltstreka kursiv"                 #  (en: 'double-struck italic')
     - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
                          
  - "←": [T: "venstrepil"]                    #  0x2190 (en: 'leftwards arrow')
@@ -320,7 +320,7 @@
      - test:
         if: "ancestor::*[2][self::m:limit]"
         then: [T: "går mot"]               #  (en: 'approaches', google translation)
-        else: [T: "høyrepil"]                #  (en: 'right arrow')
+        else: [T: "høgrepil"]                #  (en: 'right arrow')
 
  - "↓": [T: "nedoverpil"]                         #  0x2193 (en: 'downwards arrow')
  - "⇒": [T: "impliserer"]                 #  0x21d2 (en: 'rightwards double arrow')
@@ -328,8 +328,8 @@
  - "∂": [T: "partiell derivert"]                                         #  0x2202
      # SWEDISH: This is only refered to as "del" in Swedish, but we write "dell" for correct pronounciation.
  - "∃": [T: "det eksisterer"]                     #  0x2203 (en: 'there exists')
- - "∄": [T: "det eksisterer ikke"]                #  0x2204 (en: 'there does not exist')
- - "∅": [T: "den tomme mengden"]                     #  0x2205 (en: 'empty set')
+ - "∄": [T: "det eksisterer ikkje"]                #  0x2204 (en: 'there does not exist')
+ - "∅": [T: "den tomme mengda"]                     #  0x2205 (en: 'empty set')
  - "∆": [T: "laplace av"]                     # 0x2206 (en: 'laplacian of')
  - "∈":                                          #  0x2208
     - test:
@@ -346,13 +346,13 @@
                 then: [T: "i"]                   #  (en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "element i"]          #  (en: 'element of', google translation)
-              - else: [T: "tilhørende"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
+              - else: [T: "tilhøyrande"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "i"] # NORWEGIAN: Set the "auto" case to be "i"
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "er et element i"]                #  (en: 'is in', google translation)
-              - else: [T: "tilhører"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
+                then: [T: "er eit element i"]                #  (en: 'is in', google translation)
+              - else: [T: "tilhøyrer"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
  - "∉":                                          #  0x2209
     # rule is identical to 0x2208
      - test:
@@ -361,23 +361,23 @@
         - test:
             if: "not(ancestor::*[self::m:set])"    # "the set x is an element of ..." sounds bad"
             then: [T: "er"]
-        - T: "ikke et element i"
+        - T: "ikkje eit element i"
         # Several options for speaking elements in ClearSpeak -- they split between being inside a set or not and then the option
         # SWEDISH/NORWEGIAN: The word "medlem" is not commonly used in set theory, so we removed that rule. If the parsing has set the parameter to "Member" it will fall under the "else" case.
         else_test:
             if: "../../self::m:set or ../../../self::m:set" #  inside a set
             then_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "ikke i"]              #  (en: 'not in', google translation)
+                then: [T: "ikkje i"]              #  (en: 'not in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "ikke element i"]     #  (en: 'not element of', google translation)
-              - else: [T: "ikke tilhørende"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
+                then: [T: "ikkje element i"]     #  (en: 'not element of', google translation)
+              - else: [T: "ikkje tilhøyrande"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'not belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "er ikke et element i"]    #  (en: 'is not an element of', google translation)
+                then: [T: "er ikkje eit element i"]    #  (en: 'is not an element of', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'In'
-                then: [T: "er ikke i"]           #  (en: 'is not in', google translation)
-              - else: [T: "tilhører ikke"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'does not belong to')
+                then: [T: "er ikkje i"]           #  (en: 'is not in', google translation)
+              - else: [T: "tilhøyrer ikkje"]        #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'does not belong to')
  - "∊":                                          #  0x220a
    - test:
         if: "$SpeechStyle != 'ClearSpeak'"
@@ -393,32 +393,32 @@
                 then: [T: "i"]                   #  (en: 'in', google translation)
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
                 then: [T: "element i"]          #  (en: 'element of', google translation)
-              - else: [T: "tilhørende"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
+              - else: [T: "tilhøyrande"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belonging to')
             else_test:
               - if: $ClearSpeak_SetMemberSymbol = 'Auto' or $ClearSpeak_SetMemberSymbol = 'In'
                 then: [T: "i"]         #  (en: 'is an element of', google translation) #NORWEGIAN: Set the "auto" case to be "i"
               - else_if: $ClearSpeak_SetMemberSymbol = 'Element'
-                then: [T: "er et element i"]                #  (en: 'is in', google translation)
-              - else: [T: "tilhører"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
+                then: [T: "er eit element i"]                #  (en: 'is in', google translation)
+              - else: [T: "tilhøyrer"]             #  $ClearSpeak_SetMemberSymbol = 'Belongs' (en: 'belongs to')
  - "∏": [T: "produktet"]                           #  0x220f (en: 'product')
  - "∐": [T: "koproduktet"]                   #  0x2210 (en: 'co-product', MathPlayer: 'coproduct', google: 'samprodukt')
  - "∑": [T: "sum"]                             #  0x2211 (en: 'sum')
  - "−": [T: "minus"]                             #  0x2212
  - "∓": [T: "minus pluss"]                        #  0x2213 (en: 'minus or plus')
- - "∗": [T: "ganger"]                      #  0x2217 (en: 'times')
- - "∘": [T: "sammensatt med"]                               #  0x2218 (en: 'composed with')
- - "√": [T: "kvadratroten av"]                    #  0x221a (en: 'square root of')
+ - "∗": [T: "gongar"]                      #  0x2217 (en: 'times')
+ - "∘": [T: "samansett med"]                               #  0x2218 (en: 'composed with')
+ - "√": [T: "kvadratrota av"]                    #  0x221a (en: 'square root of')
  - "∝":                                          #  0x221d
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                         #  (en: 'is', google translation)
      - T: "proporsjonal med"                    #  (en: 'proportional to')
- - "∞": [T: "uendelig"]                        #  0x221e (en: 'infinity')
+ - "∞": [T: "uendeleg"]                        #  0x221e (en: 'infinity')
  - "∟": [T: "rett vinkel"]                      #  0x221f (en: 'right angle')
  - "∠": [T: "vinkel"]                            #  0x2220 (en: 'angle')
  - "∡": [T: "målt vinkel"]                       #  0x2221 (en: 'measured angle')
  - "∣": [T: "deler"]                             #  0x2223 (en: 'divides')
- - "∤": [T: "deler ikke"]                        #  0x2224 (en: 'does not divide')
+ - "∤": [T: "deler ikkje"]                        #  0x2224 (en: 'does not divide')
  - "∥":                                           # 0x2225
      - test:
          if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
@@ -432,7 +432,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                         #  (en: 'is', google translation)
-     - T: "ikke parallell med"                  #  (en: 'not parallel to')
+     - T: "ikkje parallell med"                  #  (en: 'not parallel to')
  - "∧": [T: "og"]                               #  0x2227 (en: 'and')
  - "∨": [T: "eller"]                             #  0x2228 (en: 'or')
  - "∩": [T: "snitt"]                             #  0x2229 (en: 'intersection')
@@ -459,7 +459,7 @@
      - test: 
         if: "$Verbosity!='Terse'"
         then: [T: "er"]
-     - T: "ikke lik"                      #  (en: 'not equal to')
+     - T: "ikkje lik"                      #  (en: 'not equal to')
  - "≡":                                          #  0x2261
      - test: 
          if: "$Verbosity!='Terse'"
@@ -489,41 +489,41 @@
          then: [T: "er"]
      - T: "større enn eller lik"
      
- - "≺": [T: "foregår"]                       #  0x227a (en: 'precedes') 
+ - "≺": [T: "føregår"]                       #  0x227a (en: 'precedes') 
  - "≻": [T: "følger"]                      #  0x227b (en: 'succeeds')   
  - "⊂":                                          #  0x2282
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "er en"]                         #     (en: 'is a', google translation)
+         then: [T: "er ei"]                         #     (en: 'is a', google translation)
      - T: "ekte delmengde av"
     
  - "⊃":                                          #  0x2283
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "er en"]                         #     (en: 'is a', google translation)
+         then: [T: "er ei"]                         #     (en: 'is a', google translation)
      - T: "ekte overmengde av"
      
  - "⊄":                                          #  0x2284
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke en ekte delmengde av"
+     - T: "ikkje ei ekte delmengde av"
      
  - "⊅":                                          #  0x2285  
      - test: 
          if: "$Verbosity!='Terse'"
          then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "ikke en ekte overmengde av"
+     - T: "ikkje ei ekte overmengde av"
     
  - "⊆":                                          #  0x2286
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "er en"]                         #     (en: 'is a', google translation)
+         then: [T: "er ei"]                         #     (en: 'is a', google translation)
      - T: "delmengde av"
      
  - "⊇":                                          #  0x2287
      - test: 
          if: "$Verbosity!='Terse'"
-         then: [T: "er en"]                         #     (en: 'is a', google translation)
+         then: [T: "er ei"]                         #     (en: 'is a', google translation)
      - T: "overmengde av"
     

@@ -16,7 +16,7 @@
   match: "count(*)=2"
   replace:
   - x: "*[2]"
-  - T: "normen"      # phrase(the 'norm' can be a measure of distance)
+  - T: "norma"      # phrase(the 'norm' can be a measure of distance)   #Gunhild: norma eller normen?
   # NORWEGIAN: Removed test for Verbosity
   - T: "til"      # phrase(systems 'of' linear equations)
   - x: "*[1]"
@@ -28,12 +28,12 @@
   replace:
   - test:
       if: "$Verbosity!='Terse'"
-      then: [T: "mengden av homomorfier på"]
-      else: [T: "homomorfiene på"]
+      then: [T: "mengda av homomorfiar på"]  #Gunhild: riktig bøyning av homomorfi?
+      else: [T: "homomorfiane på"]
   - x: "*[1]"
   - test:
       if: "$Impairment = 'Blindness' and not(*[last()][IsBracketed(., '', '') or IsNode(., 'simple')] )"
-      then: [T: "slutt homomorfier"]
+      then: [T: "slutt homomorfiar"]
   - test:
       if: "IsNode(., '2D')"
       then: [pause: short]
@@ -69,7 +69,7 @@
   tag: norm
   match: "count(*)=1"
   replace:
-  - T: "normen"      # phrase(the 'norm' can be a measure of distance)
+  - T: "norma"      # phrase(the 'norm' can be a measure of distance)  #Gunhild: normen eller norma?
   - T: "til"      # phrase(this is the mean 'of' the data)
   - x: "*[1]"
   - test:
