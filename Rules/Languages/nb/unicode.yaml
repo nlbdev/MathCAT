@@ -3,7 +3,7 @@
     - test: 
         if: "$TTS='none'"
         then: [T: "."]                            #  (en: '.', google translation)
-        else: [spell: "'.'"]
+        else: [SPELL: "'.'"]
 
  # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
  # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"
@@ -27,7 +27,7 @@
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
+        replace: [SPELL: "translate('.', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"]
 
  - "0-9": [T: "."]                               #  (en: '.', google: 'A')
  
@@ -97,7 +97,11 @@
         if: "parent::*[1][self::m:mn]"
         then: [T: "punktum"]                       #  (en: 'point', google translation)                               
         else: [T: "prikk"]                       #  (en: 'dot')                                                     
- - "/": [T: "delt på"]                         #  0x2f (en: 'divided by')
+ - "/":                         #  0x2f (en: 'divided by')
+     - test:
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+        then: [t: "skråstrek"]                 # 0x2f
+        else: [t: "delt på"]                   # 0x2f
  - ":": [T: "kolon"]                             #  0x3a (en: 'colon')
  - ";": [T: "semikolon"]                         #  0x3b (en: 'semicolon')
  - "<":                                          #  0x3c
@@ -141,16 +145,18 @@
         then: [T: "start krøllparentes"]       #  (en: 'open brace', google translation)
         else: [T: "venstre krøllparentes"]     #  (en: 'left brace')
     - pause: short
- - "|":                                          #  0x7c   NORWEGIAN: Changed to English version
+ - "|":                                          # 0x7c
     # note: for ClearSpeak and SimpleSpeak, "|" inside of sets is handled at the mrow level, same for 'sets'
      - with:
         variables: [DefaultToGiven: "count(preceding-sibling::*)=1 and count(following-sibling::*)=1 and ../../../*[1][.='P']"] # P(A|B)
         replace:
         - test:
-            - if: "$SpeechStyle != 'ClearSpeak'"
+            - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+              then: [T: "vertikal strek"]
+            - else_if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                 - if: "$DefaultToGiven"
-                  then: [pause: short, T: "gitt"]
+                  then: [T: "gitt"]
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
                   then: [T: "deler"]
@@ -160,7 +166,7 @@
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [T: "slik at"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [pause: short, T: "gitt"] 
+              then: [T: "gitt"] 
             - else: [T: "deler"]
 
  - "}":                                          #  0x7d
@@ -183,17 +189,22 @@
  - "´": [T: "akutt aksent"]                       #  0xb4 (en: 'acute')
  - "·":                                          #  0xB7
     - test:
-        if: "$SpeechStyle = 'LiteralSpeak' or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
         then: [T: "midtstilt prikk"]                       #  (en: 'times', google translation)                        
         else: [T: "ganger"]               #  (en: 'dot', MathPlayer: 'mellanpunkt', google: 'punkt')             
- - "×":                                          #  0xd7
+ - "×":                                          # 0xd7
     - test:
-        if: "$SpeechStyle != 'ClearSpeak' or $ClearSpeak_MultSymbolX = 'Auto'"
-        then: [T: "ganger"]                       #  (en: 'times', google translation)
+        if: "$SpeechStyle = 'ClearSpeak'"
+        then_test:
+        - if: "$ClearSpeak_MultSymbolX = 'Auto'"
+          then: [T: "ganger"]
+        - else_if: "$ClearSpeak_MultSymbolX = 'By'"
+          then: [T: "ganger"]
+          else: [T: "kryss"]
         else_test:
-            if: $ClearSpeak_MultSymbolX = 'By'
-            then: [T: "ganger"]                   #  (en: 'by', google translation)
-            else: [T: "kryss"]                  #  (en: 'cross')
+            if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+            then: [T: "kryss"]
+            else: [T: "ganger"]
  - "÷": [T: "delt på"]                          #  0xf7 (en: 'divided by')
  - "̀": [T: "grav aksent"]                #  0x300 (en: 'grave accent embellishment', google: 'allvarlig accentutsmyckning')
  - "́": [T: "akutt aksent"]            #  0x301 (en: 'acute accent embellishment', google: 'akut accentutsmyckning')
@@ -223,7 +234,7 @@
     - pitch:
         value: "$CapitalLetters_Pitch"
         # note: processing of ranges converts '.' into the character, so it needs to be in quotes below
-        replace: [spell: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
+        replace: [SPELL: "translate('.', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩ', 'αβγδεζηθικλμνξοπρςστυφχψω')"]
 
  - "α": [T: "alfa"]                              #  0x3b1 (en: 'alpha')
  - "β": [T: "beta"]                              #  0x3b2
@@ -295,24 +306,24 @@
 
  - "ℂℕℚℝℤ":                                      #  here we rely on this running through the table again to speak "cap xxx"
     - T: "dobbeltstreket"                          #  (en: 'double-struck')
-    - spell: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
+    - SPELL: "translate('.', 'ℂℕℚℝℤ', 'CNQRZ')"
 
  - "℃": [T: "grader celsius"]                    #  0x2103 (en: 'degrees celsius')
  - "℉": [T: "grader fahrenheit"]                 #  0x2109 (en: 'degrees fahrenheit')
  - "ℋℛℓ":                                        #  0x210b
     - T: "script font"                        #  (en: 'script', google: 'manus')             
-    - spell: "translate('.', 'ℋℛℓ', 'HRl')"
+    - SPELL: "translate('.', 'ℋℛℓ', 'HRl')"
  - "ℎ": [T: "plancks konstant"]                   #  0x210e
  - "ℜ":                                          #  0x211c
     - T: "fraktur"                       #  (en: 'fraktur', google: 'fraktur')
-    - spell: "'R'"
+    - SPELL: "'R'"
 
  - "Ω": [T: "ohm"]                               #  0x2126 (en: 'ohms')
  - "K": [T: "kelvin"]                     #  0x212a (en: 'kelvin')
  - "Å": [T: "ångstrøm"]                         #  0x212b
  - "ⅆⅇⅈⅉ":                                       #  0x2146-9
     - T: "dobbeltstreket kursiv"                 #  (en: 'double-struck italic')
-    - spell: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
+    - SPELL: "translate('.', 'ⅆⅇⅈⅉ', 'deij')"
                          
  - "←": [T: "venstrepil"]                    #  0x2190 (en: 'leftwards arrow')
  - "↑": [T: "oppoverpil"]                         #  0x2191 (en: 'upwards arrow')
