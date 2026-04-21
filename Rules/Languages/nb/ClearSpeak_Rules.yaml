@@ -1,4 +1,5 @@
 ---
+# audit-ignore
 - name: pause
   tag: "!*"
   match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
@@ -14,12 +15,14 @@
           else: [pause: medium]
       - x: "."
       
+# audit-ignore
 - name: intent-literal-silent
   tag: [mi, mo, mn]
   match: "contains(@data-intent-property, ':silent:')"
   # say nothing
   replace: []
 
+# audit-ignore
 # handling of negative numbers that come from 'intent' is hard -- we do something that is close to right here 
 - name: intent-literal-negative-number
   tag: mn
@@ -28,6 +31,7 @@
   - T: "minus"      # phrase(10 'minus' 4 equals 6)
   - x: "translate(text(), '-_', '')"
 
+# audit-ignore
 - name: default
   tag: square-root
   match: "."
@@ -55,6 +59,7 @@
       then: [pause: short]
       else: [pause: long]
 
+# audit-ignore
 - name: default
   tag: root
   match: "."
@@ -70,7 +75,7 @@
           then: [T: "den negative"]      # phrase(minus 6 is a 'negative' number)
           else: [T: "den positive"]      # phrase(10 is a 'positive' number)
   - test:
-      if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
+      if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]" # NORWEGIAN: Changed decimal point to $DecimalSeparators
       then_test:
       - if: "*[2][.='2']"
         then: [T: "kvadratroten"]      # phrase(5 is the 'square root' of 25)
@@ -95,6 +100,7 @@
         then: [pause: short]
         else: [pause: long]
 
+# audit-ignore
 # The 'negative' rule interacts with the msqrt/mroot rules as those might pick off this case ("the negative square root of x")
 - name: negative_and_positive
   tag: [plus, minus]
@@ -115,7 +121,8 @@
 
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
-       
+    
+# audit-ignore  
 # Units (e.g., meters per second)
 # NORWEGIAN: Added rule for t="time"
 - name: per-fraction
@@ -135,13 +142,14 @@
       else: 
        - x: "*[2]"
 
+# audit-ignore 
 # Note: if the bounds change for what is a common fraction, change them in general.yaml for units
 - name: common-fraction
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    #NORWEGIAN: Changed decimal point to $DecimalSeparators
-  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             #NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    # NORWEGIAN: Changed decimal point to $DecimalSeparators
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             # NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
   variables:
   - IsPlural: "not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064'])"     # '\u2064' is invisible plus and is used in mixed fractions
     # set right level for the location of the common fraction/mixed fraction
@@ -186,8 +194,8 @@
           then: [x: "DefinitionValue(*[2], 'Speech', 'OrdinalFractionalDenominatorsForUnits')"]
           else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
-
-#NORWEGIAN: Changed to English version, but changed decimal point to $DecimalSeparators 
+# audit-ignore
+# NORWEGIAN: Changed to English version, but changed decimal point to $DecimalSeparators 
 - name: fraction-over-simple
   tag: fraction
   match:
@@ -213,6 +221,7 @@
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
 
+# audit-ignore
 - # fraction with text or numbers followed by text in both numerator and denominator
   name: fraction-over-text
   tag: fraction
@@ -242,7 +251,8 @@
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
 
-#NORWEGIAN: Changed to English version
+# audit-ignore
+# NORWEGIAN: Changed to English version
 - name: default
   tag: fraction
   match: "."
@@ -263,6 +273,7 @@
       - T: "slutt brøk"      # phrase(the fraction with 3 over 4 'end fraction')
       - pause: short
 
+# audit-ignore
 # rules for functions raised to a power
 # these could have been written on 'mrow' but putting them on msup seems more specific
 # to see if it is a function, we look right to see if the following sibling is apply-function
@@ -278,7 +289,7 @@
         then: [bookmark: "*[2]/@id", T: "arcus", x: "*[1]"]      # phrase(the 'buelenge' of a circle)
         else: [bookmark: "*[2]/@id", T: "invers", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
-
+# audit-ignore
 - name: function-squared-or-cubed
   tag: power
   match:
@@ -343,7 +354,7 @@
 
 - name: simple-integer
   tag: power
-  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   replace:
   - x: "*[1]"
   - T: "opphøyd i"                 
@@ -355,7 +366,7 @@
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and"
-  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"       #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"       # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "    ]"
   replace:
   - x: "*[1]"
@@ -391,7 +402,7 @@
   - "     *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3
   # base is mn, mi, common fraction ([xxx] case)
   - "     *[1][self::m:mn or self::m:mi or "
-  - "          self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                   #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "          self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                   # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                        *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "         ]"
   - "    ]"
@@ -410,7 +421,7 @@
   - "                *[2][self::m:mn][.='2' or .='3'] and " # exp is 2 or 3"
   # base is mn, mi, common fraction ([xxx] case)
   - "                *[1][self::m:mn or self::m:mi or "
-  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                      #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "                     self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                      # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                                   *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "               ]"
   - "          ]"
@@ -433,7 +444,7 @@
   - "       *[2][self::m:mo][.='⁢'] and " # invisible times
   # base is mn, or common fraction ([xxx] case)
   - "       *[1][self::m:mn or "
-  - "            self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                         #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "            self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                         # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                          *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "           ]"
   - "      ]"
@@ -456,7 +467,7 @@
   - "       *[1][self::m:minus and count(*)=1 and "
   # base is mn, or common fraction ([xxx] case)
   - "            *[1][self::m:mn or "
-  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                     #NORWEGIAN: Changed decimal point to $DecimalSeparators 
+  - "                 self::m:fraction[*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                     # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   - "                                  *[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]]"
   - "                ]"
   - "           ]"
@@ -489,6 +500,7 @@
 #
 # Some rules on mrows
 #
+# audit-ignore
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
   name: ClearSpeak-absolute-value
   tag: absolute-value
@@ -509,6 +521,7 @@
       - x: "$EndToSay"
   - pause: short
 
+# audit-ignore
 - name: set
   tag: set
   match: "."
@@ -546,6 +559,7 @@
 
  # SWEDISH/NORWEGIAN: rewrote the intervals function to better deal with Swedish/Norwegian convention of speaking intervals
  # NORWEGIAN: Removed test for verbosity, cause you should always say "det åpne" etc.
+ # audit-ignore
 - name: ClearSpeak-intervals # avoid overriding with default "intervals" name
   variables:
   - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
@@ -571,6 +585,7 @@
         then: [T: "og med"] 
   - x: "*[2]"
 
+ # audit-ignore
 - name: binomial-frac-vector
   tag: matrix
   match:
@@ -581,6 +596,7 @@
   - T: "over"      # phrase(the binomial coefficient n 'choose' m)
   - x: "*[2]/*[1]/*"
 
+ # audit-ignore
 - name: ClearSpeak-default
   tag: [mtr, mlabeledtr]
   match: "parent::m:matrix or parent::m:determinant"
@@ -609,16 +625,16 @@
   replace:
   - bookmark: "@id"
   - test:
-      if: "IsNode(following-sibling::*[2],'simple')"
+      if: "$log_is_simple"
       then:
       - test:
         - if: ".='log'"
           then: [T: "log"]      # phrase(the 'log' of x)
         - else_if: ".='lg'"
-          then: [spell: "'lg'"]      # phrase(the 'lg' of x)
-        - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
+          then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
+        - else_if: $ClearSpeak_Log = 'LnAsNaturalLog'
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of the product of 2 numbers)
-          else: [spell: "'ln'"]
+          else: [SPELL: "'ln'"]
       else:
       - test:
         - if: ".='log'"
@@ -632,12 +648,13 @@
           - test:
             - if: "$Verbosity='Verbose'"
               then: [T: "tier-logaritmen"]
-              else: [spell: "'lg'"]      # phrase(the 'lg' of x)
+              else: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
         - else_if: $ClearSpeak_Log = 'LnAsNaturalLog' or $Verbosity='Verbose'
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of x)
-          else: [spell: "'ln'"]
+          else: [SPELL: "'ln'"]
 
-#NORWEGIAN: Changed to English version
+# audit-ignore
+# NORWEGIAN: Changed to English version
 - name: ClearSpeak-multi-line
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
@@ -691,7 +708,8 @@
       - pause: short
   - x: "*"
 
-#NORWEGIAN: Changed from Swedish to English version
+# audit-ignore
+# NORWEGIAN: Changed from Swedish to English version
 - name: ClearSpeak-default-multiline
   tag: [mtr, mlabeledtr]
   match: "parent::m:piecewise or parent::m:system-of-equations or parent::m:lines"
@@ -731,6 +749,7 @@
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
+# audit-ignore
 - name: ClearSpeak_Functions_None
   tag: mo
   match:
@@ -742,6 +761,7 @@
       then: [T: ""]
       else: [T: "ganger"]      # phrase(5 'times' 3 equals 15)
 
+# audit-ignore
 - name: no-times
   tag: mo
   match:
@@ -750,6 +770,7 @@
   replace:
   - T: ""
 
+# audit-ignore
 # NORWEGIAN: Changed to English version
 - name: ClearSpeak-times
   tag: mo
@@ -782,6 +803,7 @@
   replace:
   - T: "ganger"      # phrase(5 'times' 3 equals 15)
 
+# audit-ignore
 - name: no-say-parens
   tag: mrow
   match:
