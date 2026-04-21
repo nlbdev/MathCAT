@@ -1,4 +1,5 @@
 ---
+# audit-ignore
 - name: pause
   tag: "!*"
   match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
@@ -13,13 +14,15 @@
           then: [pause: short]
           else: [pause: medium]
       - x: "."
-      
+    
+# audit-ignore    
 - name: intent-literal-silent
   tag: [mi, mo, mn]
   match: "contains(@data-intent-property, ':silent:')"
   # say nothing
   replace: []
 
+# audit-ignore
 # handling of negative numbers that come from 'intent' is hard -- we do something that is close to right here 
 - name: intent-literal-negative-number
   tag: mn
@@ -28,24 +31,28 @@
   - T: "minus"        # phrase(x 'minus' y)
   - x: "translate(text(), '-_', '')"
 
+# audit-ignore
 - name: default
   tag: square-root
   match: "."
   replace:
-  - T: "kvadratroten av"      # phrase(the 'square root' of x)
-  # NORWEGIAN: Removed test for Verbosity
+  - test:
+      if: "$Verbosity!='Terse'"
+      then: [T: "kvadratroten av"]       # phrase(the 'square root' of x)
+      else: [T: "roten av"]
   - x: "*[1]"
   - test:
       if: IsNode(*[1], 'leaf')
       then: [pause: short]
       else: [pause: short, T: "slutt rot", pause: short]  # phrase(start the square root of x 'end of root')
 
+# audit-ignore
 - name: default
   tag: root
   match: "."
   replace:
   - test:
-      if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]"     #NORWEGIAN: Changed decimal point to $DecimalSeparators
+      if: "*[2][self::m:mn and not(contains(., $DecimalSeparators))]"     # NORWEGIAN: Changed decimal point to $DecimalSeparators
       then_test:
       - if: "*[2][.='2']"
         then: [T: "kvadratroten"]        # phrase(the 'square root' of x)
@@ -64,13 +71,14 @@
       then: [pause: short]
       else: [pause: short, T: "slutt rot", pause: short]      # phrase(start the fifth root of x 'end of root')
 
+# audit-ignore
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
 # Note: if the bounds change for what is a common fraction, change them in general.yaml for units
 - name: common-fraction
   tag: fraction
   match:
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                               #NORWEGIAN: Changed decimal point to $DecimalSeparators
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                               # NORWEGIAN: Changed decimal point to $DecimalSeparators
   - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]"
   variables:
   - IsPlural: "not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064'])"     # '\u2064' is invisible plus and is used in mixed fractions
@@ -114,9 +122,9 @@
           then: [x: "DefinitionValue(*[2], 'Speech', 'OrdinalFractionalDenominatorsForUnits')"]
           else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
-
+# audit-ignore
 # Units (e.g., meters per second, m^2/s^2, (3m^2)/s)
-#NORWEGIAN: Added rule for t="time"
+# NORWEGIAN: Added rule for t="time"
 - name: per-fraction
   tag: fraction
   match:
@@ -132,7 +140,8 @@
       then: [T: "time"]
       else: 
        - x: "*[2]"
-  
+ 
+# audit-ignore 
 - name: simple
   # don't include nested fractions. E.g, fraction a plus b over c + 1 end fraction" is ambiguous
   # by simplistic SimpleSpeak's rules "b over c" is a fraction, but if we say nested fractions
@@ -147,6 +156,7 @@
   - x: "*[2]"
   - pause: short
 
+# audit-ignore
 - name: default
   tag: fraction
   match: "."
@@ -166,6 +176,7 @@
   - T: "slutt brøk"      # phrase(start 7 over 8 'end of fraction')
   - pause: medium
 
+# audit-ignore
 # rules for functions raised to a power
 # these could have been written on 'mrow' but putting them on msup seems more specific
 # to see if it is a function, we look right to see if the following sibling is apply-function
@@ -176,6 +187,7 @@
   - T: "invers"      # phrase(the 'inverse' of f)
   - x: "*[1]"
 
+# audit-ignore
 - name: function-squared-or-cubed
   tag: power
   match:
@@ -189,6 +201,7 @@
       then: [T: "i andre"]      # phrase(5 'squared' equals 25)
       else: [T: "i tredje"]      # phrase(5 'cubed' equals 125)
 
+# audit-ignore
 - name: function-power
   tag: power
   match:
@@ -200,6 +213,7 @@
   - x: "*[2]"
   - pause: short
 
+# audit-ignore
 # non-function rules for power
 - name: squared-or-cubed
   tag: power
@@ -212,26 +226,29 @@
       then: [T: "i andre"]      # phrase(5 'squared' equals 25)
       else: [T: "i tredje"]      # phrase(5 'cubed' equals 125)
 
+# audit-ignore
 - name: simple-integer
   tag: power
-  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
+  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]" # NORWEGIAN: Changed decimal point to $DecimalSeparators
   replace:
   - x: "*[1]"
   - T: "opphøyd i"
   - x: "*[2]"
   - pause: short
 
+# audit-ignore
 - name: simple-negative-integer
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and"
-  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]]" #NORWEGIAN: Changed decimal point to $DecimalSeparators
+  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]]" # NORWEGIAN: Changed decimal point to $DecimalSeparators
   replace:
   - x: "*[1]"
   - T: "opphøyd i"
   - x: "*[2]"
   - pause: short
 
+# audit-ignore
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
@@ -241,6 +258,7 @@
   - x: "*[2]"
   - pause: short
 
+# audit-ignore
 - name: simple
   tag: power
   match: "IsNode(*[2], 'leaf')"
@@ -250,6 +268,7 @@
   - x: "*[2]"
   - pause: short
 
+# audit-ignore
 - name: nested
   # it won't end in "power" if the exponent is simple enough
   # FIX: not that important, but this misses the case where the nested exp is a negative integer (change test if this is fixed)
@@ -267,6 +286,7 @@
   - pause: short
   - T: "slutt eksponent"      # phrase(start 2 raised to the exponent 4 'end of exponent')
 
+# Norwegian: Need to find something similar to the word "power" or add a long pause.
 - name: default
   tag: power
   match: "."
@@ -277,7 +297,7 @@
 
 #
 # Some rules on mrows
-#
+# audit-ignore
 - name: set
   tag: set
   match: "."
@@ -295,7 +315,8 @@
       else:
       - T: "mengden"      # phrase(here is a 'set' of numbers)
       - x: "*[1]"
-
+      
+# audit-ignore
 # NORWEGIAN: Added sqrt, so it, for example, says "sqrt a times sqrt b"
 - name: times
   tag: mo
@@ -325,6 +346,7 @@
   replace:
   - T: "ganger"      # phrase(7 'times' 5 equals 35)
 
+# audit-ignore
 - name: no-say-parens
   tag: mrow
   match:
