@@ -418,7 +418,7 @@ fn without_prefix_other() -> Result<()> {
         <mn>1</mn><mi intent=":unit">erg</mi><mo>,</mo><mn>2</mn><mi intent=":unit">erg</mi>
     </math>"#;
     test("nb", "SimpleSpeak", expr, 
-        "1 hektar, komma, 2 hektar, komma, \
+        "ett hektar, komma, 2 hektar, komma, \
                 1 desibel, komma, 2 desibel, komma, \
                 1 atmosfære, komma, 2 atmosfærer, komma; \
                 1 atommasseenhet, komma; 2 atommasseenheter, komma, \

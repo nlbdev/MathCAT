@@ -321,6 +321,7 @@
     "arcmin", "amin", "am", "MOA":,                                    
     "arcsec", "asec",
     "ltyr", "ly", "l.y.",
+    "ha",
     
     #EnglishUnits
     "bbl", "BBL", "lb",
