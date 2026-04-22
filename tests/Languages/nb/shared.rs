@@ -149,8 +149,8 @@ fn prime() -> Result<()> {
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("nb", "SimpleSpeak", expr, "stor p; startparentes; stor a, gitt stor b; sluttparentes")?;
-    test("nb", "ClearSpeak", expr,  "stor p; startparentes; stor a, gitt stor b; sluttparentes")?; // not good, but follows the spec
+    test("nb", "SimpleSpeak", expr, "stor p; startparentes; stor a gitt stor b; sluttparentes")?;
+    test("nb", "ClearSpeak", expr,  "stor p; startparentes; stor a gitt stor b; sluttparentes")?; // not good, but follows the spec
     return Ok(());
 
 }
@@ -379,6 +379,28 @@ fn mn_with_space() -> Result<()> {
   let expr = "<math><mn>1 234 567</mn></math>";
   test_prefs("nb", "SimpleSpeak", vec![("DecimalSeparators", "."), ("BlockSeparators", " ,")], expr, "1234567")?;
   return Ok(());
+
+}
+
+#[test]
+fn ignore_bold() -> Result<()> {
+  let expr = r#"<math>
+				<mi mathvariant="bold-italic">x</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+				<mrow>
+				<mi>𝒔𝒊𝒏</mi>
+				<mo>&#x2061;</mo>
+				<mrow><mi mathvariant="bold-italic">t</mi></mrow>
+				</mrow>
+				<mo>-</mo>
+				<mn>1</mn>
+			</math>"#; 
+  test_prefs("nb", "SimpleSpeak", vec![("IgnoreBold", "false")],
+             expr, "fet x er lik, 2 sinus av fet t, minus 1")?;
+  test_prefs("nb", "SimpleSpeak", vec![("IgnoreBold", "true")],
+             expr, "x er lik, 2 sinus av t, minus 1")?;
+             return Ok(());
 
 }
 
