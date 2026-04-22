@@ -1273,7 +1273,7 @@ fn has_c_h_o(elements: &[&str]) -> bool {
 
 
 fn is_structural(elements: &[&str]) -> bool {
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
 
     // debug!("is_structural: {:?}", elements);
     let mut element_set = HashSet::with_capacity(elements.len());
@@ -1310,7 +1310,7 @@ fn collect_elements(mrow: Element<'_>) -> Option<Vec<&str>> {
 /// check to make sure elements are ordered alphabetically
 /// Actually check Hill's system that puts 'C' followed by 'H' first if 'C' is present
 fn is_alphabetical(elements: &[&str]) -> bool {
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
     // debug!("is_alphabetical: {:?}", elements);
     let mut elements = elements;
     if elements[1..].contains(&"C") {  // "C" must be first if present
@@ -1325,7 +1325,7 @@ fn is_alphabetical(elements: &[&str]) -> bool {
 fn is_ordered_by_electronegativity(elements: &[&str]) -> bool {
     // HPO_4^2 (Mono-hydrogen phosphate) doesn't fit this pattern, nor does HCO_3^- (Hydrogen carbonate) and some others
     // FIX: drop "H" from the ordering??
-    assert!(!elements.len() > 1);   // already handled
+    assert!(elements.len() > 1);   // already handled
     return elements.windows(2).all(|pair| CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(pair[0]).unwrap() < CHEMICAL_ELEMENT_ELECTRONEGATIVITY.get(pair[1]).unwrap());
 }
 
