@@ -161,3 +161,11 @@ fn simple_fraction_power() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn no_double_the_532() -> Result<()> {
+    let expr = "<math><mroot><msqrt><mn>42</mn></msqrt><mn>3</mn></mroot></math>";
+    test("en", "ClearSpeak", expr, "the cube root of the square root of 42")?;
+    return Ok(());
+
+}
