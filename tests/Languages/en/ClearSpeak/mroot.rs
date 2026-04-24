@@ -61,7 +61,7 @@ fn mroot_simple_pos_end_with_neg_root() -> Result<()> {
 
                 </math>";
     test_ClearSpeak("en", "ClearSpeak_Roots", "PosNegSqRoot", expr, 
-    "the negative cube root of x; minus the positive square root of x")?;
+    "the negative cube root of x; minus, the positive square root of x")?;
     return Ok(());
 
 }
