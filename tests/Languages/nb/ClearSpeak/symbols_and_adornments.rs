@@ -181,7 +181,7 @@ fn vertical_line_divides() -> Result<()> {
             <mn>3</mn><mo>|</mo><mn>6</mn>
         </math>";
         test_ClearSpeak("nb", "ClearSpeak_VerticalLine", "Given", expr,
-                "3, gitt 6")?;
+                "3 gitt 6")?;
                 return Ok(());
 
     }
@@ -201,7 +201,7 @@ fn vertical_line_divides() -> Result<()> {
                 </mrow>
             </math>";
         test_ClearSpeak_prefs("nb", vec![("ClearSpeak_VerticalLine", "Given"), ("ClearSpeak_ImpliedTimes", "None")]
-                        , expr, "stor p; startparentes; stor a, gitt stor b; sluttparentes")?;
+                        , expr, "stor p; startparentes; stor a gitt stor b; sluttparentes")?;
                         return Ok(());
     }
 

@@ -540,7 +540,7 @@
       - if: ".='log'"
         then: [T: "log"]      # phrase(the 'log' function is used in mathematics)
       - else_if: ".='lg'"
-        then: [spell: "'lg'"]      # phrase(the 'lg' of x)
+        then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
       # SWEDISH/NORWEGIAN: We have added the term "lg" for the logarithm with base 10. Also added a verbosity test for long and short form.
       - else_if: "$Verbosity!='Verbose'"
         then: [spell: "'ln'"]
