@@ -663,6 +663,16 @@ pub fn get_supported_languages() -> Result<Vec<String>> {
 /// The Element type does not copy and modifying the structure of an element's child will modify the element, so we need a copy
 /// Convert the returned error from set_mathml, etc., to a useful string for display
 pub fn copy_mathml(mathml: Element) -> Element {
+    return copy_mathml_recursive(mathml, 0);
+}
+
+fn copy_mathml_recursive(mathml: Element, depth: usize) -> Element {
+    // Safety: Prevent stack overflow on deeply nested MathML
+    if depth > 512 {
+        // Return the element as a leaf if it's too deep to prevent crash
+        return create_mathml_element(&mathml.document(), name(mathml));
+    }
+
     // If it represents MathML, the 'Element' can only have Text and Element children along with attributes
     let children = mathml.children();
     let new_mathml = create_mathml_element(&mathml.document(), name(mathml));
