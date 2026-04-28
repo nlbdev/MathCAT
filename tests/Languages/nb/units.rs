@@ -1030,3 +1030,38 @@ fn density_two_fifths() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn currency_singular() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mi>kr</mi><mn>1</mn>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 krone")?;
+    test("nb", "SimpleSpeak", expr, "1 krone")?;
+    return Ok(());
+
+}
+
+#[test]
+fn currency_neuter_singular() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mi>£</mi><mn>1</mn>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "ett pund")?;
+    test("nb", "SimpleSpeak", expr, "ett pund")?;
+    return Ok(());
+
+}
+#[test]
+fn currency_plural() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mi>kr</mi><mn>10</mn>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "10 kroner")?;
+    test("nb", "SimpleSpeak", expr, "10 kroner")?;
+    return Ok(());
+
+}

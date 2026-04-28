@@ -8,6 +8,7 @@
   - T: "punktum"
   - x: "substring-after(., '.')"
 
+# audit-ignore
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
 - name: pos-neg-number-sets
   tag: number-sets
@@ -89,6 +90,7 @@
   - bookmark: "@id"
   - T: "den imaginære delen"      # phrase('the imaginary part' is part of a complex number)
 
+# audit-ignore
 # rules on scripted vertical bars ('evaluated at')
 - name: evaluated-at-2
   tag: evaluate
@@ -104,6 +106,7 @@
   - pause: auto
   - x: "*[2]"
 
+# audit-ignore
 - name: evaluated-at-3
   tag: evaluate
   match: "count(*)=3"
@@ -123,6 +126,7 @@
   - pause: short
   - x: "*[2]"
 
+# audit-ignore
 - name: permutation
   tag: pochhammer
   match: "count(*)=2"
@@ -132,6 +136,7 @@
   - T: "elementer av"      # phrase(the solution  involves several 'permutations of' values)
   - x: "*[1]"
 
+# audit-ignore
 # NORWEGIAN: Removed test for verbosity
 - name: intervals
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
@@ -162,6 +167,7 @@
 #      - T: "komma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
 #      - x: "*[2]"
 
+# audit-ignore
 - name: default-point
   tag: point
   match: "count(*)=2"
@@ -171,6 +177,7 @@
   - T: "komma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
   - x: "*[2]"
 
+# audit-ignore
 - name: bigop-both
   tag: large-op
   match: "count(*) = 3"
@@ -186,7 +193,7 @@
       if: "following-sibling::*"
       then: [T: "av"]      # phrase(the square root 'of' 25 equals 5)
       
-
+# audit-ignore
 - name: bigop-under
   tag: large-op
   match: "count(*)=2"
@@ -199,6 +206,7 @@
       if: "following-sibling::*"
       then: [T: "av"]      # phrase(the square root 'of' 25 equals 5)
 
+# audit-ignore
 - name: largeop
   tag: mrow
   match: "count(*)=2 and IsInDefinition(*[1], 'Speech', 'LargeOperators')"
@@ -215,8 +223,9 @@
   replace:
   - x: "*[1]"
   - T: "med repeterende siffer"      # phrase('with repeating digits')
-  - spell: "*[2]"
+  - SPELL: "*[2]"
 
+# audit-ignore
 - name: msubsup-skip-super
   # handles single, double, etc., prime
   tag: [skip-super, say-super]
@@ -247,6 +256,13 @@
         else: [T: "hevet"]      # phrase(this is a 'super' set of numbers)
   - x: "*[3]"
   - pause: short
+  
+- name: unit-terse
+  tag: unit
+  match: "$Verbosity = 'Terse' and string-length(.)=1"
+  replace:
+  - bookmark: "@id"
+  - SPELL: "text()"
 
 # need to say "ett" for '1' in front of a neuter unit
 # this is extra complicated because we need to allow do it for a 1 in front of a mixed fraction
@@ -379,7 +395,31 @@
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
           else: [x: "concat('\uF8FE', $Word)"]
 
+# audit-ignore
+# need to reverse the order of speech: $ 3 -> 3 dollars
+# Added test for neuter currencies, which use "ett" instead of "en" for the singular form of "one".
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  variables:
+    # If the amount is singular, we don't add the plural ending.
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - IsNeuterCurrency: "DefinitionValue(*[1], 'Speech', 'CurrencySymbolsNeuter') != ''"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - test:
+    - if: "$IsSingular and $IsNeuterCurrency"
+      then: [T: "ett"]
+      else: [x: "*[3]"]
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord"]
 
+# audit-ignore
 - name: sin
   tag: mi
   match: ".='sin'"
@@ -391,6 +431,7 @@
       else: [T: "sinus"]      # phrase(the 'sine' of the angle)
       # SWEDISH/NORWEGIAN: Added short form.
 
+# audit-ignore
 - name: cos
   tag: mi
   match: ".='cos'"
@@ -401,6 +442,7 @@
       then: [T: "cos"]      # phrase('cos' is the abbreviation for cosine)
       else: [T: "cosinus"]      # phrase(find the 'cosine' in a right-angle triangle)
 
+# audit-ignore
 - name: tan
   tag: mi
   match: ".='tan' or .='tg'"
@@ -411,6 +453,7 @@
       then: [T: "tan"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
       else: [T: "tangens"]      # phrase(a 'tangent' is a straight line that touches a curve)
 
+# audit-ignore
 - name: sec
   tag: mi
   match: ".='sec'"
@@ -421,6 +464,7 @@
       then: [T: "sec"]         # phrase(to 'seek' a solution)
       else: [T: "sekans"]     # phrase(a 'secant' intersects a curve at two or more points)
 
+# audit-ignore
 - name: csc
   tag: mi
   match: ".='csc'"
@@ -431,6 +475,7 @@
       then: [T: "cosec"]         # phrase(we will 'cosecant' a solution)
       else: [T: "cosekans"]      # phrase(the 'cosecant' is the reciprocal of the secant)
 
+# audit-ignore
 - name: cot
   tag: mi
   match: ".='cot'"
@@ -441,72 +486,65 @@
       then: [T: "cotan"]          # phrase(find the 'cotangent' in a right-angle triangle)
       else: [T: "cotangens"]      # phrase(the 'cotangent' is the reciprocal of the tangent)
 
-# NORWEGIAN: Removed tests for verbosity. We don't say "sin hype" etc., and "sinh" sounds like "sin"
 - name: sinh
   tag: mi
   match: ".='sinh'"
   replace:
   - bookmark: "@id"
-  - T: "sinus hyperbolicus"
-  #- test:
-      #if: "$Verbosity='Terse'"
-      #then: [T: "sin hype"]                # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
-      #else: [T: "sinus hyperbolicus"]      # phrase(the 'hyperbolic sine' is used in mathematics) 
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "sin hyperbolicus"]                # phrase(the word 'sinch' is an abbreviation for hyperbolic sine)
+      else: [T: "sinus hyperbolicus"]      # phrase(the 'hyperbolic sine' is used in mathematics) 
 
 - name: cosh
   tag: mi
   match: ".='cosh'"
   replace:
   - bookmark: "@id"
-  - T: "cosinus hyperbolicus"
-  #- test:
-      #if: "$Verbosity='Terse'"
-      #then: [T: "cos hype"]                  # phrase('cosh' is an abbreviation of hyperbolic cosine)
-      #else: [T: "cosinus hyperbolicus"]      # phrase(the 'hyperbolic cosine' is a mathematical function) 
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "cos hyperbolicus"]                  # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      else: [T: "cosinus hyperbolicus"]      # phrase(the 'hyperbolic cosine' is a mathematical function) 
 
 - name: tanh
   tag: mi
   match: ".='tanh'"
   replace:
   - bookmark: "@id"
-  - T: "tangens hyperbolicus"
-  #- test:
-      #if: "$Verbosity='Terse'"
-      #then: [T: "tan hype"]                  # phrase('tanch' is shorthand for hyperbolic tangent)
-      #else: [T: "tangens hyperbolicus"]      # phrase('hyperbolic tangent' is a mathematical function)
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "tan hyperbolicus"]                  # phrase('tanch' is shorthand for hyperbolic tangent)
+      else: [T: "tangens hyperbolicus"]      # phrase('hyperbolic tangent' is a mathematical function)
 
 - name: sech
   tag: mi
   match: ".='sech'"
   replace:
   - bookmark: "@id"
-  - T: "sekans hyperbolicus"
-  #- test:
-      #if: "$Verbosity='Terse'"
-      #then: [T: "sec hype"]                   # phrase('sheck' is shorthand for hyperbolic secant)
-      #else: [T: "sekans hyperbolicus"]        # phrase('hyperbolic secant' is a mathematical function) 
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "sec hyperbolicus"]                   # phrase('sheck' is shorthand for hyperbolic secant)
+      else: [T: "sekans hyperbolicus"]        # phrase('hyperbolic secant' is a mathematical function) 
 
 - name: csch
   tag: mi
   match: ".='csch'"
   replace:
   - bookmark: "@id"
-  - T: "cosekans hyperbolicus"
-  #- test:
-      #if: "$Verbosity='Terse'"
-      #then: [T: "cosec hype"]                   # phrase('cosheck' is shorthand for hyperbolic cosecant)
-      #else: [T: "cosekans hyperbolicus"]        # phrase('hyperbolic cosecant' is a mathematical function) 
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "cosec hyperbolicus"]                   # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      else: [T: "cosekans hyperbolicus"]        # phrase('hyperbolic cosecant' is a mathematical function) 
 
 - name: coth
   tag: mi
   match: ".='coth'"
   replace:
   - bookmark: "@id"
-  - T: "cotangens hyperbolicus"
-  #- test:
-      #if: "$Verbosity='Terse'"
-      #then: [T: "cotan hype"]                  # phrase('cotanch' is shorthand for hyperbolic cotangent)
-      #else: [T: "cotangens hyperbolicus"]      # phrase(the 'hyperbolic cotangent' is a mathematical function) 
+  - test:
+      if: "$Verbosity='Terse'"
+      then: [T: "cotan hyperbolicus"]                  # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      else: [T: "cotangens hyperbolicus"]      # phrase(the 'hyperbolic cotangent' is a mathematical function) 
 
 # NORWEGIAN: Added this rule from English version
 - name: exponential
@@ -519,6 +557,7 @@
       then: [T: "exp"]      # phrase('exp' means exponential function)
       else: [T: "eksponensialfunksjonen"]      # phrase('exponential' function)  #Norwegian: Spelled wrong for correct pronunciation
 
+# audit-ignore
 # NORWEGIAN: Added this rule from English version, but removed test for verbosity.    
 - name: covariance
   tag: mi
@@ -527,6 +566,7 @@
   - bookmark: "@id"
   - T: "kovarians"
 
+# consider to change this to be equal to the ClearSpeak rule. 
 - # handle both log and ln
   name: log
   tag: mi
@@ -543,7 +583,7 @@
         then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
       # SWEDISH/NORWEGIAN: We have added the term "lg" for the logarithm with base 10. Also added a verbosity test for long and short form.
       - else_if: "$Verbosity!='Verbose'"
-        then: [spell: "'ln'"]
+        then: [SPELL: "'ln'"]
         else: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' function is used in mathematics)
       else:
       - test:
@@ -555,13 +595,14 @@
         - else_if: ".='lg'"
           then_test:
           - if: "$Verbosity!='Verbose'"
-            then: [spell: "'lg'"]      # phrase(the 'lg' of x)
+            then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
             else: [T: "tier-logaritmen"]
         - else_if: "$Verbosity='Terse'"
-          then: [spell: "'ln'"]
+          then: [SPELL: "'ln'"]
           else: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' function is used in mathematics)
 
 
+# audit-ignore
 # NORWEGIAN: Changed from Swedish to English version.
 - name: multi-line
   #   that eliminates the need for the if: else_if: ...
@@ -626,6 +667,7 @@
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
+# audit-ignore
 # NORWEGIAN: Changed from Swedish to English version.
 - name: default-multiline
   tag: mtd
@@ -748,6 +790,7 @@
           then: [T: "vektor"]      # phrase(the 2 column 'vector')
           else: [T: "matrise"]      # phrase(the 2 by 2 'matrix')
 
+# audit-ignore
 - name: default-column-matrix
   tag: matrix
   variables: [IsColumnSilent: true()]
@@ -868,6 +911,7 @@
           then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
           else: [T: "matrise"]      # phrase(the 2 by 2 'matrix's)
 
+# audit-ignore
 - name: chemistry-msub
   tag: [chemical-formula]
   match: "*[1][.='msub']"
@@ -1090,7 +1134,7 @@
   match: "."
   replace:
   - bookmark: "@id"
-  - spell: text()
+  - SPELL: text()
   - pause: short
 
 - name: chemical-state

@@ -240,6 +240,17 @@
     "mph": "mile per hour",
     "mpg": "mile per gallon",
   }
+  
+- CurrencySymbols: {
+    "$": "dollar", "¢": "cent", "€": "euro", "£": "pund", "₡": "colón", "₤": "lira", "₨": "rupi",
+    "₩": "won", "₪": "ny shekel", "₱": "peso", "₹": "indisk rupi", "₺": "tyrkisk lira", "₿": "bitcoin", "kr": "krone", "NOK": "norsk krone", 
+    # could add more currencies...
+  }
+
+# Norwegian: Added this set because we differentiate between masculine and neuter currencies.
+- CurrencySymbolsNeuter: {
+    "£": "pund",
+  }
 
 - PluralForms: {
   # SWEDISH: this should be complete. Units not listed here are not modified when pluralised. /Tim
@@ -305,6 +316,11 @@
     "omdreining per minutt": "omdreininger per minutt",
     "curie": "curier",
     "annuum": "annua",
+    "indisk rupi": "indiske rupi",
+    "tyrkisk lira": "tyrkiske lira",
+    "bitcoin": "bitcoins",
+    "krone": "kroner",
+    "norsk krone": "norske kroner",
     
   }
 
