@@ -1,5 +1,5 @@
 ---
-
+# audit-ignore
 - name: divergence
   tag: divergence
   match: "count(*) = 1"
@@ -13,6 +13,7 @@
       then: [pause: short]
   - x: "*[1]"
 
+# audit-ignore
 - name: curl
   tag: curl
   match: "count(*) = 1"
@@ -26,6 +27,7 @@
       then: [pause: short]
   - x: "*[1]"
 
+# audit-ignore
 - name: gradient
   tag: gradient
   match: "count(*) = 1"
@@ -35,3 +37,4 @@
       if: "not(IsNode(*[1], 'leaf'))"
       then: [pause: short]
   - x: "*[1]"
+
