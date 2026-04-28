@@ -8,9 +8,8 @@
   - T: "punktum"
   - x: "substring-after(., '.')"
 
-# audit-ignore
 # number-sets are a little messy in that the base was converted to a number-set, so we have to match that (simple) case last
-- name: pos-neg-number-sets
+- name: pos-neg-number-sets   # audit-ignore
   tag: number-sets
   match: "count(*)=2 and *[2][.='+' or .='-']"
   replace:
@@ -90,9 +89,8 @@
   - bookmark: "@id"
   - T: "den imaginære delen"      # phrase('the imaginary part' is part of a complex number)
 
-# audit-ignore
 # rules on scripted vertical bars ('evaluated at')
-- name: evaluated-at-2
+- name: evaluated-at-2    # audit-ignore
   tag: evaluate
   match: "count(*)=2"
   replace:
@@ -106,8 +104,7 @@
   - pause: auto
   - x: "*[2]"
 
-# audit-ignore
-- name: evaluated-at-3
+- name: evaluated-at-3    # audit-ignore
   tag: evaluate
   match: "count(*)=3"
   replace:
@@ -126,8 +123,7 @@
   - pause: short
   - x: "*[2]"
 
-# audit-ignore
-- name: permutation
+- name: permutation   # audit-ignore
   tag: pochhammer
   match: "count(*)=2"
   replace:
@@ -136,9 +132,8 @@
   - T: "elementer av"      # phrase(the solution  involves several 'permutations of' values)
   - x: "*[1]"
 
-# audit-ignore
 # NORWEGIAN: Removed test for verbosity
-- name: intervals
+- name: intervals   # audit-ignore
   tag: [open-interval, open-closed-interval, closed-interval, closed-open-interval]
   match: "count(*)=2"
   replace:
@@ -167,8 +162,7 @@
 #      - T: "komma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
 #      - x: "*[2]"
 
-# audit-ignore
-- name: default-point
+- name: default-point   # audit-ignore
   tag: point
   match: "count(*)=2"
   replace:
@@ -177,8 +171,7 @@
   - T: "komma"      # phrase(use a 'comma' to divide large numbers or as a decimal point)
   - x: "*[2]"
 
-# audit-ignore
-- name: bigop-both
+- name: bigop-both    # audit-ignore
   tag: large-op
   match: "count(*) = 3"
   replace:
@@ -192,9 +185,8 @@
   - test:
       if: "following-sibling::*"
       then: [T: "av"]      # phrase(the square root 'of' 25 equals 5)
-      
-# audit-ignore
-- name: bigop-under
+
+- name: bigop-under   # audit-ignore
   tag: large-op
   match: "count(*)=2"
   replace:
@@ -206,8 +198,7 @@
       if: "following-sibling::*"
       then: [T: "av"]      # phrase(the square root 'of' 25 equals 5)
 
-# audit-ignore
-- name: largeop
+- name: largeop   # audit-ignore
   tag: mrow
   match: "count(*)=2 and IsInDefinition(*[1], 'Speech', 'LargeOperators')"
   replace:
@@ -225,8 +216,7 @@
   - T: "med repeterende siffer"      # phrase('with repeating digits')
   - SPELL: "*[2]"
 
-# audit-ignore
-- name: msubsup-skip-super
+- name: msubsup-skip-super    # audit-ignore
   # handles single, double, etc., prime
   tag: [skip-super, say-super]
   match: "count(*)=3"
@@ -395,10 +385,9 @@
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))"]
           else: [x: "concat('\uF8FE', $Word)"]
 
-# audit-ignore
 # need to reverse the order of speech: $ 3 -> 3 dollars
 # Added test for neuter currencies, which use "ett" instead of "en" for the singular form of "one".
-- name: currency
+- name: currency    # audit-ignore
   tag: mrow
   match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
   variables:
@@ -419,8 +408,7 @@
       then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
       else: [x: "$CurrencyWord"]
 
-# audit-ignore
-- name: sin
+- name: sin   # audit-ignore
   tag: mi
   match: ".='sin'"
   replace:
@@ -431,8 +419,7 @@
       else: [T: "sinus"]      # phrase(the 'sine' of the angle)
       # SWEDISH/NORWEGIAN: Added short form.
 
-# audit-ignore
-- name: cos
+- name: cos   # audit-ignore
   tag: mi
   match: ".='cos'"
   replace:
@@ -442,8 +429,7 @@
       then: [T: "cos"]      # phrase('cos' is the abbreviation for cosine)
       else: [T: "cosinus"]      # phrase(find the 'cosine' in a right-angle triangle)
 
-# audit-ignore
-- name: tan
+- name: tan   # audit-ignore
   tag: mi
   match: ".='tan' or .='tg'"
   replace:
@@ -453,8 +439,7 @@
       then: [T: "tan"]      # phrase(the 'tan' is the ratio of the opposite to the adjacent side of a right-angled triangle)
       else: [T: "tangens"]      # phrase(a 'tangent' is a straight line that touches a curve)
 
-# audit-ignore
-- name: sec
+- name: sec   # audit-ignore
   tag: mi
   match: ".='sec'"
   replace:
@@ -464,8 +449,7 @@
       then: [T: "sec"]         # phrase(to 'seek' a solution)
       else: [T: "sekans"]     # phrase(a 'secant' intersects a curve at two or more points)
 
-# audit-ignore
-- name: csc
+- name: csc   # audit-ignore
   tag: mi
   match: ".='csc'"
   replace:
@@ -475,8 +459,7 @@
       then: [T: "cosec"]         # phrase(we will 'cosecant' a solution)
       else: [T: "cosekans"]      # phrase(the 'cosecant' is the reciprocal of the secant)
 
-# audit-ignore
-- name: cot
+- name: cot   # audit-ignore
   tag: mi
   match: ".='cot'"
   replace:
@@ -557,9 +540,8 @@
       then: [T: "exp"]      # phrase('exp' means exponential function)
       else: [T: "eksponensialfunksjonen"]      # phrase('exponential' function)  #Norwegian: Spelled wrong for correct pronunciation
 
-# audit-ignore
 # NORWEGIAN: Added this rule from English version, but removed test for verbosity.    
-- name: covariance
+- name: covariance    # audit-ignore
   tag: mi
   match: ".='Cov'"
   replace:
@@ -602,9 +584,8 @@
           else: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' function is used in mathematics)
 
 
-# audit-ignore
 # NORWEGIAN: Changed from Swedish to English version.
-- name: multi-line
+- name: multi-line    # audit-ignore
   #   that eliminates the need for the if: else_if: ...
   # IDEA:  set a variable with the word to say for the row (e.g., RowLabel = Row/Case/Line/...)
   tag: [piecewise, system-of-equations, lines]
@@ -667,9 +648,8 @@
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
-# audit-ignore
 # NORWEGIAN: Changed from Swedish to English version.
-- name: default-multiline
+- name: default-multiline   # audit-ignore
   tag: mtd
   match: "parent::*[parent::m:piecewise or parent::m:system-of-equations or parent::m:lines]"
   variables: [LongPause: "$SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultiLinePausesBetweenColumns = 'Long'"]
@@ -790,8 +770,7 @@
           then: [T: "vektor"]      # phrase(the 2 column 'vector')
           else: [T: "matrise"]      # phrase(the 2 by 2 'matrix')
 
-# audit-ignore
-- name: default-column-matrix
+- name: default-column-matrix   # audit-ignore
   tag: matrix
   variables: [IsColumnSilent: true()]
   match: "*[self::m:mtr][count(*) = 1]"
@@ -911,8 +890,7 @@
           then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
           else: [T: "matrise"]      # phrase(the 2 by 2 'matrix's)
 
-# audit-ignore
-- name: chemistry-msub
+- name: chemistry-msub    # audit-ignore
   tag: [chemical-formula]
   match: "*[1][.='msub']"
   replace:

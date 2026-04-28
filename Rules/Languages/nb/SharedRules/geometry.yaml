@@ -1,6 +1,5 @@
 ---
-# audit-ignore
-- name: line-segment
+- name: line-segment    # audit-ignore
   tag: line-segment
   match: "count(*)=2"
   replace:
@@ -16,8 +15,7 @@
       - x: "*[1]"
       - x: "*[2]"
       
-# audit-ignore
-- name: geometry-ray
+- name: geometry-ray    # audit-ignore
   tag: ray
   match: "count(*)=2"
   replace:
@@ -33,8 +31,7 @@
       - x: "*[1]"
       - x: "*[2]"
 
-# audit-ignore
-- name: geometry-arc
+- name: geometry-arc    # audit-ignore
   tag: arc
   match: "count(*)=2"
   replace:
@@ -42,8 +39,7 @@
   - x: "*[1]"
   - x: "*[2]"
 
-# audit-ignore
-- name: measure-of-angle
+- name: measure-of-angle  # audit-ignore
   tag: measure-of-angle
   match: "count(*)=3"
   replace:
@@ -57,8 +53,7 @@
   - x: "*[2]"
   - x: "*[3]"
 
-# audit-ignore
-- name: coordinate
+- name: coordinate    # audit-ignore
   tag: coordinate
   match: "."
   replace:
