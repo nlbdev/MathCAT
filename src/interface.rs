@@ -150,10 +150,15 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
     // if these are present when resent to MathJaX, MathJaX crashes (https://github.com/mathjax/MathJax/issues/2822)
     static MATHJAX_V2: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]MJX-.*?['"]"#).unwrap());
     static MATHJAX_V3: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"class *= *['"]data-mjx-.*?['"]"#).unwrap());
-    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]+"#).unwrap()); // very limited namespace prefix match
-    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]+:"#).unwrap()); // very limited namespace prefix match
-    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]+?);"#).unwrap());
 
+    // Strip out processing instructions and comments -- these are not MathML and can cause DOS problems in the parser
+    static PROCESSING_INSTRUCTION: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"<\?[\s\S]{1,2048}\?>"#).unwrap());
+    static XML_COMMENT: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?s)"#).unwrap());
+
+    // These have some length limits to avoid DOS attacks via long strings
+    static NAMESPACE_DECL: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"xmlns:[[:alpha:]]{1,32}"#).unwrap());
+    static PREFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(</?)[[:alpha:]]{1,32}:"#).unwrap());
+    static HTML_ENTITIES: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"&([a-zA-Z]{2,10});"#).unwrap());
     let result = catch_unwind(AssertUnwindSafe(|| {
         NAVIGATION_STATE.with(|nav_stack| {
             nav_stack.borrow_mut().reset();
@@ -164,13 +169,20 @@ pub fn set_mathml(mathml_str: impl AsRef<str>) -> Result<String> {
         crate::speech::SPEECH_RULES.with(|rules| rules.borrow_mut().read_files())?;
 
         let mathml_str = mathml_str.as_ref();
+        // Safety guard: Reject strings > 1MB to prevent DoS/Stack issues
+        if mathml_str.len() > 1024 * 1024 {
+            bail!("MathML string of size {} bytes exceeds length limit of 1MB", mathml_str.len());
+        }
+
         return MATHML_INSTANCE.with(|old_package| {
             static HTML_ENTITIES_MAPPING: phf::Map<&str, &str> = include!("entities.in");
 
             let mut error_message = "".to_string(); // can't return a result inside the replace_all, so we do this hack of setting the message and then returning the error
-                                                    // need to deal with character data and convert to something the parser knows
-            let mathml_str =
-                HTML_ENTITIES.replace_all(mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
+                                                                     
+            let mathml_str = XML_COMMENT.replace_all(mathml_str, "");
+            let mathml_str = PROCESSING_INSTRUCTION.replace_all(&mathml_str, "");
+            // FIX: need to deal with character data and convert to something the parser knows
+            let mathml_str = HTML_ENTITIES.replace_all(&mathml_str, |cap: &Captures| match HTML_ENTITIES_MAPPING.get(&cap[1]) {
                     None => {
                         error_message = format!("No entity named '{}'", &cap[0]);
                         cap[0].to_string()
