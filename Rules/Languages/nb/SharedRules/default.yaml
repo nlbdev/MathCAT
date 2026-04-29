@@ -60,7 +60,7 @@
     - if: "string-length(.) = 1 and text() != '_'"       # need unicode.tdl to kick in for single letter tokens
       then: [x: "text()"]
     - else_if: "@data-chem-element"                      # NavMode=Character needs this
-      then: [spell: "text()", pause: "short"]
+      then: [SPELL: "text()", pause: "short"]
       else: [x: "translate(., '-_\u00A0', '  ')"]   # from intent literals or from extra spaces added (which get deleted)
 
 - name: default
@@ -91,7 +91,7 @@
   - x: "*[2]"
   - pause: short
 
-- name: literal-default
+- name: literal-default     # audit-ignore
   tag: mfrac
   match: "."
   replace:
@@ -110,10 +110,9 @@
   - T: "slutt brøk"          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
-
 # not sure what really should be said for these since we should not assume they are square roots
 #NORWEGIAN: Removed test for verbosity
-- name: literal-default
+- name: literal-default     # audit-ignore
   tag: msqrt
   match: "."
   replace:
@@ -126,7 +125,7 @@
 
 # not sure what really should be said for these since we should not assume they are square roots
 # NORWEGIAN: Changed to "med grad", and changed the order of the index and the variable/number in the root. Removed test for verbosity. 
-- name: literal-default
+- name: literal-default     # audit-ignore
   tag: mroot
   match: "."
   replace:
@@ -145,6 +144,7 @@
       then: [T: "slutt rottegn"] # phrase("root of x 'end root symbol'")
 
 
+# Used for expressions where the subscript is an integer, and verbosity is terse.
 - name: simple-sub
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
@@ -154,9 +154,11 @@
   - x: "*[2]"
   - pause: short
 
+
+# Used for expression where the subscript is a leaf or and mrow where the second element is a comma.
 # NORWEGIAN: Removed the following test: if: "$Verbosity!='Terse' or not(*[2][self::m:mn])", which is in the Swedish translation. 
 # NORWEGIAN: Added "pause: short" before "senket"
-- name: no-end-sub
+- name: no-end-sub      # audit-ignore
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
   match: "count(*)=2 and (IsNode(*[2], 'leaf') or *[2][self::m:mrow][*[2][.='⁣']])"           #NORWEGIAN: Don't change this to English version. Then the rule "indexed-by" in definitions.yaml kicks in instead. Want to keep the pause before "senket". 
@@ -164,6 +166,15 @@
   - x: "*[1]"
   - pause: short
   - T: "senket"
+  - x: "*[2]"
+  - pause: short
+  
+- name: power-indexed-by
+  tag: power-indexed-by
+  match: "."
+  replace:
+  - x: "*[1]"
+  - T: "senket"               # phrase(x 'sub' 2)
   - x: "*[2]"
   - pause: short
 
@@ -177,6 +188,7 @@
       then: [T: "senket"]      # phrase(x 'sub' 2)
   - x: "*[2]"
 
+# Norwegian: Changed this to be more similar to the English rule. Can't find a way to trigger the last "else" statement.
 - name: literal
   tag: [msup, msubsup]
   match: "."
@@ -199,9 +211,10 @@
               if: "not(IsNode(*[last()], 'simple'))"
               then: [T: "slutt hevet"]      # phrase(x super 2 'end of super')
           else:
-          - T: "opphøyd i"            # phrase(5 'raised to the' second power equals 25)
+          - T: "hevet"            # phrase(5 'raised to the' second power equals 25)
           - x: "*[last()]"
-          # - t: "power"                    # phrase(5 raised to the second 'power' equals 25)
+          - T: "slutt hevet"
+
 
 #NORWEGIAN: Changed to English version. 
 - name: default
