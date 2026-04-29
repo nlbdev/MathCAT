@@ -1,5 +1,4 @@
 ---
-# audit-ignore
 - name: pause
   tag: "!*"
   match: "not(self::m:math) and not($MatchingPause) and @data-intent-property[contains(., ':pause')]"
@@ -15,14 +14,12 @@
           else: [pause: medium]
       - x: "."
       
-# audit-ignore
 - name: intent-literal-silent
   tag: [mi, mo, mn]
   match: "contains(@data-intent-property, ':silent:')"
   # say nothing
   replace: []
 
-# audit-ignore
 # handling of negative numbers that come from 'intent' is hard -- we do something that is close to right here 
 - name: intent-literal-negative-number
   tag: mn
@@ -31,8 +28,7 @@
   - T: "minus"      # phrase(10 'minus' 4 equals 6)
   - x: "translate(text(), '-_', '')"
 
-# audit-ignore
-- name: default
+- name: default   #audit-ignore
   tag: square-root
   match: "."
   replace:
@@ -59,8 +55,7 @@
       then: [pause: short]
       else: [pause: long]
 
-# audit-ignore
-- name: default
+- name: default   # audit-ignore
   tag: root
   match: "."
   replace:
@@ -100,7 +95,6 @@
         then: [pause: short]
         else: [pause: long]
 
-# audit-ignore
 # The 'negative' rule interacts with the msqrt/mroot rules as those might pick off this case ("the negative square root of x")
 - name: negative_and_positive
   tag: [plus, minus]
@@ -122,10 +116,9 @@
 # Fraction rules
 # Mixed numbers mostly "just work" because the invisible char reads as "and" and other parts read properly on their own
     
-# audit-ignore  
 # Units (e.g., meters per second)
 # NORWEGIAN: Added rule for t="time"
-- name: per-fraction
+- name: per-fraction    # audit-ignore
   tag: fraction
   match:
   - "$ClearSpeak_Fractions='Per' or"
@@ -142,9 +135,8 @@
       else: 
        - x: "*[2]"
 
-# audit-ignore 
 # Note: if the bounds change for what is a common fraction, change them in general.yaml for units
-- name: common-fraction
+- name: common-fraction  # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
@@ -194,9 +186,8 @@
           then: [x: "DefinitionValue(*[2], 'Speech', 'OrdinalFractionalDenominatorsForUnits')"]
           else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
-# audit-ignore
 # NORWEGIAN: Changed to English version, but changed decimal point to $DecimalSeparators 
-- name: fraction-over-simple
+- name: fraction-over-simple    # audit-ignore
   tag: fraction
   match:
   - "($ClearSpeak_Fractions='Over' or $ClearSpeak_Fractions='FracOver' or $ClearSpeak_Fractions='OverEndFrac') or"
@@ -221,7 +212,6 @@
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
 
-# audit-ignore
 - # fraction with text or numbers followed by text in both numerator and denominator
   name: fraction-over-text
   tag: fraction
@@ -251,7 +241,6 @@
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
 
-# audit-ignore
 # NORWEGIAN: Changed to English version
 - name: default
   tag: fraction
@@ -273,7 +262,6 @@
       - T: "slutt brøk"      # phrase(the fraction with 3 over 4 'end fraction')
       - pause: short
 
-# audit-ignore
 # rules for functions raised to a power
 # these could have been written on 'mrow' but putting them on msup seems more specific
 # to see if it is a function, we look right to see if the following sibling is apply-function
@@ -289,7 +277,6 @@
         then: [bookmark: "*[2]/@id", T: "arcus", x: "*[1]"]      # phrase(the 'buelenge' of a circle)
         else: [bookmark: "*[2]/@id", T: "invers", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
-# audit-ignore
 - name: function-squared-or-cubed
   tag: power
   match:
@@ -303,6 +290,7 @@
       then: [T: "i andre"]      # phrase(25 equals 5 'squared')
       else: [T: "i tredje"]      # phrase(625 equals 5 'cubed')
 
+# The following element is invisible function application. Used for expressions like sin^n x.
 - name: function-power
   tag: power
   match:
@@ -394,6 +382,7 @@
 #   but the test cases all fall back to "raised to the exponent" when not "Auto"
 #   If these are allowed for non-Auto values, then you end up with "...power power...".
 - # [xxx]^n
+  # Norwegian: Consider to find a word similar to "power".
   name: nested-squared-or-cubed
   tag: power
   match:
@@ -412,6 +401,7 @@
   - x: "*[2]"
 
 - # - [xxx]^n
+  # Norwegian: Consider to find a word similar to "power".
   name: nested-negative-squared-or-cubed
   tag: power
   match:
@@ -432,6 +422,7 @@
   - x: "*[2]"
 
 - # [xxx] var^n
+  # Norwegian: Consider to find a word similar to "power".
   name: nested-var-squared-or-cubed
   tag: power
   match:
@@ -454,6 +445,7 @@
   - x: "*[2]"
 
 - # -[xxx] var^n
+  # Norwegian: Consider to find a word similar to "power".
   name: nested-negative-var-squared-or-cubed
   tag: power
   match:
@@ -489,6 +481,7 @@
   - pause: short
   - T: "slutt eksponent"      # phrase(and now 'end exponent' has been reached)
 
+# Norwegian: Consider to find a word similar to "power".
 - name: default
   tag: power
   match: "."
@@ -500,9 +493,8 @@
 #
 # Some rules on mrows
 #
-# audit-ignore
 - # the inference rules lump absolute value and cardinality together, so those rules are implemented here
-  name: ClearSpeak-absolute-value
+  name: ClearSpeak-absolute-value   # audit-ignore
   tag: absolute-value
   match: "."
   # SWEDISH/NORWEGIAN: Differentiate between the initial and ending declaration of the terms.
@@ -521,8 +513,7 @@
       - x: "$EndToSay"
   - pause: short
 
-# audit-ignore
-- name: set
+- name: set   # audit-ignore
   tag: set
   match: "."
   replace:
@@ -559,8 +550,7 @@
 
  # SWEDISH/NORWEGIAN: rewrote the intervals function to better deal with Swedish/Norwegian convention of speaking intervals
  # NORWEGIAN: Removed test for verbosity, cause you should always say "det åpne" etc.
- # audit-ignore
-- name: ClearSpeak-intervals # avoid overriding with default "intervals" name
+- name: ClearSpeak-intervals # avoid overriding with default "intervals" name # audit-ignore
   variables:
   - is_intervals_start_infinity: "*[1][self::m:minus and count(*)=1 and *[1][.='∞']]"
   - is_intervals_end_infinity: "*[2][.='∞'or (self::m:plus and count(*)=1 and *[1][.='∞'])]"
@@ -585,7 +575,6 @@
         then: [T: "og med"] 
   - x: "*[2]"
 
- # audit-ignore
 - name: binomial-frac-vector
   tag: matrix
   match:
@@ -596,7 +585,6 @@
   - T: "over"      # phrase(the binomial coefficient n 'choose' m)
   - x: "*[2]/*[1]/*"
 
- # audit-ignore
 - name: ClearSpeak-default
   tag: [mtr, mlabeledtr]
   match: "parent::m:matrix or parent::m:determinant"
@@ -618,7 +606,7 @@
       else: [x: "*"]
 
 - # handle both log and ln
-  name: ClearSpeak-log
+  name: ClearSpeak-log    # audit-ignore
   tag: mi
   variables: [log_is_simple: "IsNode(following-sibling::*[2],'simple')"] # skip function apply
   match: ".='log' or .='ln' or .='lg'"
@@ -653,8 +641,7 @@
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of x)
           else: [SPELL: "'ln'"]
 
-# audit-ignore
-# NORWEGIAN: Changed to English version
+# Norwegian: The preference MultiLineLabel = none is handled differently than it is for English.
 - name: ClearSpeak-multi-line
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
@@ -708,7 +695,6 @@
       - pause: short
   - x: "*"
 
-# audit-ignore
 # NORWEGIAN: Changed from Swedish to English version
 - name: ClearSpeak-default-multiline
   tag: [mtr, mlabeledtr]
@@ -749,8 +735,7 @@
       then: [x: "*[position()>1]"]
       else: [x: "*"]
 
-# audit-ignore
-- name: ClearSpeak_Functions_None
+- name: ClearSpeak_Functions_None   # audit-ignore
   tag: mo
   match:
   - ".='⁡' and $ClearSpeak_Functions = 'None' and"
@@ -761,7 +746,6 @@
       then: [T: ""]
       else: [T: "ganger"]      # phrase(5 'times' 3 equals 15)
 
-# audit-ignore
 - name: no-times
   tag: mo
   match:
@@ -770,7 +754,6 @@
   replace:
   - T: ""
 
-# audit-ignore
 # NORWEGIAN: Changed to English version
 - name: ClearSpeak-times
   tag: mo
@@ -803,7 +786,6 @@
   replace:
   - T: "ganger"      # phrase(5 'times' 3 equals 15)
 
-# audit-ignore
 - name: no-say-parens
   tag: mrow
   match:
