@@ -43,11 +43,13 @@ jobs:
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz
 
-      - name: Set fuzz duration (weekly = 1h each, else smoke = 60s)
+      - name: Set fuzz duration (weekly = 1h, manual = 30m, else smoke = 60s)
         id: fuzztime
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             echo "seconds=3600" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "seconds=1800" >> "$GITHUB_OUTPUT"
           else
             echo "seconds=60" >> "$GITHUB_OUTPUT"
           fi
