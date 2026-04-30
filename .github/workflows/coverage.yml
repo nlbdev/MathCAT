@@ -1,5 +1,5 @@
 # Weekly LLVM source-based coverage for the whole workspace (`cargo llvm-cov`).
-# Produces a terminal summary, an HTML artifact (90-day retention), and (on main)
+# Produces an HTML report (artifact + optional commit to main/llvm-cov/), and (on main)
 # commits HTML under llvm-cov/ on branch main so GitHub Pages (main + /(root)) serves
 # https://<org>.github.io/<repo>/llvm-cov/
 name: Test coverage
@@ -34,9 +34,9 @@ jobs:
         with:
           tool: cargo-llvm-cov
 
-      - name: Generate coverage (HTML + terminal summary)
+      - name: Generate coverage (HTML report)
         run: |
-          cargo llvm-cov --workspace --html --output-dir llvm-cov-html --summary-only
+          cargo llvm-cov --workspace --html --output-dir llvm-cov-html
 
       - name: Upload HTML report artifact
         uses: actions/upload-artifact@v4
