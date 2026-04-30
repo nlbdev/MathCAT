@@ -222,10 +222,26 @@ fn exercise_speech(lang: &str) {
     let _ = libmathcat::get_spoken_text();
 }
 
-/// Braille tables are exercised independently of speech language; use a fixed language for this sweep.
-fn exercise_all_braille_codes(braille_codes: &[String], tail_id: &Option<String>) {
+/// Braille tables are exercised independently of speech language; use a fixed language.
+/// Two corpus-selected codes per input (distinct when more than one table exists).
+fn exercise_two_braille_codes(braille_codes: &[String], data: &[u8], tail_id: &Option<String>) {
     let _ = libmathcat::set_preference("Language", "en");
-    for code in braille_codes.iter() {
+    let n = braille_codes.len();
+    if n == 0 {
+        return;
+    }
+    let i1 = data.get(1).copied().unwrap_or(0) as usize % n;
+    let i2 = if n == 1 {
+        0
+    } else {
+        let mut j = data.get(2).copied().unwrap_or(0) as usize % n;
+        if j == i1 {
+            j = (i1 + 1) % n;
+        }
+        j
+    };
+    for idx in [i1, i2] {
+        let code = &braille_codes[idx];
         if libmathcat::set_preference("BrailleCode", code).is_err() {
             continue;
         }
@@ -315,9 +331,23 @@ const NAV_COMMANDS: &[&str] = &[
     "SetPlacemarker9",
 ];
 
+const MAX_NAV_STEPS: usize = 20;
+
+/// Map `step` and `data` to a nav command index (deterministic; spreads reads across the buffer).
+fn nav_command_index(data: &[u8], step: usize) -> usize {
+    let n = NAV_COMMANDS.len();
+    if data.is_empty() {
+        return step % n;
+    }
+    let len = data.len();
+    let p = (step.wrapping_mul(37).wrapping_add(11)) % len;
+    let q = (step.wrapping_mul(19).wrapping_add(len / 2)) % len;
+    let mix = (data[p] as usize) ^ (data[q] as usize) ^ step.wrapping_mul(17);
+    mix % n
+}
+
 fuzz_target!(|data: &[u8]| {
     let state = fuzz_state();
-    let codes = state.braille_codes.as_slice();
 
     // Deterministic “random” non-English language from the corpus byte stream.
     let other_lang = {
@@ -342,12 +372,11 @@ fuzz_target!(|data: &[u8]| {
 
     exercise_speech("en");
     exercise_speech(other_lang);
-    exercise_all_braille_codes(codes, &tail_id);
+    exercise_two_braille_codes(state.braille_codes.as_slice(), data, &tail_id);
 
     // Navigation depends only on the MathML and the command sequence, not on BrailleCode or speech prefs.
-    const MAX_NAV_STEPS: usize = 96;
-    for &b in data.iter().take(MAX_NAV_STEPS) {
-        let cmd = NAV_COMMANDS[b as usize % NAV_COMMANDS.len()];
+    for step in 0..MAX_NAV_STEPS {
+        let cmd = NAV_COMMANDS[nav_command_index(data, step)];
         let _ = libmathcat::do_navigate_command(cmd);
     }
 });
