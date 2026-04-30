@@ -18,3 +18,12 @@ There are four related projects that make use of MathCAT:
 MathCAT is used in many assistive technologies including NVDA and JAWS.
 
 For more information, see the [full documentation](https://nsoiffer.github.io/MathCAT/).
+
+### Test coverage
+
+Line coverage for the Rust test suite is generated weekly with [`cargo-llvm-cov`](https://github.com/taiki-e/cargo-llvm-cov).
+
+- **Run manually on GitHub:** open [Actions → Test coverage](https://github.com/NSoiffer/MathCAT/actions/workflows/coverage.yml), press **Run workflow**, choose the branch (**`main`** if you want the live **`/llvm-cov/`** site updated), then **Run workflow**. This produces the **llvm-cov-html** artifact and, on **`main`**, pushes the same HTML to the **`gh-pages`** branch under **`llvm-cov/`** (same as the weekly schedule).
+- **Run locally:** install the tool (`cargo install cargo-llvm-cov` and add `llvm-tools-preview` via `rustup component add llvm-tools-preview`), then from the repo root run `cargo llvm-cov --workspace --html --output-dir llvm-cov-html` and open `llvm-cov-html/index.html`.
+- **Scheduled runs:** open the same workflow link, pick the latest successful run, and download the **llvm-cov-html** artifact; open `index.html` inside the archive.
+- **Browsable URL (optional):** if this repository’s GitHub Pages source is the **`gh-pages`** branch (Settings → Pages), the report is also published at [**https://nsoiffer.github.io/MathCAT/llvm-cov/**](https://nsoiffer.github.io/MathCAT/llvm-cov/) (updated by the same workflow; existing site files outside `llvm-cov/` are left in place).
