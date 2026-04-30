@@ -1,21 +1,21 @@
 # Weekly LLVM source-based coverage for the whole workspace (`cargo llvm-cov`).
 # Produces a terminal summary, an HTML artifact (90-day retention), and (on main)
-# pushes HTML to the gh-pages branch under /llvm-cov/ for a stable browse URL
-# when GitHub Pages is set to deploy from that branch.
+# commits HTML under llvm-cov/ on branch main so GitHub Pages (main + /(root)) serves
+# https://<org>.github.io/<repo>/llvm-cov/
 name: Test coverage
 
 on:
   schedule:
     # Monday 07:30 UTC — weekly; adjust if you want a different window.
     - cron: "30 7 * * 1"
-  # Manual runs behave like schedule: HTML artifact + push to gh-pages on main (see gh-pages job `if`).
+  # Manual runs: same as schedule — artifact + push llvm-cov/ on main (see publish job `if`).
   workflow_dispatch:
 
 concurrency:
   group: coverage-${{ github.workflow }}
   cancel-in-progress: false
 
-# Schedule / workflow_dispatch only (not PRs): allow pushing the gh-pages branch.
+# Pushes commits to main (llvm-cov/ only); [skip ci] avoids re-triggering this workflow.
 permissions:
   contents: write
 
@@ -57,14 +57,14 @@ jobs:
             echo ""
             echo "**This run:** [artifacts and logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) — download **llvm-cov-html**, unzip, open \`index.html\`."
             echo ""
-            echo "**Browsable site (optional):** if GitHub Pages uses the \`gh-pages\` branch, see the repo README for the \`/llvm-cov/\` URL."
+            echo "**Browsable site:** Pages must use branch **main** and folder **/(root)**; coverage is then at **\`/llvm-cov/\`** (see repo README)."
           } >> "$GITHUB_STEP_SUMMARY"
 
-  # Pushes only under llvm-cov/ and keeps other files on gh-pages (existing docs stay).
-  gh-pages-llvm-cov:
-    name: Publish HTML to gh-pages (llvm-cov/)
+  # Commits only under llvm-cov/ on main (keep_files preserves the rest of the branch).
+  publish-llvm-cov-to-main:
+    name: Publish HTML to main (llvm-cov/)
     needs: llvm-cov
-    # Same as schedule: deploy on main for cron and for workflow_dispatch (manual runs).
+    # Same as schedule: on main for cron and workflow_dispatch (manual runs).
     if: >-
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
@@ -75,13 +75,15 @@ jobs:
           name: llvm-cov-html
           path: llvm-cov-html
 
-      - name: Deploy to gh-pages branch
+      - name: Commit llvm-cov/ on main for Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: main
           publish_dir: ./llvm-cov-html
           destination_dir: llvm-cov
           keep_files: true
           user_name: github-actions
           user_email: github-actions@github.com
-          commit_message: "chore: refresh llvm-cov HTML report"
+          # Avoid push → workflow → push loops when workflows trigger on push to main.
+          commit_message: "chore: refresh llvm-cov HTML report [skip ci]"
