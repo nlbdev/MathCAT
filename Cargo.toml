@@ -61,6 +61,8 @@ crate-type = ["rlib", "cdylib"]
 name = "mathml2text"
 path = "src/bin/mathml2text.rs"
 
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(coverage)'] }
 
 [profile.test]
 debug = true

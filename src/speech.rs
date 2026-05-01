@@ -491,6 +491,7 @@ struct InsertChildren {
     replacements: ReplacementArray,     // what is inserted between each node
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for InsertChildren {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "InsertChildren:\n  nodes {}\n  replacements {}", self.xpath, &self.replacements);
@@ -721,6 +722,7 @@ struct With {
     replacements: ReplacementArray,     // what to do with these vars
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for With {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "with:\n      variables: {}\n      replace: {}", &self.variables, &self.replacements);
@@ -765,6 +767,7 @@ struct SetVariables {
     variables: VariableDefinitions,     // variables and values
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for SetVariables {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "SetVariables: variables {}", &self.variables);
@@ -795,6 +798,7 @@ struct TranslateExpression {
     xpath: MyXPath,     // variables and values
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for TranslateExpression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "speak: {}", &self.xpath);
