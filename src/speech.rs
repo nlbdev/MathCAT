@@ -491,13 +491,13 @@ struct InsertChildren {
     replacements: ReplacementArray,     // what is inserted between each node
 }
 
-//LCOV_EXCL_START
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for InsertChildren {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "InsertChildren:\n  nodes {}\n  replacements {}", self.xpath, &self.replacements);
     }
 }
-//LCOV_EXCL_STOP
+
 
 impl InsertChildren {
     fn build(insert: &Yaml) -> Result<Box<InsertChildren>> {
@@ -723,13 +723,13 @@ struct With {
     replacements: ReplacementArray,     // what to do with these vars
 }
 
-//LCOV_EXCL_START
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for With {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "with:\n      variables: {}\n      replace: {}", &self.variables, &self.replacements);
     }
 }
-//LCOV_EXCL_STOP
+
 
 impl With {
     fn build(vars_replacements: &Yaml) -> Result<Box<With>> {
@@ -769,13 +769,13 @@ struct SetVariables {
     variables: VariableDefinitions,     // variables and values
 }
 
-//LCOV_EXCL_START
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for SetVariables {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "SetVariables: variables {}", &self.variables);
     }
 }
-//LCOV_EXCL_STOP
+
 
 impl SetVariables {
     fn build(vars: &Yaml) -> Result<Box<SetVariables>> {
@@ -801,13 +801,13 @@ struct TranslateExpression {
     xpath: MyXPath,     // variables and values
 }
 
-//LCOV_EXCL_START
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for TranslateExpression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "speak: {}", &self.xpath);
     }
 }
-//LCOV_EXCL_STOP
+
 
 impl TranslateExpression {
     fn build(vars: &Yaml) -> Result<TranslateExpression> {
