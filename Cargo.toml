@@ -61,6 +61,9 @@ crate-type = ["rlib", "cdylib"]
 name = "mathml2text"
 path = "src/bin/mathml2text.rs"
 
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(coverage)', 'cfg(coverage_nightly)'] }
+
 [profile.test]
 debug = true
 opt-level = 1    # adds a few seconds to the compile, but cuts testing time by ~75% (~90 secs on 5/24)
