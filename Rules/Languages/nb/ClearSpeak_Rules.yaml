@@ -340,6 +340,7 @@
   - bookmark: "*[2]/@id"
   - T: "i tredje"      # phrase(5 'cubed' equals 125)
 
+# Norwegian: Changed to longer pause at the end.
 - name: simple-integer
   tag: power
   match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           # NORWEGIAN: Changed decimal point to $DecimalSeparators 
@@ -348,8 +349,9 @@
   - T: "opphøyd i"                 
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - pause: short
+  - pause: medium
 
+# Norwegian: Changed to longer pause at the end.
 - name: simple-negative-integer
   tag: power
   match:
@@ -361,8 +363,9 @@
   - T: "opphøyd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - pause: short
+  - pause: medium
 
+# Norwegian: Changed to longer pause at the end.
 - name: simple-var
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
@@ -371,7 +374,7 @@
   - T: "opphøyd i"
   - bookmark: "*[2]/@id"
   - x: "*[2]"
-  - pause: short
+  - pause: medium
 
 # match nested exponent, where the nested exponent is has the power 2 or 3 (n below)
 #   [xxx]^n, - [xxx]^n, [xxx] var^n, -[xxx] var^n
@@ -382,7 +385,7 @@
 #   but the test cases all fall back to "raised to the exponent" when not "Auto"
 #   If these are allowed for non-Auto values, then you end up with "...power power...".
 - # [xxx]^n
-  # Norwegian: Consider to find a word similar to "power".
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
   name: nested-squared-or-cubed
   tag: power
   match:
@@ -399,9 +402,15 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - # - [xxx]^n
-  # Norwegian: Consider to find a word similar to "power".
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
   name: nested-negative-squared-or-cubed
   tag: power
   match:
@@ -420,9 +429,15 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - # [xxx] var^n
-  # Norwegian: Consider to find a word similar to "power".
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
   name: nested-var-squared-or-cubed
   tag: power
   match:
@@ -443,9 +458,15 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - # -[xxx] var^n
-  # Norwegian: Consider to find a word similar to "power".
+  # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
   name: nested-negative-var-squared-or-cubed
   tag: power
   match:
@@ -468,6 +489,12 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 - name: default-exponent-power
   tag: power
@@ -481,7 +508,7 @@
   - pause: short
   - T: "slutt eksponent"      # phrase(and now 'end exponent' has been reached)
 
-# Norwegian: Consider to find a word similar to "power".
+# Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
 - name: default
   tag: power
   match: "."
@@ -489,6 +516,12 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(x 'raised to the' second power)
   - x: "*[2]"
+  - test:
+      if: "$Verbosity='Verbose'"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
+      else: [pause: medium]
 
 #
 # Some rules on mrows
