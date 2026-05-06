@@ -674,7 +674,6 @@
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of x)
           else: [SPELL: "'ln'"]
 
-# Norwegian: The preference MultiLineLabel = none is handled differently than it is for English.
 - name: ClearSpeak-multi-line
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
@@ -691,37 +690,37 @@
         - if: "($ClearSpeak_MultiLineLabel = 'Auto' and self::m:piecewise) or $ClearSpeak_MultiLineLabel = 'Case'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "tilfeller"]
                 else: [T: "tilfelle"]      # phrase(this is the first 'case' of three cases)
-        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'" # already dealt with Auto/Case
+        - else_if: "$ClearSpeak_MultiLineLabel = 'Auto' or $ClearSpeak_MultiLineLabel = 'Line'  or $ClearSpeak_MultiLineLabel = 'None'" # already dealt with Auto/Case
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "rader"]      # phrase(this is the first 'line' of three lines)
                 else: [T: "rad"]      # phrase(this is the first 'line' of three lines)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Constraint'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "betingelser"]      # phrase(this is the first 'constraint' of three constraints)
                 else: [T: "betingelse"]      # phrase(this is the first 'constraint' of three constraints)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Equation'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "likninger"]      # phrase(this is the first 'equation' of three equations)
                 else: [T: "likning"]      # phrase(this is the first 'equation' of three equations)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Row'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "rader"]      # phrase(this is the first 'row' of three rows)
                 else: [T: "rad"]      # phrase(this is the first 'row' of three rows)
         - else_if: "$ClearSpeak_MultiLineLabel = 'Step'"
           then:
             - test:
-              - if: "$LineCount > 1 and $ClearSpeak_MultiLineLabel != 'None'"
+              - if: "$LineCount > 1"
                 then: [T: "steg"]      # phrase(this is the first 'step' of three steps)
                 else: [T: "steg"]      # phrase(this is the first 'step' of three steps)
           # SWEDISH/NORWEGIAN: Every expression had to be inflected separately.
