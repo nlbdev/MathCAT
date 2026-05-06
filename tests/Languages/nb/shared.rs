@@ -297,7 +297,7 @@ fn ignore_comma() -> Result<()> {
       </mstyle>
     </mrow>
 </math>";
-    test("nb", "SimpleSpeak", expr, "fi av x er lik, c ganger, e opphøyd i minus h i andre x i andre")?;
+    test("nb", "SimpleSpeak", expr, "fi av x er lik; c ganger, e opphøyd i minus h i andre x i andre, slutt eksponent")?;
     return Ok(());
 
 }
