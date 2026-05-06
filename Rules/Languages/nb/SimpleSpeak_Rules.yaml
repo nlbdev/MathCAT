@@ -267,9 +267,17 @@
   - T: "opphøyd i"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
   - pause: short
-  - T: "slutt eksponent"      # phrase(start 2 raised to the exponent 4 'end of exponent')
+  - test:
+      if: "$Impairment = 'Blindness'"
+      then:
+      - T: "slutt eksponent"      # phrase(start 2 raised to the exponent 4 'end of exponent')
+      - pause: short
+      else:
+      - pause: medium
 
-# Norwegian: Need to find something similar to the word "power" or add a long pause.
+# Norwegian: Added "end exponent" at the end. This doesn't apply if the parent is a power. 
+# For example: x^((4/5)^(n+1))
+# The outer power is caught by the nested rule. Avoid duplicated "end exponent".
 - name: default
   tag: power
   match: "."
@@ -277,6 +285,11 @@
   - x: "*[1]"
   - T: "opphøyd i"      # phrase(15 'raised to the' second power equals 225)
   - x: "*[2]"
+  - test:
+      if: "not(parent::*[self::m:power or self::m:msup])"
+      then: 
+        - pause: short
+        - T: "slutt eksponent"
 
 #
 # Some rules on mrows
