@@ -182,7 +182,7 @@ impl NavigationState {
 
     pub fn get_navigation_mathml_id(&self, mathml: Element) -> (String, usize) {
         if self.position_stack.is_empty() {
-            return (mathml.attribute_value("id").unwrap().to_string(), 0);
+            return (mathml.attribute_value("id").unwrap_or_default().to_string(), 0);
         } else {
             let (position, _) = self.top().unwrap();
             return (position.current_node.clone(), position.current_node_offset);
@@ -196,10 +196,12 @@ impl NavigationState {
         if command == "WhereAmI" && self.where_am_i == NavigationPosition::default() {
             context.set_variable("NavNode", self.where_am_i.current_node.as_str());
             context.set_variable("NavNodeOffset", self.where_am_i.current_node_offset as f64);
-        } else {
-            let position = &self.position_stack[self.position_stack.len()-1];
+        } else if let Some((position, _)) = nav_state_top {
             context.set_variable("NavNode", position.current_node.as_str());
             context.set_variable("NavNodeOffset", position.current_node_offset as f64);
+        } else {
+            context.set_variable("NavNode", self.where_am_i.current_node.as_str());
+            context.set_variable("NavNodeOffset", self.where_am_i.current_node_offset as f64);
         }
 
         // get the index from command (e.g., '3' in 'SetPlacemarker3 or MoveTo3' and set 'PlaceMarker' to it's position)
@@ -379,8 +381,10 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         // debug!("MathML: {}", mml_to_string(mathml));
         if nav_state.position_stack.is_empty() {
             // initialize to root node
+            let root_id = mathml.attribute_value("id")
+                        .context("Internal error: root <math> is missing required id attribute for navigation")?;
             nav_state.push(NavigationPosition{
-                current_node: mathml.attribute_value("id").unwrap().to_string(),
+                current_node: root_id.to_string(),
                 current_node_offset: 0
             }, "None")
         };
@@ -396,7 +400,7 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
             nav_state.init_navigation_context(rules_with_context.get_context(), nav_command, nav_state.top());
             
             // start navigation off at the right node
-            if nav_command == "MoveLastLocation" {
+            if nav_command == "MoveLastLocation" && nav_state.position_stack.len() > 1 {
                 nav_state.pop();
             }
 
@@ -443,16 +447,23 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
                     }
                 }
             }
+            let start_id = nav_state
+                .top()
+                .map(|(position, _)| position.current_node.as_str())
+                .unwrap_or("<unknown>");
             bail!("Internal error: Navigation exceeded limit of number of times no speech generated
                    when attempting to {} in {} mode start at id={} in this MathML:\n{}.",
-                   nav_command, nav_state.mode, nav_state.top().unwrap().0.current_node, mml_to_string(mathml));
+                   nav_command, nav_state.mode, start_id, mml_to_string(mathml));
         });
     });
 
     fn get_start_node<'m>(mathml: Element<'m>, nav_state: &RefMut<NavigationState>) -> Result<Element<'m>>  {
         let element = match nav_state.top() {
             None => {
-                let nav_position = NavigationPosition { current_node: mathml.attribute_value("id").unwrap().to_string(), current_node_offset: 0 };
+                let nav_position = NavigationPosition {
+                    current_node: mathml.attribute_value("id").unwrap_or_default().to_string(),
+                    current_node_offset: 0
+                };
                 get_node_by_id(mathml, &nav_position)
             },
             Some( (position, _) ) => get_node_by_id(mathml, position),
@@ -532,7 +543,11 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         // }
         let offset = context_get_int_variable(rules_with_context.get_context(), "NavNodeOffset", intent)?;
         rules_with_context.set_nav_node_offset(offset);
-        debug!("starting nav_position: {}, start node ={}", nav_state.top().unwrap().0, name(start_node));
+        let start_position = nav_state
+            .top()
+            .map(|(position, _)| position.to_string())
+            .unwrap_or_else(|| "<empty navigation stack>".to_string());
+        debug!("starting nav_position: {}, start node ={}", start_position, name(start_node));
 
         let raw_speech_string = rules_with_context.match_pattern::<String>(start_node)
                     .context("Pattern match/replacement failure during math navigation!")?;
@@ -573,7 +588,9 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
 
         debug!("after match nav_position: {}", nav_position);
         // push the new location on the stack
-        if nav_position != NavigationPosition::default() && &nav_position != nav_state.top().unwrap().0 {
+        let should_push = nav_position != NavigationPosition::default() &&
+            nav_state.top().map(|(position, _)| position != &nav_position).unwrap_or(true);
+        if should_push {
             nav_state.push(nav_position.clone(), nav_command);
         }
 
@@ -638,12 +655,14 @@ pub fn do_navigate_command_string(mathml: Element, nav_command: &'static str) ->
         let push_command_on_stack = (nav_command.starts_with("Move") && nav_command != "MoveLastLocation") || nav_command.starts_with("Zoom");
         // debug!("pop_stack: nav_command={}, count={}, push? {} stack=\n{}", nav_command, count, push_command_on_stack, nav_state);
         if count == 0 {
-            if !push_command_on_stack && nav_command == nav_state.top().unwrap().1 {
+            if !push_command_on_stack && nav_state.top().map(|(_, top_command)| nav_command == top_command).unwrap_or(false) {
                 nav_state.pop();    // remove ReadXXX, SetPlacemarker, etc. commands that don't change the state
             }
             return;
         }
-        let (top_position, top_command) = nav_state.pop().unwrap();
+        let Some((top_position, top_command)) = nav_state.pop() else {
+            return;
+        };
         let mut count = count - 1;
         loop {
             // debug!("  ... loop count={}", count);
@@ -2565,7 +2584,6 @@ mod tests {
         });
     }
 
-    
     #[test]
     fn basic_language_test() -> Result<()> {
         // this is basically a sanity check that all the language's navigation.yaml files are at least syntactically correct

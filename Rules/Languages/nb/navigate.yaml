@@ -56,17 +56,17 @@
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "'zoom'"]]          # phrase('zoom' in to see more details)     
+            then: [set_variables: [Prefix: "'zoom'", PrefixSpoken: "'zoom'"]]          # phrase('zoom' in to see more details)     
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'gå'"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'move'", PrefixSpoken: "'gå'"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'les'"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'read'", PrefixSpoken: "'les'"]]          # phrase('read' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'beskriv'"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'describe'", PrefixSpoken: "'beskriv'"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
-            - x: "$Prefix"
+            - x: "$PrefixSpoken"
             - test:
               - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
                 then: [T: "inn"]                                  # phrase(zoom 'in' to see more details)
@@ -100,7 +100,7 @@
 
 - name: into-or-out-of-mtr
   tag: [mtr, mlabeledtr]
-  match: "$Move2D = 'inn'" # Navigate into a 2D structure.
+  match: "$Move2D = 'in'" # Navigate into a 2D structure.
   replace:
   - T: "kolonne"
   - x: "count($Child2D/preceding-sibling::*)+1" # Teller antall søskennoder før Child2D (noden man beveger seg inn i)
@@ -261,7 +261,7 @@
       - with:
       # Setter Move2d til "i".
       # Setter Child2d til siste barn hvis kommandoen er "MovePreviousZoom", ellers første barn.
-          variables: [Move2D: "'i'", Child2D: "IfThenElse($NavCommand = 'MovePreviousZoom', (*[last()]), (*[1]))"]   # phrase('in' the denominator) 
+          variables: [Move2D: "'in'", Child2D: "IfThenElse($NavCommand = 'MovePreviousZoom', (*[last()]), (*[1]))"]   # phrase('in' the denominator)
           replace: [x: "IfThenElse($NavCommand = 'MovePreviousZoom', 1, $Child2D)"]
   - test:
       if: "$NavCommand = 'MovePreviousZoom'"
@@ -279,18 +279,18 @@
     - if: "self::m:mtr or self::m:mlabeledtr"
       then:
       - with:
-          variables: [Move2D: "'i'", Child2D: "*[1]/*[1]"]   # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]/*[1]"]   # phrase('in' the denominator)
           replace: [x: "."]
       - set_variables: [NavNode: "*[1]/*[1]/@id"] # skip mtd
     - else_if: "*[1][self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]" # auto zoom
       then:
       - with:
-          variables: [Move2D: "'i'", Child2D: "*[1]"]   # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]   # phrase('in' the denominator)
           replace: [x: "."]
       - set_variables: [NavNode: "*[1]/*[2]/@id"]        # skip parens/brackets
       else:
       - with:
-          variables: [Move2D: "'i'", Child2D: "*[1]"]        # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]        # phrase('in' the denominator)
           replace: [x: "."]
       # "(...)" to get around some weird parse bug"
       - set_variables: 
@@ -312,7 +312,7 @@
           - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
       else:
       - with:
-          variables: [Move2D: "'i'", Child2D: "*[1]"]        # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]        # phrase('in' the denominator)
           replace: [x: "."]
       - x: "*[1]"
 
@@ -325,7 +325,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - with:
-      variables: [Move2D: "'i'", Child2D: "*[1]"]          # phrase('in' the denominator)
+      variables: [Move2D: "'in'", Child2D: "*[1]"]          # phrase('in' the denominator)
       replace: [x: "."]
   - test:
       if: "$NavMode = 'Simple'"
@@ -354,7 +354,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - with:
-      variables: [Move2D: "'i'", Child2D: "*[1]"]              # phrase('in' the denominator)
+      variables: [Move2D: "'in'", Child2D: "*[1]"]              # phrase('in' the denominator)
       replace: [x: "."]
   - x: "*[1]"
 
@@ -406,7 +406,7 @@
   - "$NavMode = 'Enhanced'"
   replace:
   - with:
-      variables: [Move2D: "'i'", Child2D: "*[1]"]            # phrase('in' the denominator)
+      variables: [Move2D: "'in'", Child2D: "*[1]"]            # phrase('in' the denominator)
       replace: [x: "."]
   - test:
     - if: "count(*)> 1 or IsNode(., 'leaf') or
@@ -434,7 +434,7 @@
           - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
       else:
       - with:
-          variables: [Move2D: "'i'", Child2D: "*[1]"]                        # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[1]"]                        # phrase('in' the denominator)
           replace: [x: "."]
       - x: "*[1]"
 
@@ -455,7 +455,7 @@
           - NavNodeOffset: "IfThenElse(@data-id-offset, @data-id-offset, '0')"
       else:
       - with:
-          variables: [Move2D: "'i'", Child2D: "*[last()]"]                     # phrase('in' the denominator)
+          variables: [Move2D: "'in'", Child2D: "*[last()]"]                     # phrase('in' the denominator)
           replace: [x: "."]
       - x: "*[last()]"
 
