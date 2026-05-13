@@ -100,28 +100,28 @@
 
 - name: into-or-out-of-mtr
   tag: [mtr, mlabeledtr]
-  match: "$Move2D = 'inn'" # Navigate into a 2D structure.
+  match: "$Move2D = 'i'" # Navigate into a 2D structure.
   replace:
   - T: "kolonne"
-  - x: "count($Child2D/preceding-sibling::*)+1" # Teller antall søskennoder før Child2D (noden man beveger seg inn i)
+  - x: "count($Child2D/preceding-sibling::*)+1" # Count number of sibling nodes before Child2D (the node being navigated into) and add 1 to get the column number.
   - pause: "medium"
 
 - name: into-or-out-of-mmultiscripts
   tag: "*"
-  match: "$Move2D != '' and (@data-from-mathml='mmultiscripts' or self::m:mmultiscripts)" #Navigerer inn i en 2d struktur som er en mmultiscripts.
+  match: "$Move2D != '' and (@data-from-mathml='mmultiscripts' or self::m:mmultiscripts)" # Navigate into a 2D structure that is a mmultiscripts.
   replace:
   - test:
-      if: "name($Child2D)!='none'" # Sjekker at barnet man navigerer inn i ikke er tomt.
+      if: "name($Child2D)!='none'" # Check that the child being navigated into is not empty.
       then:
       - with:
           variables:
-          - NumPrecedingSiblings: "count($Child2D/preceding-sibling::*)" # Lagrer antall søsken foran målnoden.
+          - NumPrecedingSiblings: "count($Child2D/preceding-sibling::*)" # Store the number of siblings before the target node.
           replace:
-          - x: "$Move2D" #Sier retningsordet (inn/ut av)
+          - x: "$Move2D" # Say the direction (into/out of)
           - test:
-            - if: "$NumPrecedingSiblings=0" # Ingen søsken foran målnoden
+            - if: "$NumPrecedingSiblings=0" # No siblings before the target node
               then: [T: "base"]                 # phrase(the 'base' of the power)
-            - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # Er vi etter <mprescripts>-taggent. I så fall er vi i prescriptene.
+            - else_if: "$Child2D/preceding-sibling::*[self::m:mprescripts]" # Are we after the <mprescripts> tag? If so, we are in the prescripts.
               then:
               - test:   # in postscripts -- base shifts by one
                   if: "$NumPrecedingSiblings mod 2 = 0" 
@@ -143,14 +143,14 @@
   replace:
   - with:
       variables:
-      - PartNumber: "count($Child2D/preceding-sibling::*)"  # antall søsken før målnoden
-      - PartName: "GetNavigationPartName(name(.), $PartNumber)" # finne navn på delen. F.eks. teller/nevner, base/eksponent
+      - PartNumber: "count($Child2D/preceding-sibling::*)"  # Count the number of siblings before the target node
+      - PartName: "GetNavigationPartName(name(.), $PartNumber)" # Find the name of the part. E.g., numerator/denominator, base/exponent
       replace:
-      - x: "$Move2D"   # inn/ut av
+      - x: "$Move2D"   # into/out of
       - test:
-        - if: "$PartName != ''" # hvis et navn på delen finnes
+        - if: "$PartName != ''" # if a name for the part exists
           then: [x: "$PartName"]
-        - else_if: "count(*) = 1" # hvis noden har ett barn
+        - else_if: "count(*) = 1" # if the node has one child
           then_test:
             if: "$NavVerbosity = 'Verbose'"
             then: [x: "translate(name(.), '-_', ' ')"]      # e.g., "in absolute value"
@@ -250,17 +250,17 @@
   - "  ($NavCommand = 'MoveNextZoom' or $NavCommand = 'MovePreviousZoom') and $NavMode='Enhanced') and "
   - "count(*)=1 and
      (*[1][self::m:mrow or @data-from-mathml='mrow'] and
-      not(@data-from-mathml='msqrt' or self::m:msqrt or @data-from-mathml='menclose' or self::m:menclose))" # nåværende node har ett barn som er en <mrow>. Den nåværende noden er ikke msqrt ekker menclose.
+      not(@data-from-mathml='msqrt' or self::m:msqrt or @data-from-mathml='menclose' or self::m:menclose))" # current node has one child that is an <mrow>. The current node is not msqrt or menclose.
   replace:
   - with:
-      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"] # hvis verbosity er verbose, blir SayCommand satt til true, ellers false
-      replace: [x: "."] # kjør videre med nåverende node
+      variables: [SayCommand: "string($NavVerbosity = 'Verbose')"] # if verbosity is verbose, SayCommand is set to true, otherwise false
+      replace: [x: "."] # continue with the current node
   - test:
       if: "not(*[1][self::m:mrow or @data-from-mathml='mrow'])"
       then:
       - with:
-      # Setter Move2d til "i".
-      # Setter Child2d til siste barn hvis kommandoen er "MovePreviousZoom", ellers første barn.
+      # Set Move2D to "i".
+      # Set Child2D to the last child if the command is "MovePreviousZoom", otherwise the first child.
           variables: [Move2D: "'i'", Child2D: "IfThenElse($NavCommand = 'MovePreviousZoom', (*[last()]), (*[1]))"]   # phrase('in' the denominator) 
           replace: [x: "IfThenElse($NavCommand = 'MovePreviousZoom', 1, $Child2D)"]
   - test:
@@ -392,7 +392,7 @@
       variables: [SayCommand: "string($NavVerbosity = 'Verbose')"]
       replace: [x: "."]
   - with:
-      variables: [Move2D: "'out of'", Child2D: "."]
+      variables: [Move2D: "'ut av'", Child2D: "."]
       replace: [x: ".."]
   - x: ".."
 
@@ -493,7 +493,7 @@
       then: [x: ".."] # auto-zoom: move out a level and retry
       else:
       - with:
-          variables: [Move2D: "'out of'", Child2D: "."]   # phrase('out of' the denominator)
+          variables: [Move2D: "'ut av'", Child2D: "."]   # phrase('out of' the denominator)
           replace: [x: ".."]
       - test:
           if: "parent::m:mtd"
@@ -632,7 +632,7 @@
           else:
           - set_variables: [NavNode: "preceding-sibling::*[1]/*[1]/@id"]
       else:
-      - t: "ingen foregående kolonner"                 # phrase('no previous column' in the table)
+      - T: "ingen foregående kolonner"                 # phrase('no previous column' in the table)
       - set_variables: [SpeakExpression: "'false'"]
 
 - name: move-cell-next
@@ -896,7 +896,7 @@
           then: [x: "$Following"]
           else:
           - with:
-              variables: [Move2D: "'in'", Child2D: "$Following"]        # phrase('in' the denominator)
+              variables: [Move2D: "'i'", Child2D: "$Following"]        # phrase('in' the denominator)
               replace: [x: ".."]
           - with:
               variables: [NavCommand: "'MoveNextZoom'"]
@@ -931,7 +931,7 @@
       - pause: medium
   - with:
       variables:
-      - Move2D: "'end of'"
+      - Move2D: "'slutt på'"
       - Child2D: "$EdgeNode/*[last()]"
       - MatchCounter: $MatchCounter + 1
       replace: [x: "$EdgeNode"]
@@ -951,10 +951,10 @@
       - T: "kan ikke"                                          # phrase('cannot' move right in expression)
       - test:
         - if: "$NavCommand = 'MoveNext'"
-          then: [t: "gå"]                                  # phrase('move' to next entry in table)     
+          then: [T: "gå"]                                  # phrase('move' to next entry in table)     
         - else_if: "$NavCommand = 'ReadNext'"
-          then: [t: "lese"]                                  # phrase('read' next entry in table)     
-          else: [t: "beskrive"]                              # phrase('describe' next entry in table)     
+          then: [T: "lese"]                                  # phrase('read' next entry in table)     
+          else: [T: "beskrive"]                              # phrase('describe' next entry in table)     
       - T: "høyre"                              # phrase(move 'right')
       - pause: short
   - T: "slutt på uttrykk"                              # phrase(move 'end of math')
@@ -980,11 +980,11 @@
       if: "following-sibling::*"
       then:
       - with:
-          variables: [Move2D: "'in'", Child2D: "."]             # phrase('in' the denominator)
+          variables: [Move2D: "'i'", Child2D: "."]             # phrase('in' the denominator)
           replace: [x: ".."]
       else:
       - with:
-          variables: [Move2D: "'out of'", Child2D: "."]
+          variables: [Move2D: "'ut av'", Child2D: "."]
           replace: [x: ".."]
   - x: ".."
 
@@ -1065,12 +1065,12 @@
       if: "preceding-sibling::* and following-sibling::*[1][name(.)='none']"
       then:
       - with:
-          variables: [Move2D: "'out of'", Child2D: "."]
+          variables: [Move2D: "'ut av'", Child2D: "."]
           replace: [x: ".."]
       - x: "following-sibling::*[1]"
       else:
       - with:
-          variables: [Move2D: "'in'", Child2D: "following-sibling::*[1]"]       # phrase('in' the denominator)
+          variables: [Move2D: "'i'", Child2D: "following-sibling::*[1]"]       # phrase('in' the denominator)
           replace: [x: ".."]
       - with:
           variables: [NavCommand: "'MoveNextZoom'"]
@@ -1091,7 +1091,7 @@
           if: "IsNode(.., '2D') or not(IsNode(.., 'mathml'))"
           then:
           - with:
-              variables: [Move2D: "'in'", Child2D: "following-sibling::*[1]"]           # phrase('in' the denominator)
+              variables: [Move2D: "'i'", Child2D: "following-sibling::*[1]"]           # phrase('in' the denominator)
               replace: [x: ".."]
       - set_variables: [NavNode: "following-sibling::*[1]/@id"]
 
@@ -1113,7 +1113,7 @@
           then: [x: "$Preceding"]
           else:
           - with:
-              variables: [Move2D: "'in'", Child2D: "$Preceding"]          # phrase('in' the denominator)
+              variables: [Move2D: "'i'", Child2D: "$Preceding"]          # phrase('in' the denominator)
               replace: [x: ".."]
           - with:
               variables: [NavCommand: "'MovePreviousZoom'"]
@@ -1148,7 +1148,7 @@
       - pause: medium
   - with:
       variables:
-      - Move2D: "'end of'"
+      - Move2D: "'slutt på'"
       - Child2D: "$EdgeNode/*[1]"
       - MatchCounter: $MatchCounter + 1
       replace: [x: "$EdgeNode"]
@@ -1177,7 +1177,7 @@
       - T: "kan ikke gå venstre"                      # phrase('cannot move left')
       - pause: short
   - with:
-      variables: [Move2D: "'start of'", Child2D: "."]
+      variables: [Move2D: "'start på'", Child2D: "."]
       replace: [x: "."]
   - pause: long
   - set_variables: [SpeakExpression: "'false'"]
@@ -1222,11 +1222,11 @@
       if: "preceding-sibling::*"
       then:
       - with:
-          variables: [Move2D: "'in'", Child2D: "."]             # phrase('in' the denominator)
+          variables: [Move2D: "'i'", Child2D: "."]             # phrase('in' the denominator)
           replace: [x: ".."]
       else:
       - with:
-          variables: [Move2D: "'out of'", Child2D: "."]
+          variables: [Move2D: "'ut av'", Child2D: "."]
           replace: [x: ".."]
   - x: ".."
 
@@ -1252,7 +1252,7 @@
       if: "not(parent::m:mrow)"
       then:
       - with:
-          variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]         # phrase('in' the denominator)
+          variables: [Move2D: "'i'", Child2D: "preceding-sibling::*[1]"]         # phrase('in' the denominator)
           replace: [x: ".."]
   - set_variables: [NavNode: "preceding-sibling::*[1]/*[2]/@id"]
 
@@ -1316,12 +1316,12 @@
       if: "count(preceding-sibling::*) > 2 and preceding-sibling::*[1][name(.)='none']"
       then:
       - with:
-          variables: [Move2D: "'out of'", Child2D: "."]
+          variables: [Move2D: "'ut av'", Child2D: "."]
           replace: [x: ".."]
       - x: "preceding-sibling::*[1]"          # skip over 'none'
       else:
       - with:
-          variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]               # phrase('in' the denominator)
+          variables: [Move2D: "'i'", Child2D: "preceding-sibling::*[1]"]               # phrase('in' the denominator)
           replace: [x: ".."]
       - with:
           variables: [NavCommand: "'MovePreviousZoom'"]
@@ -1342,7 +1342,7 @@
           if: "IsNode(.., '2D') or not(IsNode(.., 'mathml'))"
           then:
           - with:
-              variables: [Move2D: "'in'", Child2D: "preceding-sibling::*[1]"]           # phrase('in' the denominator)
+              variables: [Move2D: "'i'", Child2D: "preceding-sibling::*[1]"]           # phrase('in' the denominator)
               replace: [x: ".."]
       - set_variables: [NavNode: "preceding-sibling::*[1]/@id"]
 
@@ -1422,7 +1422,7 @@
       - test:
         - if: "$NavCommand = 'ReadCurrent'"
           then: [T: "les"]                                  # phrase('read' next entry in table) 
-          else: [t: "beskriv"]                              # phrase('describe' next entry in table)     
+          else: [T: "beskriv"]                              # phrase('describe' next entry in table)     
       - T: "nåværende"                                         # phrase('current' entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
@@ -1447,7 +1447,7 @@
         - else_if: "starts-with($NavCommand, 'MoveTo')"
           then: [T: "gå til "]                              # phrase('move to' the next entry in table) 
           else: [T: "angi"]                                   # phrase('set' the value of the next entry in table) 
-      - t: "plassholder"                                     # phrase('placeholder' for the value)
+      - T: "plassholder"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1492,20 +1492,19 @@
   - test:
       if: "$NavCommand = 'WhereAmI'"
       then:
-      - t: "inside of nothing more"                         # phrase('inside of nothing more') 
+      - T: "inni ingenting mer"                         # phrase('inside of nothing more') 
       - pause: long
       - set_variables: [SpeakExpression: "'false'"]
       else:
-      - t: "inside"                                         # phrase('inside' a big expression) 
+      - T: "inni"                                         # phrase('inside' a big expression) 
       - pause: medium
   - set_variables: [NavNode: "@id"]
 
-# Marthe
 - name: where-am-i-middle
   tag: "*"
   match: "$NavCommand = 'WhereAmI' or $NavCommand = 'WhereAmIAll'"
   replace:
-  - t: "inside"                                           # phrase('inside' a big expression)
+  - T: "inni"                                           # phrase('inside' a big expression)
   - pause: medium
   - test:
     - if: "$NavMode='Enhanced' and parent::*[self::m:mrow and (IsBracketed(., '(', ')', false) or IsBracketed(., '[', ']', false))]"
