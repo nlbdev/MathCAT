@@ -46,13 +46,13 @@
       if: "*[2][self::m:mn]"
       then_test:
       - if: "*[2][text()='2']"
-        then: [T: "kvadratroten"]
+        then: [T: "kvadratrot"]
       - else_if: "*[2][text()='3']"
-        then: [T: "kubikkroten"]
+        then: [T: "kubikkrot"]
       - else_if: "*[2][not(contains(., ','))]"
-        then: [x: "ToOrdinal(*[2])", T: "roten"]
+        then: [x: "ToOrdinal(*[2])", T: "rot"]
       else:
-      - T: "roten av grad"
+      - T: "rot av grad"
       - x: "*[2]"
   - test:
       if: "IsNode(*[1], 'simple')"

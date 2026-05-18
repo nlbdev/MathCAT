@@ -156,7 +156,7 @@
             - else_if: "$SpeechStyle != 'ClearSpeak'"
               then_test:
                 - if: "$DefaultToGiven"
-                  then: [T: "gitt"]
+                  then: [pause: short, T: "gitt"]
                 - else_if: "preceding-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))] and 
                             following-sibling::*[1][self::m:mn and not(contains(., $DecimalSeparators))]"
                   then: [T: "deler"]
@@ -166,7 +166,7 @@
             - else_if: "$ClearSpeak_VerticalLine = 'SuchThat'"
               then: [T: "slik at"]
             - else_if: "$ClearSpeak_VerticalLine = 'Given' or $DefaultToGiven"
-              then: [T: "gitt"] 
+              then: [pause: short, T: "gitt"] 
             - else: [T: "deler"]
 
  - "}":                                          #  0x7d
