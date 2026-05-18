@@ -149,8 +149,8 @@ fn prime() -> Result<()> {
 #[test]
 fn given() -> Result<()> {
     let expr = "<math><mi>P</mi><mo>(</mo><mi>A</mi><mo>|</mo><mi>B</mi><mo>)</mo></math>";
-    test("nb", "SimpleSpeak", expr, "stor p; startparentes; stor a gitt stor b; sluttparentes")?;
-    test("nb", "ClearSpeak", expr,  "stor p; startparentes; stor a gitt stor b; sluttparentes")?; // not good, but follows the spec
+    test("nb", "SimpleSpeak", expr, "stor p; startparentes; stor a, gitt stor b; sluttparentes")?;
+    test("nb", "ClearSpeak", expr,  "stor p; startparentes; stor a, gitt stor b; sluttparentes")?; // not good, but follows the spec
     return Ok(());
 
 }
