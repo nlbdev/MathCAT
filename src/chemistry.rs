@@ -55,7 +55,6 @@ pub static NOT_CHEMISTRY: i32 = -10000;  // should overwhelm any positive signal
 static NOT_CHEMISTRY_THRESHOLD: i32 = -10000/2;  // value for testing -- that way some can be added to NOT_CHEMISTRY and still meet the test
 static CHEMISTRY_THRESHOLD: i32 = 5;   // if this changes, change CHEMISTRY_THRESHOLD_STR
 
-
 /// this might be chemistry -- should only exist during canonicalization
 pub static MAYBE_CHEMISTRY: &str = "data-maybe-chemistry";
 
@@ -792,7 +791,7 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
                 }
                 return false;
             },
-            "msub" | "msup" | "msubsup" | "mmultiscripts" => {
+            "msub" | "msup" | "msubsup" | "mmultiscripts" | "mover" => {
                 gather_chemical_elements(get_possible_embellished_node(mathml), chem_elements);
                 return name(mathml) == "mmultiscripts" &&  has_numerical_prescripts(mathml);
             },
@@ -1347,7 +1346,7 @@ fn is_generalized_salt(elements: &[&str]) -> bool {
 ///
 /// Note: 'mathml' is not necessarily canonicalized   
 pub fn likely_adorned_chem_formula(mathml: Element) -> i32 {
-    if !matches!(name(mathml), "msub" | "msup" | "msubsup" | "mmultiscripts") {
+    if !matches!(name(mathml), "msub" | "msup" | "msubsup" | "mmultiscripts" | "mover") {
         return NOT_CHEMISTRY;
     }
     // some simple sanity checks on the scripts...

@@ -193,12 +193,8 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math>
-        <msub><mi mathvariant="normal">N</mi><mn>2</mn></msub>
-        <munderover><mo>&#x2192;</mo><mtext>Haber&#xA0;process</mtext><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub></munderover>
-        <mi mathvariant="normal">N</mi>
-        <msub><mi mathvariant="normal">H</mi><mn>3</mn></msub>
-    </math>
+<math> <mn>1</mn> <mi>kg</mi> <msup> <mi intent=':unit'>sec</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> <msup> <mi intent='unit'>m</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> </math>
+
          "#;
   // let instant = Instant::now();
 

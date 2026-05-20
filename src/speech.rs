@@ -132,10 +132,13 @@ fn speak_rules(rules: &'static std::thread::LocalKey<RefCell<SpeechRules>>, math
         let new_package = Package::new();
         let mut rules_with_context = SpeechRulesWithContext::new(&rules, new_package.as_document(), nav_node_id, nav_node_offset);
         let speech_string = nestable_speak_rules(& mut rules_with_context, mathml)?;
+        
         return Ok( rules.pref_manager.borrow().get_tts()
             .merge_pauses(remove_optional_indicators(
                 &speech_string.replace(CONCAT_STRING, "")
-                                    .replace(CONCAT_INDICATOR, "")                            
+                                   .replace(CONCAT_INDICATOR, "") 
+                                   .replace(POSTFIX_CONCAT_STRING, "")
+                                   .replace(POSTFIX_CONCAT_INDICATOR, "")                           
                             )
             .trim_start().trim_end_matches([' ', ',', ';'])) );
     });
@@ -241,6 +244,12 @@ pub const CONCAT_INDICATOR: &str = "\u{F8FE}";
 
 // This is the pattern that needs to be matched (and deleted)
 pub const CONCAT_STRING: &str = " \u{F8FE}";
+
+// a similar hack to delete a space afterward
+pub const POSTFIX_CONCAT_INDICATOR: &str = "\u{F8FF}";
+
+// This is the pattern that needs to be matched (and deleted)
+pub const POSTFIX_CONCAT_STRING: &str = "\u{F8FF} ";
 
 // a similar hack to potentially delete (repetitive) optional replacements
 // the OPTIONAL_INDICATOR is added by "ot:" before and after the optional string
@@ -447,6 +456,9 @@ impl Replacement {
             "ct" | "CT" => {
                 return Ok( Replacement::Text( CONCAT_INDICATOR.to_string() + as_str_checked(value)? ) );
             },
+            "tc" | "TC" => {
+                return Ok( Replacement::Text( as_str_checked(value)?.to_string() + POSTFIX_CONCAT_INDICATOR ) );
+            },
             "ot" | "OT" => {
                 return Ok( Replacement::Text( OPTIONAL_INDICATOR.to_string() + as_str_checked(value)? + OPTIONAL_INDICATOR ) );
             },
@@ -491,11 +503,13 @@ struct InsertChildren {
     replacements: ReplacementArray,     // what is inserted between each node
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for InsertChildren {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "InsertChildren:\n  nodes {}\n  replacements {}", self.xpath, &self.replacements);
     }
 }
+
 
 impl InsertChildren {
     fn build(insert: &Yaml) -> Result<Box<InsertChildren>> {
@@ -721,11 +735,13 @@ struct With {
     replacements: ReplacementArray,     // what to do with these vars
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for With {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "with:\n      variables: {}\n      replace: {}", &self.variables, &self.replacements);
     }
 }
+
 
 impl With {
     fn build(vars_replacements: &Yaml) -> Result<Box<With>> {
@@ -765,11 +781,13 @@ struct SetVariables {
     variables: VariableDefinitions,     // variables and values
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for SetVariables {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "SetVariables: variables {}", &self.variables);
     }
 }
+
 
 impl SetVariables {
     fn build(vars: &Yaml) -> Result<Box<SetVariables>> {
@@ -795,11 +813,14 @@ struct TranslateExpression {
     xpath: MyXPath,     // variables and values
 }
 
+#[cfg_attr(coverage, coverage(off))]
 impl fmt::Display for TranslateExpression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         return write!(f, "speak: {}", &self.xpath);
     }
 }
+
+
 impl TranslateExpression {
     fn build(vars: &Yaml) -> Result<TranslateExpression> {
         // 'translate:' -- xpath (should evaluate to an id)
@@ -2061,6 +2082,15 @@ impl FilesAndTimes {
         }
     }
 
+    /// Mark cached files as stale so the next `read_files()` reloads them.
+    pub fn invalidate(&mut self) {
+        self.ft.clear();
+    }
+
+    pub fn is_valid(&self) -> bool {
+        self.ft.is_empty()
+    }
+
     pub fn as_path(&self) -> &Path {
         assert!(!self.ft.is_empty());
         return &self.ft[0].file;
@@ -2182,6 +2212,46 @@ thread_local!{
 
     pub static BRAILLE_RULES: RefCell<SpeechRules> =
             RefCell::new( SpeechRules::new(RulesFor::Braille, false) );
+}
+
+/// Invalidate speech caches whose paths change when `Language` changes.
+pub fn invalidate_speech_language_caches() {
+    SPEECH_DEFINITION_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    SPEECH_UNICODE_SHORT_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    SPEECH_UNICODE_FULL_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    INTENT_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    SPEECH_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    OVERVIEW_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+    NAVIGATION_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+}
+
+/// Invalidate caches whose paths change when `SpeechStyle` changes.
+pub fn invalidate_speech_style_caches() {
+    SPEECH_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+}
+
+/// Invalidate braille caches whose paths change when `BrailleCode` changes.
+pub fn invalidate_braille_caches() {
+    BRAILLE_DEFINITION_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    BRAILLE_UNICODE_SHORT_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    BRAILLE_UNICODE_FULL_FILES_AND_TIMES.with(|files| files.borrow_mut().invalidate());
+    BRAILLE_RULES.with(|rules| rules.borrow_mut().rule_files.invalidate());
+}
+
+#[cfg(test)]
+// Used for testing the cache is invalidated when the language changes in prefs.rs
+impl SpeechRules {
+    pub(crate) fn rule_files_cache_is_empty(&self) -> bool {
+        self.rule_files.is_valid()
+    }
+
+    pub(crate) fn definitions_files_cache_is_empty(&self) -> bool {
+        self.definitions_files.borrow().is_valid()
+    }
+
+    pub(crate) fn definitions_files_cache_path(&self) -> PathBuf {
+        self.definitions_files.borrow().as_path().to_path_buf()
+    }
 }
 
 impl SpeechRules {
@@ -2764,7 +2834,17 @@ pub fn braille_replace_chars(str: &str, mathml: Element) -> Result<String> {
         let rules = rules.borrow();
         let new_package = Package::new();
         let mut rules_with_context = SpeechRulesWithContext::new(&rules, new_package.as_document(), "", 0);
-        return rules_with_context.replace_chars(str, mathml);
+        return match rules_with_context.replace_chars(str, mathml) {
+            Ok(s) => Ok(
+                s.replace(CONCAT_STRING, "")
+                 .replace(CONCAT_INDICATOR, "") 
+                 .replace(POSTFIX_CONCAT_STRING, "")
+                 .replace(POSTFIX_CONCAT_INDICATOR, "")
+            ),
+            Err(e) => Err(e),
+        }                   
+
+
     })
 }
 
