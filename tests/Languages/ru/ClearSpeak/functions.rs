@@ -17,7 +17,7 @@ fn trig_names() -> Result<()> {
     <mi>csc</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>cot</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("ru", "ClearSpeak", expr, "синус икс плюс косинус игрек плюс тангенс зет плюс секанс альфа, плюс косеканс фи, плюс котангенс фи")?;
+    test("ru", "ClearSpeak", expr, "синус икс плюс косинус игрек плюс тангенс зэт плюс секанс альфа, плюс косеканс фи, плюс котангенс фи")?;
     return Ok(());
 }
 
@@ -31,7 +31,7 @@ fn hyperbolic_trig_names() -> Result<()> {
     <mi>csch</mi><mi>&#x03D5;</mi><mo>+</mo>
     <mi>coth</mi><mi>&#x03C6;</mi>
     </mrow></math>";
-    test("ru", "ClearSpeak", expr, "гиперболический синус икс, плюс гиперболический косинус игрек, плюс гиперболический тангенс зет, плюс гиперболический секанс альфа, плюс гиперболический косеканс фи, плюс гиперболический котангенс фи")?;
+    test("ru", "ClearSpeak", expr, "гиперболический синус икс, плюс гиперболический косинус игрек, плюс гиперболический тангенс зэт, плюс гиперболический секанс альфа, плюс гиперболический косеканс фи, плюс гиперболический котангенс фи")?;
     return Ok(());
 }
 
@@ -75,14 +75,14 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("ru", "ClearSpeak", expr, "секанс в четвертой степени икс")?;
+    test("ru", "ClearSpeak", expr, "секанс в четвёртой степени икс")?;
     return Ok(());
 }
 
 #[test]
 fn trig_power_other() -> Result<()> {
     let expr = "<math><msup><mi>sinh</mi><mrow>><mi>n</mi><mo>-</mo><mn>1</mn></mrow></msup><mi>x</mi></math>";
-    test("ru", "ClearSpeak", expr, "гиперболический синус икс в степени n минус 1")?;
+    test("ru", "ClearSpeak", expr, "гиперболический синус икс в степени эн минус 1")?;
     return Ok(());
 }
 
@@ -232,7 +232,7 @@ fn times_sqrt() -> Result<()> {
         <mo>=</mo>
         <msqrt> <mrow>  <mi>a</mi><mi>b</mi></mrow> </msqrt>
         </mrow></math>";
-    test("ru", "ClearSpeak", expr, "квадратный корень из а; умножить на квадратный корень из бэ; равно, квадратный корень из а бэ")?;
+    test("ru", "ClearSpeak", expr, "квадратный корень из а; умножить на квадратный корень из бэ; равно, квадратный корень из а умножить на бэ")?;
     return Ok(());
 }
 
@@ -250,7 +250,7 @@ fn more_implied_times() -> Result<()> {
     </mrow>
     </mrow></math>";
     test_ClearSpeak("ru", "ClearSpeak_ImpliedTimes", "MoreImpliedTimes", expr,
-        "скобка 2 умножить на икс закрывается в квадрате")?;
+        "скобка открывается 2 умножить на икс скобка закрывается в квадрате")?;
         return Ok(());
 }
 
