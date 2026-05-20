@@ -342,38 +342,38 @@ fn set_preference_impl(name: &str, value: &str) -> Result<()> {
         }
     }
 
-    crate::speech::SPEECH_RULES.with(|rules| {
-        let rules = rules.borrow_mut();
-        if let Some(error_string) = rules.get_error() {
+    crate::speech::SPEECH_RULES.with(|rules| -> Result<()> {
+        if let Some(error_string) = rules.borrow().get_error() {
             bail!("{}", error_string);
         }
+        Ok(())
+    })?;
 
-        // we set the value even if it was the same as the old value because this might override a potentially changed future user value
-        let mut pref_manager = rules.pref_manager.borrow_mut();
-        if name == "LanguageAuto" {
-            let language_pref = pref_manager.pref_to_string("Language");
-            if language_pref != "Auto" {
-                bail!(
-                    "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
-                    language_pref
-                );
+    // Do not hold a SpeechRules borrow while updating preferences: invalidation clears rule caches.
+    let pref_manager = crate::prefs::PreferenceManager::get();
+    let mut pref_manager = pref_manager.borrow_mut();
+    if name == "LanguageAuto" {
+        let language_pref = pref_manager.pref_to_string("Language");
+        if language_pref != "Auto" {
+            bail!(
+                "'LanguageAuto' can only be used when 'Language' has the value 'Auto'; Language={}",
+                language_pref
+            );
+        }
+    }
+    let lower_case_value = value.to_lowercase();
+    if lower_case_value == "true" || lower_case_value == "false" {
+        pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
+    } else {
+        match name {
+            "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
+                pref_manager.set_api_float_pref(name, to_float(name, &value)?)
+            }
+            _ => {
+                pref_manager.set_string_pref(name, &value)?;
             }
         }
-        let lower_case_value = value.to_lowercase();
-        if lower_case_value == "true" || lower_case_value == "false" {
-            pref_manager.set_api_boolean_pref(name, value.to_lowercase() == "true");
-        } else {
-            match name {
-                "Pitch" | "Rate" | "Volume" | "CapitalLetters_Pitch" | "MathRate" | "PauseFactor" => {
-                    pref_manager.set_api_float_pref(name, to_float(name, &value)?)
-                }
-                _ => {
-                    pref_manager.set_string_pref(name, &value)?;
-                }
-            }
-        };
-        return Ok::<(), Error>(());
-    })?;
+    };
 
     return Ok(());
 }
