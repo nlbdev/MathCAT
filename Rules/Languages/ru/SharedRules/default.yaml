@@ -418,6 +418,15 @@
   replace:
   - t: "и"
 
+- name: english-if
+  tag: mtext
+  match: "normalize-space(.)='if' or contains(., 'if')"
+  replace:
+  - test:
+      if: "ancestor::m:mtd"
+      then: [pause: short]
+  - t: "если"
+
 - name: even-number-text
   tag: mtext
   match: "contains(., 'even') and contains(., 'number')"
@@ -478,7 +487,7 @@
     - else_if: "text()='B' and parent::*[self::m:mrow and IsBracketed(., '(', ')') and count(*)=3 and preceding-sibling::*[2][self::m:mi[.='P']]]"
       then: [t: "заглавной бэ"]
     - else_if: "text()='e' and parent::*[self::m:power or self::m:msup][*[1][text()='e']]"
-      then: [t: "e"]
+      then: [t: "е"]
     - else_if: "text()='g' and following-sibling::*[1][.='⁡' or (.='⁢' and @data-function-guess)]"
       then: [t: "же"]
     - else_if: "$SpeechStyle='SimpleSpeak' and (text()='n' or text()='k') and parent::*[self::m:mrow and count(*)=3 and *[2][.='+'] and *[3][self::m:mn]] and ancestor::*[name()='fraction']"

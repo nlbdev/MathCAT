@@ -287,7 +287,7 @@ fn nested_end_exponent_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени n плюс 1, конец показателя")?;
+    test("ru", "SimpleSpeak", expr, "тэ в степени четыре пятых в степени эн плюс 1, конец показателя")?;
     test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
                "тэ в степени четыре пятых в степени эн плюс 1")?;
                return Ok(());

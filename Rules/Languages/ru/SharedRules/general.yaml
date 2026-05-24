@@ -163,8 +163,8 @@
       then:
       - test:
         - if: "*[1]/*[1][.='n']"
-          then: [t: "n"]
-        - else: [t: "k"]
+          then: [t: "эн"]
+        - else: [t: "ка"]
       - x: "*[1]/*[2]"
       - x: "*[1]/*[3]"
       else: [x: "*[1]"]
@@ -174,8 +174,8 @@
       then:
       - test:
         - if: "*[2]/*[1][.='n']"
-          then: [t: "n"]
-        - else: [t: "k"]
+          then: [t: "эн"]
+        - else: [t: "ка"]
       - x: "*[2]/*[2]"
       - x: "*[2]/*[3]"
       else: [x: "*[2]"]
@@ -821,11 +821,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase('end' of matrix)
       - test:
           if: $ClearSpeak_Matrix = 'EndVector'
-          then: [t: "вектор"]      # phrase(the 2 column 'vector')
-          else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "конец вектора"]      # phrase(the 2 column 'vector')
+          else: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-column-matrix
   tag: matrix
@@ -864,11 +863,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
-          else: [t: "вектор"]      # phrase(the 2 by 1 'vector')
+          then: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "конец вектора"]      # phrase(the 2 by 1 'vector')
 
 - name: default-row-matrix
   tag: matrix
@@ -887,11 +885,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
-          else: [t: "вектор"]      # phrase(the 2 by 1 'vector')
+          then: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "конец вектора"]      # phrase(the 2 by 1 'vector')
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -913,11 +910,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [t: "определитель"]      # phrase(the 2 by 2 'determinant')
-          else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "конец определителя"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-matrix
   tag: [matrix, determinant]
@@ -936,11 +932,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [t: "определитель"]      # phrase(the 2 by 2 'determinant')
-          else: [t: "матрица"]      # phrase(the 2 by 2 'matrix's)
+          then: [t: "конец определителя"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix's)
 
 - name: chemistry-msub
   tag: [chemical-formula]

@@ -725,6 +725,15 @@
   - pause: medium
   - x: "*[3]"
 
+- name: equality-with-piecewise
+  tag: [math, mrow]
+  match: "count(*[.='='])=1 and *[.='=']/following-sibling::*[1][self::m:piecewise or .//m:piecewise]"
+  replace:
+  - x: "*[.='=']/preceding-sibling::*"
+  - x: "*[.='=']"
+  - pause: medium
+  - x: "*[.='=']/following-sibling::*"
+
 - name: functions-none-plus
   tag: mrow
   match:
@@ -823,7 +832,7 @@
       - if: ".//m:mo[.='|' or .='∣' or .='∩'] or .//m:mtext[contains(., 'and')] or .//*[contains(name(.), 'given')]"
         then: [t: "открывающая круглая скобка"]
       - else_if: "ancestor::*[self::m:fraction] and not(IsNode(*[2], 'simple'))"
-        then: [t: "открывается скобка"]
+        then: [t: "скобка открывается"]
       - else: [t: "скобка открывается"]
   - test:
       if: ".//m:mo[.='|' or .='∣' or .='∩'] or .//m:mtext[contains(., 'and')] or .//*[contains(name(.), 'given')]"
@@ -839,7 +848,7 @@
       - if: ".//m:mo[.='|' or .='∣' or .='∩'] or .//m:mtext[contains(., 'and')] or .//*[contains(name(.), 'given')]"
         then: [t: "закрывающая круглая скобка"]
       - else_if: "ancestor::*[self::m:fraction] and not(IsNode(*[2], 'simple'))"
-        then: [t: "закрывается скобка"]
+        then: [t: "скобка закрывается"]
       - else: [t: "скобка закрывается"]
   - test:
       if: "following-sibling::*[1][.='+' or .='=']"
