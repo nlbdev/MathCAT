@@ -27,7 +27,7 @@
  - "w": [t: "дабл-ю"]
  - "x": [t: "икс"]
  - "y": [t: "игрек"]
- - "z": [t: "зет"]
+ - "z": [t: "зэт"]
 
  # Capital letters are a little tricky: users can pick their favorite word (something that was requested) and 
  # screen readers have options to use pitch changes or beeps instead of or in addition to say "cap"

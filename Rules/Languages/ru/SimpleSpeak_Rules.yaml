@@ -229,7 +229,7 @@
   - t: "в"
   - test:
     - if: "*[2][self::m:mn][.='4']"
-      then: [t: "четвертой"]
+      then: [t: "четвёртой"]
     - else_if: "*[2][self::m:mn][not(contains(., '.'))]"
       then: [x: "ToOrdinal(*[2])"]
       else:
