@@ -856,7 +856,7 @@
       then: [pause: medium]
   - test:
       if: "$ClearSpeak_ImpliedTimes='MoreImpliedTimes'"
-      then: [t: "скобка"]
+      then: [t: "скобка открывается"]
       else: [t: "скобка открывается"]
   - test:
       if: "*[2][self::m:fraction]"
@@ -867,7 +867,7 @@
       then: [pause: short]
   - test:
       if: "$ClearSpeak_ImpliedTimes='MoreImpliedTimes'"
-      then: [t: "закрывается"]
+      then: [t: "скобка закрывается"]
       else: [t: "скобка закрывается"]
 
 - name: ClearSpeak-multi-line
@@ -989,6 +989,8 @@
   - ".='⁢' and (not(@data-function-guess) or $ClearSpeak_Functions = 'None') and"
   - "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and ("
   - "  $ClearSpeak_ImpliedTimes = 'MoreImpliedTimes'"
+  - " or "
+  - "  ancestor::*[self::m:square-root or self::m:msqrt or self::m:root or self::m:mroot]"
   - " or "
   - "  following-sibling::*[1]["
   - "    IsBracketed(., '(', ')') or IsBracketed(., '[', ']') or IsBracketed(., '|', '|') or "
