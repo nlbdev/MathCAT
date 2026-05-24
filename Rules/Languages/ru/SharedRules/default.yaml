@@ -1068,7 +1068,7 @@
       - test:
           if: ".[contains(@notation,'horizontalstrike')]"
           then: [t: "горизонтальная", pause: short]      # phrase(the line is 'horizontal')
-      - t: "перечеркивание"      # phrase(please 'cross out' the incorrect answer)
+      - t: "перечёркивание"      # phrase(please 'cross out' the incorrect answer)
       - pause: short
   - test:
       if: ".[contains(@notation,'uparrow')]"
