@@ -63,7 +63,7 @@
       then:
       - test:
           if: "$SpeechStyle='ClearSpeak'"
-          then: [t: "зэ"]
+          then: [t: "зэт"]
           else: [t: "зэт"]
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
