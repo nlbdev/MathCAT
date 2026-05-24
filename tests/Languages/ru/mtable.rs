@@ -154,11 +154,11 @@ fn matrix_3x1_not_simple() -> Result<()> {
     test("ru", "SimpleSpeak", expr, "матрица-столбец 3 на 1; \
             строка 1; икс; \
             строка 2; а; \
-            строка 3; дробь, икс делить на, икс плюс 1, конец дроби")?;
+            строка 3; дробь, числитель: икс, знаменатель: икс плюс 1, конец дроби")?;
     test("ru", "ClearSpeak",  expr, "матрица-столбец 3 на 1; \
             строка 1; икс; \
             строка 2; а; \
-            строка 3; дробь, числитель икс; знаменатель икс плюс 1")?;
+            строка 3; дробь, числитель: икс; знаменатель: икс плюс 1")?;
             return Ok(());
 }
 
@@ -558,11 +558,11 @@ fn simple_absolute_value() -> Result<()> {
   let expr = "<math>
     <mrow><mrow><mo>|</mo> <mi>x</mi> <mo>|</mo></mrow></mrow>
   </math>";
-  test("ru", "SimpleSpeak", expr, "абсолютная величина икс")?;
-  test("ru", "ClearSpeak",  expr, "абсолютная величина икс")?;
-  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "абсолютная величина икс")?;
+  test("ru", "SimpleSpeak", expr, "модуль от икс")?;
+  test("ru", "ClearSpeak",  expr, "модуль из икс")?;
+  test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "Auto")], expr, "модуль из икс")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "абсолютная величина икс, конец абсолютной величины")?;
+             expr, "модуль из икс, конец модуля")?;
              return Ok(());
 }
   
@@ -573,9 +573,9 @@ let expr = "<math>
       <mrow><mi>x</mi><mo>+</mo><mn>1</mn> </mrow>
     <mo>|</mo></mrow></mrow>
   </math>";
-  test("ru", "ClearSpeak", expr, "абсолютная величина икс плюс 1")?;
+  test("ru", "ClearSpeak", expr, "модуль из икс плюс 1")?;
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Terse"), ("ClearSpeak_AbsoluteValue", "AbsEnd")],
-             expr, "абсолютная величина икс плюс 1, конец абсолютной величины")?;
+             expr, "модуль из икс плюс 1, конец модуля")?;
              return Ok(());
 }
 
@@ -585,7 +585,7 @@ fn simple_cardinality_value() -> Result<()> {
     <mrow><mrow><mo>|</mo> <mi>S</mi> <mo>|</mo></mrow></mrow>
   </math>";
   test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_AbsoluteValue", "Cardinality")], expr,
-             "мощность заглавная эс")?;
+             "мощность множества из заглавная эс")?;
              return Ok(());
 }
   
@@ -670,8 +670,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SpeakColNum",
-        expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2")?;
+        expr, "матрица 2 на 2; строка 1; столбец 1; бэ с индексом 1 1; столбец 2; бэ с индексом 1 2; \
+                                                строка 2; столбец 1; бэ с индексом 2 1; столбец 2; бэ с индексом 2 2")?;
                                                 return Ok(());
 }
 
@@ -756,8 +756,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "SilentColNum",
-        expr, "матрица 2 на 2; строка 1; бэ нижний индекс 1 1; бэ нижний индекс 1 2; \
-                                                строка 2; бэ нижний индекс 2 1; бэ нижний индекс 2 2")?;
+        expr, "матрица 2 на 2; строка 1; бэ с индексом 1 1; бэ с индексом 1 2; \
+                                                строка 2; бэ с индексом 2 1; бэ с индексом 2 2")?;
                                                 return Ok(());
 }
 
@@ -842,8 +842,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2; конец матрицы")?;
+        expr, "матрица 2 на 2; строка 1; столбец 1; бэ с индексом 1 1; столбец 2; бэ с индексом 1 2; \
+                                                строка 2; столбец 1; бэ с индексом 2 1; столбец 2; бэ с индексом 2 2; конец матрицы")?;
                                                 return Ok(());
 }
 
@@ -928,8 +928,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "Vector",
-        expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2")?;
+        expr, "матрица 2 на 2; строка 1; столбец 1; бэ с индексом 1 1; столбец 2; бэ с индексом 1 2; \
+                                                строка 2; столбец 1; бэ с индексом 2 1; столбец 2; бэ с индексом 2 2")?;
                                                 return Ok(());
 }
 
@@ -1014,8 +1014,8 @@ let expr = "<math><mrow><mrow><mo>(</mo><mrow>
     </mtable>
     </mrow><mo>)</mo></mrow></mrow></math>";
 test_ClearSpeak("ru", "ClearSpeak_Matrix", "EndVector",
-        expr, "матрица 2 на 2; строка 1; столбец 1; бэ нижний индекс 1 1; столбец 2; бэ нижний индекс 1 2; \
-                                                 строка 2; столбец 1; бэ нижний индекс 2 1; столбец 2; бэ нижний индекс 2 2; конец матрицы")?;
+        expr, "матрица 2 на 2; строка 1; столбец 1; бэ с индексом 1 1; столбец 2; бэ с индексом 1 2; \
+                                                 строка 2; столбец 1; бэ с индексом 2 1; столбец 2; бэ с индексом 2 2; конец матрицы")?;
                                                  return Ok(());
 }
 
@@ -1039,7 +1039,7 @@ fn matrix_times() -> Result<()> {
     <mfenced><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mi>b</mi></mtd></mtr><mtr><mtd><mi>c</mi></mtd><mtd><mi>d</mi></mtd></mtr></mtable></mfenced>
   </math>";
   test("ru", "SimpleSpeak", expr,
-    "матрица 2 на 2; строка 1; 1, 2; строка 2; 3, 4; умножить на, матрица 2 на 2; строка 1; а, б; строка 2; цэ, дэ")?;
+    "матрица 2 на 2; строка 1; 1, 2; строка 2; 3, 4; умножить на матрица 2 на 2; строка 1; а, бэ; строка 2; цэ, дэ")?;
     return Ok(());
 }
 
@@ -1077,7 +1077,7 @@ fn unknown_mtable_property() -> Result<()> {
       </mtable>
     </math>";
     test("ru", "ClearSpeak",  expr,
-         "2 строки; строка 1; а равно b плюс цэ минус дэ; строка 2; плюс e минус f")?;
+         "2 строки; строка 1; а равно бэ плюс цэ минус дэ; строка 2; плюс е минус эф")?;
          return Ok(());
 }
 
