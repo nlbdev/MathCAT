@@ -425,7 +425,7 @@
   - test:
       if: "$SpeechStyle='ClearSpeak'"
       then: [t: "— чётное число"]
-      else: [t: "x — чётное число"]
+      else: [t: "икс — чётное число"]
 
 - name: fraction-text-terms
   tag: [mi, mtext]
@@ -493,10 +493,10 @@
       - if: "text()='n'"
         then: [t: "n"]
       - else: [t: "k"]
-    - else_if: "text()='i' and (ancestor::*[self::m:large-op] or ($SpeechStyle='ClearSpeak' and (ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])))"
+    - else_if: "text()='i' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators') or .//*[self::m:large-op or IsInDefinition(., 'LargeOperators')]]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
       then: [t: "и"]
-    - else_if: "text()='n' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
-      then: [t: "n"]
+    - else_if: "text()='n' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators') or .//*[self::m:large-op or IsInDefinition(., 'LargeOperators')]]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
+      then: [t: "эн"]
     - else_if: "text()='d' and preceding-sibling::*[1][.='⁢'] and following-sibling::*[1][.='⁢']"
       then: [t: "д"]
     - else_if: "text()='b' and parent::*[self::m:mover or self::m:modified-variable]"
