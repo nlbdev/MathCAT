@@ -14,14 +14,14 @@ fn msub_simple() -> Result<()> {
 #[test]
 fn msub_not_simple() -> Result<()> {
     let expr = "<math> <msub> <mi>x</mi> <mn>1.2</mn> </msub> </math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс с индексом 1.2")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс с индексом 12")?;
     return Ok(());
 }
 
 #[test]
 fn msubsup_not_simple() -> Result<()> {
     let expr = "<math> <msubsup> <mi>x</mi> <mn>1.2</mn> <mn>3</mn></msubsup> </math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс с индексом 1.2, в кубе")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс нижний индекс 12, в кубе")?;
     return Ok(());
 }
 
@@ -29,7 +29,7 @@ fn msubsup_not_simple() -> Result<()> {
 fn msub_simple_mi() -> Result<()> {
     let expr = "<math> <msub> <mi>x</mi> <mi>i</mi> </msub> </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс с индексом i")?;
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "икс с индексом и")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "икс с индексом i")?;
     return Ok(());
 }
 
@@ -45,7 +45,7 @@ fn msub_simple_number_follows() -> Result<()> {
 fn msub_simple_non_number_follows() -> Result<()> {
     let expr = "<math> <msubsup> <mi>x</mi> <mn>1</mn> <mn>2</mn> </msubsup> </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс 1, в квадрате")?;
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "икс с индексом 1, в квадрате")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "икс нижний индекс 1, в квадрате")?;
     return Ok(());
 }
 

@@ -5,35 +5,35 @@ use anyhow::Result;
 #[test]
 fn transpose() -> Result<()> {
   let expr = "<math> <msup><mi>M</mi><mi>T</mi></msup> </math>";
-  test("ru", "SimpleSpeak", expr, "эм большое транспонированная")?;
+  test("ru", "SimpleSpeak", expr, "заглавная эм транспонирование")?;
   return Ok(());
 }
 
 #[test]
 fn trace() -> Result<()> {
   let expr = "<math> <mi>Tr</mi><mi>M</mi> </math>";
-  test("ru", "SimpleSpeak", expr, "след от эм большое")?;
+  test("ru", "SimpleSpeak", expr, "след от заглавная эм")?;
   return Ok(());
 }
 
 #[test]
 fn dimension() -> Result<()> {
   let expr = "<math> <mi>Dim</mi><mi>M</mi> </math>";
-  test("ru", "SimpleSpeak", expr, "размерность эм большое")?;
+  test("ru", "SimpleSpeak", expr, "размерность от заглавная эм")?;
   return Ok(());
 }
 
 #[test]
 fn homomorphism() -> Result<()> {
   let expr = "<math> <mi>Hom</mi><mo>(</mo><mi>M</mi><mo>)</mo> </math>";
-  test("ru", "SimpleSpeak", expr, "гомоморфизм от эм большое")?;
+  test("ru", "SimpleSpeak", expr, "гомоморфизм от заглавная эм")?;
   return Ok(());
 }
 
 #[test]
 fn kernel() -> Result<()> {
   let expr = "<math> <mi>ker</mi><mrow><mo>(</mo><mi>L</mi><mo>)</mo></mrow> </math>";
-  test("ru", "SimpleSpeak", expr, "ядро от эль большое")?;
+  test("ru", "SimpleSpeak", expr, "ядро от заглавная эль")?;
   return Ok(());
 }
 
@@ -80,7 +80,7 @@ fn norm_subscripted() -> Result<()> {
     </msub>
 </math>
 ";
-  test("ru", "SimpleSpeak", expr, "пэ-норма от эф")?;
+  test("ru", "SimpleSpeak", expr, "пэ норма из эф")?;
   return Ok(());
 }
 
@@ -98,6 +98,6 @@ fn not_gradient() -> Result<()> {
   <mi>a</mi>
 </math>
 "#;
-  test("ru", "SimpleSpeak", expr, "скобка открывается, бэ умножить на набла, скобка закрывается; умножить на а")?;
+  test("ru", "SimpleSpeak", expr, "скобка открывается бэ умножить набла скобка закрывается умножить на а")?;
   return Ok(());
 }
