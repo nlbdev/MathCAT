@@ -15,14 +15,14 @@ fn silent_intent() -> Result<()> {
 #[test]
 fn prefix_intent() -> Result<()> {
     let expr = r#"<math><msup intent='testing:prefix($x)'> <mi arg='x'>x</mi> <mi>T</mi> </msup> </math>"#;
-    test("ru", "SimpleSpeak", expr, "икс")?;
+    test("ru", "SimpleSpeak", expr, "testing икс")?;
     return Ok(());
 }
 
 #[test]
 fn postfix_intent() -> Result<()> {
     let expr = r#"<math><msup intent='testing:postfix($x)'> <mi arg='x'>x</mi> <mi>T</mi> </msup> </math>"#;
-    test("ru", "SimpleSpeak", expr, "икс")?;
+    test("ru", "SimpleSpeak", expr, "икс testing")?;
     return Ok(());
 }
 
@@ -33,7 +33,7 @@ fn infix_intent() -> Result<()> {
         <mi arg='y'>y</mi>
         <mi arg='z'>z</mi>
     </mrow> </math>"#;
-    test("ru", "SimpleSpeak", expr, "икс игрек зет 2")?;
+    test("ru", "SimpleSpeak", expr, "икс testing игрек testing зэт testing 2")?;
     return Ok(());
 }
 
@@ -53,7 +53,7 @@ fn infix_intent_one_arg() -> Result<()> {
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
     // Note: we say the intent name because there are infix plus/minus with a single arg due to continued rows or combined columns
-    test("ru", "SimpleSpeak", expr, "икс")?;
+    test("ru", "SimpleSpeak", expr, "testing икс")?;
     return Ok(());
 }
 
@@ -64,7 +64,7 @@ fn function_intent() -> Result<()> {
         <mi arg='y'>y</mi>
         <mi arg='z'>z</mi>
     </mrow> </math>"#;
-    test("ru", "SimpleSpeak", expr, "икс запятая, игрек запятая, зет запятая, 2")?;
+    test("ru", "SimpleSpeak", expr, "testing от икс запятая; игрек запятая, зэт запятая, 2")?;
     return Ok(());
 }
 
@@ -83,7 +83,7 @@ fn function_one_arg_intent() -> Result<()> {
     let expr = r#"<math><mrow intent='testing:function($x)'>
         <mi arg='x'>x</mi>
     </mrow> </math>"#;
-    test("ru", "SimpleSpeak", expr, "икс")?;
+    test("ru", "SimpleSpeak", expr, "testing от икс")?;
     return Ok(());
 }
 
@@ -126,6 +126,6 @@ fn intent_prob_x() -> Result<()> {
         <mi arg='arg'>x</mi>
         <mi arg='op' intent='probability' mathvariant='normal'>P</mi>
     </msup></math>";
-    test("ru", "ClearSpeak", expr, "вероятность икс")?;
+    test("ru", "ClearSpeak", expr, "probability от икс")?;
     return Ok(());
 }

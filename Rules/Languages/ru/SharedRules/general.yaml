@@ -1047,10 +1047,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "suppript"]      # phrase(phrase(H 'subscript' 2)
+              then: [t: "нижний индекс"]      # phrase(phrase(H 'subscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "sub"]      # phrase(phrase(H 'sub' 2)
+                then: [t: "нижний индекс"]      # phrase(phrase(H 'sub' 2)
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -1058,10 +1058,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "superscript"]      # phrase(H 'superscript' 2)
+              then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "super"]          # phrase(H 'super' 2)
+                then: [t: "верхний индекс"]          # phrase(H 'super' 2)
           - x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -1072,10 +1072,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "script"]      # phrase(H 'subscript' 2)
+                  then: [t: "нижний индекс"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "sub"]          # phrase(H 'sub' 2)
+                    then: [t: "нижний индекс"]          # phrase(H 'sub' 2)
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -1083,10 +1083,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "superscript"]      # phrase(H 'superscript' 2)
+                  then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "super"]          # phrase(H 'super' 2)
+                    then: [t: "верхний индекс"]          # phrase(H 'super' 2)
               - x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -1097,10 +1097,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [t: "script"]    # phrase(H 'subscript' 2)
+                      then: [t: "нижний индекс"]    # phrase(H 'subscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [t: "sub"]        # phrase(H 'sub' 2)
+                        then: [t: "нижний индекс"]        # phrase(H 'sub' 2)
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -1108,10 +1108,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [t: "superscript"]  # phrase(H 'superscript' 2)
+                      then: [t: "верхний индекс"]  # phrase(H 'superscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [t: "super"]      # phrase(H 'super' 2)
+                        then: [t: "верхний индекс"]      # phrase(H 'super' 2)
                   - x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -1122,10 +1122,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [t: "script"]      # phrase(H 'subscript' 2)
+                          then: [t: "нижний индекс"]      # phrase(H 'subscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [t: "sub"]      # phrase(H 'sub' 2)
+                            then: [t: "нижний индекс"]      # phrase(H 'sub' 2)
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -1133,10 +1133,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [t: "superscript"]      # phrase(H 'superscript' 2)
+                          then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [t: "super"]      # phrase(H 'super' 2)
+                            then: [t: "верхний индекс"]      # phrase(H 'super' 2)
                       - x: "$Postscripts[8]"
                       - pause: "short"
       - test:
@@ -1180,7 +1180,7 @@
   - bookmark: "@id"
   - test:
     - if: ".='-' or .=':'"
-      then: [t: "единственная связь"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+      then: [t: "одинарная связь"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
     - else_if: ".='=' or .='∷'"
       then: [t: "двойная связь"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: ".='≡'"
@@ -1205,8 +1205,8 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [t: "формы"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [t: "реагирует на образование"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [t: "образует"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [t: "реагирует с образованием"]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='\u1f8d2'"
       then: [t: "находится в равновесии с"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='\u1f8d4'"
