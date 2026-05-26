@@ -791,7 +791,7 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
                 }
                 return false;
             },
-            "msub" | "msup" | "msubsup" | "mmultiscripts" | "mover" => {
+            "msub" | "msup" | "msubsup" | "mmultiscripts" => {
                 gather_chemical_elements(get_possible_embellished_node(mathml), chem_elements);
                 return name(mathml) == "mmultiscripts" &&  has_numerical_prescripts(mathml);
             },
@@ -1346,7 +1346,7 @@ fn is_generalized_salt(elements: &[&str]) -> bool {
 ///
 /// Note: 'mathml' is not necessarily canonicalized   
 pub fn likely_adorned_chem_formula(mathml: Element) -> i32 {
-    if !matches!(name(mathml), "msub" | "msup" | "msubsup" | "mmultiscripts" | "mover") {
+    if !matches!(name(mathml), "msub" | "msup" | "msubsup" | "mmultiscripts") {
         return NOT_CHEMISTRY;
     }
     // some simple sanity checks on the scripts...

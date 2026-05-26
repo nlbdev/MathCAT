@@ -60,7 +60,7 @@ fn equation_plus_at_start() -> Result<()> {
    ";
    test_ClearSpeak("ru", "ClearSpeak_MultiLineLabel", "Auto", expr, "2 строки; \
                 строка 1; икс плюс игрек равно 7; \
-                строка 2; 2 икс, плюс 3 игрек, равно 17")?;
+                строка 2; 2 икс плюс 3 игрек равно 17")?;
     return Ok(());
 }
 

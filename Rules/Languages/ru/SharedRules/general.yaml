@@ -63,7 +63,7 @@
       then:
       - test:
           if: "$SpeechStyle='ClearSpeak'"
-          then: [t: "зэ"]
+          then: [t: "зэт"]
           else: [t: "зэт"]
       else: [x: "*[1][text()]"] # shouldn't happen
   - bookmark: "*[2]/@id"
@@ -163,8 +163,8 @@
       then:
       - test:
         - if: "*[1]/*[1][.='n']"
-          then: [t: "n"]
-        - else: [t: "k"]
+          then: [t: "эн"]
+        - else: [t: "ка"]
       - x: "*[1]/*[2]"
       - x: "*[1]/*[3]"
       else: [x: "*[1]"]
@@ -174,8 +174,8 @@
       then:
       - test:
         - if: "*[2]/*[1][.='n']"
-          then: [t: "n"]
-        - else: [t: "k"]
+          then: [t: "эн"]
+        - else: [t: "ка"]
       - x: "*[2]/*[2]"
       - x: "*[2]/*[3]"
       else: [x: "*[2]"]
@@ -821,11 +821,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase('end' of matrix)
       - test:
           if: $ClearSpeak_Matrix = 'EndVector'
-          then: [t: "вектор"]      # phrase(the 2 column 'vector')
-          else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "конец вектора"]      # phrase(the 2 column 'vector')
+          else: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-column-matrix
   tag: matrix
@@ -864,11 +863,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
-          else: [t: "вектор"]      # phrase(the 2 by 1 'vector')
+          then: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "конец вектора"]      # phrase(the 2 by 1 'vector')
 
 - name: default-row-matrix
   tag: matrix
@@ -887,11 +885,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: $ClearSpeak_Matrix = 'EndMatrix'
-          then: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
-          else: [t: "вектор"]      # phrase(the 2 by 1 'vector')
+          then: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
+          else: [t: "конец вектора"]      # phrase(the 2 by 1 'vector')
 
 - name: simple-small-matrix
   tag: [matrix, determinant]
@@ -913,11 +910,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [t: "определитель"]      # phrase(the 2 by 2 'determinant')
-          else: [t: "матрица"]      # phrase(the 2 by 2 'matrix')
+          then: [t: "конец определителя"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix')
 
 - name: default-matrix
   tag: [matrix, determinant]
@@ -936,11 +932,10 @@
   - test:
       if: "$ClearSpeak_Matrix = 'EndMatrix' or $ClearSpeak_Matrix = 'EndVector'"
       then:
-      - t: "конец"      # phrase(the 'end' of matrix has been reached)
       - test:
           if: "self::m:determinant"
-          then: [t: "определитель"]      # phrase(the 2 by 2 'determinant')
-          else: [t: "матрица"]      # phrase(the 2 by 2 'matrix's)
+          then: [t: "конец определителя"]      # phrase(the 2 by 2 'determinant')
+          else: [t: "конец матрицы"]      # phrase(the 2 by 2 'matrix's)
 
 - name: chemistry-msub
   tag: [chemical-formula]
@@ -1052,10 +1047,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "suppript"]      # phrase(phrase(H 'subscript' 2)
+              then: [t: "нижний индекс"]      # phrase(phrase(H 'subscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "sub"]      # phrase(phrase(H 'sub' 2)
+                then: [t: "нижний индекс"]      # phrase(phrase(H 'sub' 2)
           - x: "$Postscripts[1]"
           - pause: "short"
       - test:
@@ -1063,10 +1058,10 @@
           then:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "superscript"]      # phrase(H 'superscript' 2)
+              then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
               else_test:
                 if: "$Verbosity='Medium'"
-                then: [t: "super"]          # phrase(H 'super' 2)
+                then: [t: "верхний индекс"]          # phrase(H 'super' 2)
           - x: "$Postscripts[2]"
           - pause: "short"
       - test:
@@ -1077,10 +1072,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "script"]      # phrase(H 'subscript' 2)
+                  then: [t: "нижний индекс"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "sub"]          # phrase(H 'sub' 2)
+                    then: [t: "нижний индекс"]          # phrase(H 'sub' 2)
               - x: "$Postscripts[3]"
               - pause: "short"
           - test:
@@ -1088,10 +1083,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "superscript"]      # phrase(H 'superscript' 2)
+                  then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "super"]          # phrase(H 'super' 2)
+                    then: [t: "верхний индекс"]          # phrase(H 'super' 2)
               - x: "$Postscripts[4]"
               - pause: "short"
           - test:
@@ -1102,10 +1097,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [t: "script"]    # phrase(H 'subscript' 2)
+                      then: [t: "нижний индекс"]    # phrase(H 'subscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [t: "sub"]        # phrase(H 'sub' 2)
+                        then: [t: "нижний индекс"]        # phrase(H 'sub' 2)
                   - x: "$Postscripts[5]"
                   - pause: "short"
               - test:
@@ -1113,10 +1108,10 @@
                   then:
                   - test:
                       if: "$Verbosity='Verbose'"
-                      then: [t: "superscript"]  # phrase(H 'superscript' 2)
+                      then: [t: "верхний индекс"]  # phrase(H 'superscript' 2)
                       else_test:
                         if: "$Verbosity='Medium'"
-                        then: [t: "super"]      # phrase(H 'super' 2)
+                        then: [t: "верхний индекс"]      # phrase(H 'super' 2)
                   - x: "$Postscripts[6]"
                   - pause: "short"
               - test:
@@ -1127,10 +1122,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [t: "script"]      # phrase(H 'subscript' 2)
+                          then: [t: "нижний индекс"]      # phrase(H 'subscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [t: "sub"]      # phrase(H 'sub' 2)
+                            then: [t: "нижний индекс"]      # phrase(H 'sub' 2)
                       - x: "$Postscripts[7]"
                       - pause: "short"
                   - test:
@@ -1138,10 +1133,10 @@
                       then:
                       - test:
                           if: "$Verbosity='Verbose'"
-                          then: [t: "superscript"]      # phrase(H 'superscript' 2)
+                          then: [t: "верхний индекс"]      # phrase(H 'superscript' 2)
                           else_test:
                             if: "$Verbosity='Medium'"
-                            then: [t: "super"]      # phrase(H 'super' 2)
+                            then: [t: "верхний индекс"]      # phrase(H 'super' 2)
                       - x: "$Postscripts[8]"
                       - pause: "short"
       - test:
@@ -1185,7 +1180,7 @@
   - bookmark: "@id"
   - test:
     - if: ".='-' or .=':'"
-      then: [t: "единственная связь"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
+      then: [t: "одинарная связь"]      # phrase(a 'single bond' is formed when two atoms share one pair of electrons)
     - else_if: ".='=' or .='∷'"
       then: [t: "двойная связь"]      # phrase(a 'double bond' may occur when two atoms share two pairs of electrons)
     - else_if: ".='≡'"
@@ -1210,8 +1205,8 @@
     - if: ".='→' or .='⟶'"
       then_test:
         if: "$Verbosity='Terse'"
-        then: [t: "формы"]      # phrase(hydrogen and oxygen 'forms' water )
-        else: [t: "реагирует на образование"]      # phrase(hydrogen and oxygen 'reacts to form' water)
+        then: [t: "образует"]      # phrase(hydrogen and oxygen 'forms' water )
+        else: [t: "реагирует с образованием"]      # phrase(hydrogen and oxygen 'reacts to form' water)
     - else_if: ".='⇌' or .='\u1f8d2'"
       then: [t: "находится в равновесии с"]      # phrase(a reactant 'is in equilibrium with' a product)
     - else_if: ".='\u1f8d4'"
