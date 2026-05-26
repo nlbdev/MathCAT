@@ -237,7 +237,7 @@
         then: [t: "умножить на"]                        	# 	(en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "на"]                      	# 	(en: 'by')
+            then: [t: "умножить на"]                      	# 	(en: 'by')
             else: [t: "векторное произведение"]               	# 	(en: 'cross')
  - "÷": [t: "разделить на"]                     	#  0xf7	(en: 'divided by')
  - "̀": [t: "знак грависа"]       	#  0x300	(en: 'grave accent embellishment', google translation)

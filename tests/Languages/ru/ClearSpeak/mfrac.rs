@@ -220,7 +220,7 @@ fn general_nested_fraction() -> Result<()> {
         </mrow>
     </math>
                     ";
-    test("ru", "ClearSpeak", expr, "дробь, числитель: 10 делённое на эн;  знаменатель: 2 делённое на эн")?;
+    test("ru", "ClearSpeak", expr, "дробь, числитель: 10 делённое на эн; знаменатель: 2 делённое на эн")?;
     return Ok(());
 }
 
