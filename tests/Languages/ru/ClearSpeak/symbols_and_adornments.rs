@@ -16,7 +16,7 @@ fn multiplication_by() -> Result<()> {
     let expr = "<math>
                     <mn>2</mn><mo>×</mo><mn>3</mn>
                 </math>";
-    test_ClearSpeak("ru", "ClearSpeak_MultSymbolX", "By", expr, "2 на 3")?;
+    test_ClearSpeak("ru", "ClearSpeak_MultSymbolX", "By", expr, "2 умножить на 3")?;
     return Ok(());
 }
 
