@@ -516,7 +516,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: ""]                  	# 	(en: 'is', google translation)
-     - t: "изогнутая s"              	# 	(en: 'most positive')
+     - t: "изогнутая эс"              	# 	(en: 'most positive')
  - "∿": [t: "синусоидальная волна"]             	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 

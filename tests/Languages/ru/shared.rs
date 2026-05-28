@@ -41,9 +41,9 @@ fn limit() -> Result<()> {
             </mfrac>
             </mrow>
         </math>";
-    test("ru", "SimpleSpeak", expr, "предел при x стремящемся к 0, от, дроби, синус икс, делить на, икс, конец дроби")?;
+    test("ru", "SimpleSpeak", expr, "предел при икс стремящемся к 0, от, дроби, синус икс, делить на, икс, конец дроби")?;
     test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-            "предел при x стремящемся к 0, от; синус икс, делить на икс")?;
+            "предел при икс стремящемся к 0, от; синус икс, делить на икс")?;
             return Ok(());
 }
 
@@ -58,49 +58,49 @@ fn limit_from_below() -> Result<()> {
                 <mrow>  <mi>sin</mi>  <mo>&#x2061;</mo> <mi>x</mi> </mrow>
             </mrow>
         </math>";
-    test("ru", "SimpleSpeak", expr, "предел при x стремящемся к 0 снизу, от синус икс")?;
+    test("ru", "SimpleSpeak", expr, "предел при икс стремящемся к 0 снизу, от синус икс")?;
     return Ok(());
 }
 
 #[test]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m")?;
+    test("ru", "SimpleSpeak", expr, "число сочетаний из эн по эм")?;
     return Ok(());
 }
 
 #[test]
 fn binomial_mmultiscripts_other() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m")?;
+    test("ru", "SimpleSpeak", expr, "число сочетаний из эн по эм")?;
     return Ok(());
 }
 
 #[test]
 fn binomial_subscript() -> Result<()> {  // C_{n,k}
     let expr = "<math><msub><mi>C</mi><mrow><mi>n</mi><mo>,</mo><mi>m</mi></mrow></msub></math>";
-    test("ru", "SimpleSpeak", expr, "число сочетаний из n по m")?;
+    test("ru", "SimpleSpeak", expr, "число сочетаний из эн по эм")?;
     return Ok(());
 }
 
 #[test]
 fn permutation_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число размещений из n по k")?;
+    test("ru", "SimpleSpeak", expr, "число размещений из эн по ка")?;
     return Ok(());
 }
 
 #[test]
 fn permutation_mmultiscripts_sup() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>P</mi><mi>k</mi><none/><mprescripts/><none/><mi>n</mi></mmultiscripts></math>";
-    test("ru", "SimpleSpeak", expr, "число размещений из n по k")?;
+    test("ru", "SimpleSpeak", expr, "число размещений из эн по ка")?;
     return Ok(());
 }
 
 #[test]
 fn permutation_msubsup() -> Result<()> {
     let expr = "<math><msubsup><mi>P</mi><mi>k</mi><mi>n</mi></msubsup></math>";
-    test("ru", "SimpleSpeak", expr, "число размещений из n по k")?;
+    test("ru", "SimpleSpeak", expr, "число размещений из эн по ка")?;
     return Ok(());
 }
 
@@ -110,9 +110,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами после, нижний индекс i верхний индекс j нижний индекс k нижний индекс l")?;
+            "заглавная эр с 4 индексами после, нижний индекс и верхний индекс джей нижний индекс ка нижний индекс эль")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "заглавная эр с 4 индексами после, нижний i верхний j нижний k нижний l")?;
+            "заглавная эр с 4 индексами после, нижний и верхний джей нижний ка нижний эль")?;
             return Ok(());
 }
 
@@ -123,7 +123,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами перед, перед нижний заглавная и, перед верхний заглавная джей и далее перед нижний заглавная ка перед нижний заглавная эль, и с 5 индексами после, нижний индекс i верхний индекс j нижний индекс k нижний индекс l и далее нижний индекс m")?;
+            "заглавная эр с 4 индексами перед, левый нижний индекс заглавная и, левый верхний индекс заглавная джей и далее левый нижний индекс заглавная ка левый нижний индекс заглавная эль, и с 5 индексами после, нижний индекс и верхний индекс джей нижний индекс ка нижний индекс эль и далее нижний индекс эм")?;
             return Ok(());
 }
 
@@ -157,17 +157,17 @@ fn simple_msubsup() -> Result<()> {
             </msubsup>
             </mstyle>
         </math>";
-    test("ru", "ClearSpeak", expr, "икс нижний индекс k, в степени i")?;
+    test("ru", "ClearSpeak", expr, "икс нижний индекс ка, в степени и")?;
     return Ok(());
 }
 
 #[test]
 fn non_simple_msubsup() -> Result<()> {
   let expr = "<math><msubsup><mi>i</mi><mrow><mi>j</mi><mo>&#x2212;</mo><mn>2</mn></mrow><mi>k</mi></msubsup></math>";
-  test("ru", "SimpleSpeak", expr, "и нижний индекс j минус 2, в степени k")?;
-  test("ru", "ClearSpeak", expr, "и нижний индекс j минус 2, в степени k")?;
+  test("ru", "SimpleSpeak", expr, "и нижний индекс джей минус 2, в степени ка")?;
+  test("ru", "ClearSpeak", expr, "и нижний индекс джей минус 2, в степени ка")?;
   test_prefs("ru", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-          "и нижний индекс j минус 2, в степени k")?;
+          "и нижний индекс джей минус 2, в степени ка")?;
           return Ok(());
 }
 
@@ -189,7 +189,7 @@ fn presentation_mathml_in_semantics() -> Result<()> {
             </annotation-xml>
         </semantics>
     </math>";
-    test("ru", "ClearSpeak", expr, "икс нижний индекс k, в степени i")?;
+    test("ru", "ClearSpeak", expr, "икс нижний индекс ка, в степени и")?;
     return Ok(());
 }
 

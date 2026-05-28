@@ -319,16 +319,16 @@
   - x: "*[1]"
   - test:
       if: "$Verbosity='Verbose'"
-      then: [t: "индекс"]      # phrase(a 'subscript' may be used to indicate an index)
-      else: [t: "суб"]      # phrase(the result is 'sub' optimal)
+      then: [t: "нижний индекс"]      # phrase(a 'subscript' may be used to indicate an index)
+      else: [t: "нижний индекс"]      # phrase(the result is 'sub' optimal)
   - x: "*[2]"
   - test:
       if: "not(IsNode(*[2],'leaf') and $Impairment = 'Blindness')"
       then:
       - test:
           if: "$Verbosity='Verbose'"
-          then: [t: "конечного индекса"]      # phrase(this is the 'end subscript' position)
-          else: [t: "конечного суб"]      # phrase(this is the 'end sub' position)
+          then: [t: "конец нижнего индекса"]      # phrase(this is the 'end subscript' position)
+          else: [t: "конец нижнего индекса"]      # phrase(this is the 'end sub' position)
       - pause: short
       else_test:
           if: "*[2][self::m:mi]"   # need a pause in "x sub k prime" so the prime is not associated with the 'k'
@@ -337,8 +337,8 @@
       if: "name(.)='say-super'"
       then_test:
         if: "$Verbosity='Verbose'"
-        then: [t: "суперкрипта"]      # phrase(a 'superscript' number indicates raised to a power)
-        else: [t: "супер"]      # phrase(this is a 'super' set of numbers)
+        then: [t: "верхний индекс"]      # phrase(a 'superscript' number indicates raised to a power)
+        else: [t: "верхний индекс"]      # phrase(this is a 'super' set of numbers)
   - x: "*[3]"
   - pause: short
 
@@ -434,7 +434,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "cos"]      # phrase('cos' is the abbreviation for cosine)
+      then: [t: "кос"]      # phrase('cos' is the abbreviation for cosine)
       else: [t: "косинус"]      # phrase(find the 'cosine' in a right-angle triangle)
 - name: tan
   tag: mi
@@ -480,7 +480,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "cosh"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      then: [t: "гиперболический косинус"]      # phrase('cosh' is an abbreviation of hyperbolic cosine)
       else: [t: "гиперболический косинус"]      # phrase(the 'hyperbolic cosine' is a mathematical function)
 - name: tanh
   tag: mi
@@ -507,7 +507,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "coscheck"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
+      then: [t: "гиперболический косеканс"]      # phrase('cosheck' is shorthand for hyperbolic cosecant)
       else: [t: "гиперболический косеканс"]      # phrase('hyperbolic cosecant' is a mathematical function)
 - name: coth
   tag: mi
@@ -516,7 +516,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "cotanch"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
+      then: [t: "гиперболический котангенс"]      # phrase('cotanch' is shorthand for hyperbolic cotangent)
       else: [t: "гиперболический котангенс"]      # phrase(the 'hyperbolic cotangent' is a mathematical function)
 
 - name: trig-name-sequence-canonical
@@ -629,7 +629,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [t: "Cov"]      # phrase('Cov' is shorthand for the covariance function)
+      then: [t: "ков"]      # phrase('Cov' is shorthand for the covariance function)
       else: [t: "ковариация"]      # phrase('covariance' function)
 
 -
@@ -1032,10 +1032,10 @@
               then:
               - test:
                   if: "$Verbosity='Verbose'"
-                  then: [t: "script"]      # phrase(H 'subscript' 2)
+                  then: [t: "нижний индекс"]      # phrase(H 'subscript' 2)
                   else_test:
                     if: "$Verbosity='Medium'"
-                    then: [t: "sub"]      # phrase(H 'sub' 2)
+                    then: [t: "нижний индекс"]      # phrase(H 'sub' 2)
               - x: "$Prescripts[3]"
               - pause: "short"
   - x: "*[1]" # base

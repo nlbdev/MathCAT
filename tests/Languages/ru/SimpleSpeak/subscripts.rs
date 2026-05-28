@@ -28,8 +28,8 @@ fn msubsup_not_simple() -> Result<()> {
 #[test]
 fn msub_simple_mi() -> Result<()> {
     let expr = "<math> <msub> <mi>x</mi> <mi>i</mi> </msub> </math>";
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс с индексом i")?;
-    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "икс с индексом i")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")], expr, "икс с индексом и")?;
+    test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "икс с индексом и")?;
     return Ok(());
 }
 

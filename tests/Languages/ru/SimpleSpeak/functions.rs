@@ -131,7 +131,7 @@ fn simple_ln() -> Result<()> {
 fn other_names() -> Result<()> {
     let expr = "<math> <mrow><mi>Cov</mi><mi>x</mi></mrow> </math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Terse")],
-                expr, "Cov икс")?;
+                expr, "ков икс")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")],
                 expr, "ковариация икс")?;
     let expr = "<math> <mrow><mi>exp</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow> </math>";

@@ -37,7 +37,7 @@
   tag: mtext
   match: "contains(., 'even') and contains(., 'number')"
   replace:
-  - t: "x — чётное число"
+  - t: "икс — чётное число"
 
 - name: default
   tag: square-root
@@ -144,7 +144,7 @@
       else_test:
         if: "BaseNode(*[2])[contains(@data-intent-property, ':unit')]"
         then: [t: "на"]
-        else: [t: "делённое на"]
+        else: [t: "разделить на"]
   - test:
       if: "BaseNode(*[2])[contains(@data-intent-property, ':unit')] and BaseNode(*[2])[.='mi']"
       then: [t: "милю"]
@@ -200,7 +200,7 @@
   - test:
       if: "$ClearSpeak_Fractions='Auto' and $Verbosity='Medium' and *[1][self::m:mrow and (*[2][.='('] or (*[2][.='⁡'] and *[3][IsBracketed(., '(', ')')]))] and *[2][self::m:mn]"
       then: [t: "на"]
-      else: [t: "делённое на"]
+      else: [t: "разделить на"]
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"

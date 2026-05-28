@@ -39,7 +39,7 @@ fn not_ClearSpeak_common_fraction_tenths() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "89 делённое на 10")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "89 разделить на 10")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "восемьдесят девять десятых")?;
     return Ok(());
 }
@@ -59,13 +59,13 @@ fn non_simple_fraction() -> Result<()> {
     </math>";
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "дробь, числитель: икс плюс игрек; знаменатель: икс минус игрек")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "дробь, числитель: икс плюс игрек; знаменатель: икс минус игрек")?;
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Over")], expr, "икс плюс игрек делённое на икс минус игрек")?;
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "FracOver")], expr, "дробь икс плюс игрек делённое на икс минус игрек")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Over")], expr, "икс плюс игрек разделить на икс минус игрек")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "FracOver")], expr, "дробь икс плюс игрек разделить на икс минус игрек")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "General")], expr, "дробь, числитель: икс плюс игрек; знаменатель: икс минус игрек")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "EndFrac")], expr, "дробь, числитель: икс плюс игрек; знаменатель: икс минус игрек; конец дроби")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "GeneralEndFrac")], expr, "дробь, числитель: икс плюс игрек; знаменатель: икс минус игрек; конец дроби")?;
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "OverEndFrac")], expr, "икс плюс игрек делённое на икс минус игрек, конец дроби")?;
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Per")], expr, "икс плюс игрек делённое на икс минус игрек")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "OverEndFrac")], expr, "икс плюс игрек разделить на икс минус игрек, конец дроби")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Per")], expr, "икс плюс игрек разделить на икс минус игрек")?;
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"),("ClearSpeak_Fractions", "Auto")], expr, "дробь, числитель: икс плюс игрек; знаменатель: икс минус игрек; конец дроби")?;
     return Ok(());
 }
@@ -162,18 +162,18 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "одна вторая делённое на две третьих")?;
-    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "одна вторая делённое на две третьих")?;
-    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 делённое на 2 делённое на 2 делённое на 3")?;
+    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "одна вторая разделить на две третьих")?;
+    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "одна вторая разделить на две третьих")?;
+    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 разделить на 2 разделить на 2 разделить на 3")?;
     test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
-            "дробь дробь 1 делённое на 2 делённое на дробь 2 делённое на 3")?;
+            "дробь дробь 1 разделить на 2 разделить на дробь 2 разделить на 3")?;
     test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
             "дробь, числитель: дробь, числитель: 1; знаменатель: 2; знаменатель: дробь, числитель: 2; знаменатель: 3")?;
-    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "одна вторая делённое на две третьих")?;
+    test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "одна вторая разделить на две третьих")?;
     test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "GeneralEndFrac")], expr,
             "дробь, числитель: дробь, числитель: 1; знаменатель: 2; конец дроби; знаменатель: дробь, числитель: 2; знаменатель: 3; конец дроби; конец дроби")?;
     test_prefs("ru", "ClearSpeak", vec![("ClearSpeak_Fractions", "OverEndFrac")], expr,
-            "1 делённое на 2, конец дроби, делённое на 2 делённое на 3, конец дроби; конец дроби")?;
+            "1 разделить на 2, конец дроби, разделить на 2 разделить на 3, конец дроби; конец дроби")?;
             return Ok(());
 }
 
@@ -194,7 +194,7 @@ fn semi_nested_fraction() -> Result<()> {
                     </mfrac>
                 </mrow>
                 </math>";
-    test("ru", "ClearSpeak", expr, "две третьих икс делённое на 6")?;
+    test("ru", "ClearSpeak", expr, "две третьих икс разделить на 6")?;
     return Ok(());
 }
 
@@ -220,7 +220,7 @@ fn general_nested_fraction() -> Result<()> {
         </mrow>
     </math>
                     ";
-    test("ru", "ClearSpeak", expr, "дробь, числитель: 10 делённое на эн; знаменатель: 2 делённое на эн")?;
+    test("ru", "ClearSpeak", expr, "дробь, числитель: 10 разделить на эн; знаменатель: 2 разделить на эн")?;
     return Ok(());
 }
 
@@ -246,7 +246,7 @@ fn complex_nested_fraction() -> Result<()> {
         </mrow>
     </math>
                     ";
-    test("ru", "ClearSpeak", expr, "дробь, числитель: дробь, числитель: эн плюс 10; знаменатель: эн; знаменатель: 2 делённое на эн")?;
+    test("ru", "ClearSpeak", expr, "дробь, числитель: дробь, числитель: эн плюс 10; знаменатель: эн; знаменатель: 2 разделить на эн")?;
     return Ok(());
 }
 
@@ -254,7 +254,7 @@ fn complex_nested_fraction() -> Result<()> {
 fn simple_function() -> Result<()> {
     let expr = "<math><mfrac><mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow><mn>2</mn></mfrac></math>";
     test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс на 2")?;
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс делённое на 2, конец дроби")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс разделить на 2, конец дроби")?;
     return Ok(());
 }
 
@@ -264,8 +264,8 @@ fn function_over_function() -> Result<()> {
             <mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
             <mrow><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
         </mfrac></math>";
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс делённое на же от икс")?;
-    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс делённое на же от икс, конец дроби")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс разделить на же от икс")?;
+    test_prefs("ru", "ClearSpeak", vec![("Verbosity", "Verbose"), ("ClearSpeak_Fractions", "Auto")], expr, "эф от икс разделить на же от икс, конец дроби")?;
     return Ok(());
 }
 
