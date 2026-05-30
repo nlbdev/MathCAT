@@ -690,8 +690,8 @@ mod tests {
             // debug!("target:\n{}", mml_to_string(target));
 
             match crate::speech::intent_from_mathml(mathml, package2.as_document()) {
-                Ok(result) => {
-                    // debug!("result:\n{}", mml_to_string(result));
+                Ok(_result) => {
+                    // debug!("result:\n{}", mml_to_string(_result));
                     Ok(())
                 },
                 Err(e) => {
@@ -752,6 +752,26 @@ mod tests {
                                 <mi data-from-mathml='mi'>speak</mi>
                                 <mi data-from-mathml='mi'>this</mi>
                             </__-_>";
+        assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
+    }
+
+    #[test]
+    fn nofix_intent_trivial() -> Result<()> {
+        let mathml = "<mi intent='set-of-integers:nofix'>ℤ</mi>";
+        let intent = "<set-of-integers data-from-mathml='mi' data-intent-property=':nofix:'>ℤ</set-of-integers>";
+        assert!(test_intent(mathml, intent, "Error"));
+        return Ok(());
+    }
+
+
+    #[test]
+    fn nofix_intent_args() -> Result<()> {
+        let mathml = "<mi intent='foo:nofix(first, second)'>foo content</mi>";
+        let intent = r#"<foo id='Mfo9mib6-0-literal-0' data-intent-property=':nofix:' data-from-mathml='mi'>
+                <first data-from-mathml='first' id='Mfo9mib6-0-literal-1'>ℤ</first>
+                <second data-from-mathml='second' id='Mfo9mib6-0-literal-2'>ℤ</second>
+            </foo>"#;
         assert!(test_intent(mathml, intent, "Error"));
         return Ok(());
     }
