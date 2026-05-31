@@ -563,7 +563,7 @@ impl CanonicalizeContext {
 			root.append_child(math_element);
 			mathml = root.children()[0].element().unwrap();
 		}
-		CanonicalizeContext::assure_mathml(mathml, 0)?;
+		CanonicalizeContext::assure_mathml(mathml)?;
 		let mathml = self.clean_mathml(mathml).unwrap();	// 'math' is never removed
 		self.assure_nary_tag_has_one_child(mathml);
 		// debug!("Not chemistry -- retry:\n{}", mml_to_string(mathml));
@@ -600,10 +600,7 @@ impl CanonicalizeContext {
 	}
 
 	/// Return an error if some element is not MathML (only look at first child of <semantics>) or if it has the wrong number of children
-	fn assure_mathml(mathml: Element, depth: usize) -> Result<()> {
-		if depth > crate::interface::MAX_DEPTH {
-			bail!("MathML is too deeply nested to process");
-		}
+	fn assure_mathml(mathml: Element) -> Result<()> {
 		let n_children = mathml.children().len();
 		let element_name = name(mathml);
 		if is_leaf(mathml) {
@@ -662,7 +659,7 @@ impl CanonicalizeContext {
 						}
 					}
 				}
-				return CanonicalizeContext::assure_mathml(presentation_element, depth + 1);
+				return CanonicalizeContext::assure_mathml(presentation_element);
 			}
 		} else if !IsNode::is_mathml(mathml) {
 			if element_name == "annotation-xml" {
@@ -674,7 +671,7 @@ impl CanonicalizeContext {
 
 		// valid MathML element and not a leaf -- check the children
 		for child in mathml.children() {
-			CanonicalizeContext::assure_mathml( as_element(child), depth + 1)?;
+			CanonicalizeContext::assure_mathml( as_element(child) )?;
 		}
 		return Ok( () );
 	}

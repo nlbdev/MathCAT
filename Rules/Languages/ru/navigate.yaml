@@ -48,13 +48,13 @@
     - if: "$MatchCounter = 0 and $SayCommand = 'true'"
       then_test:
       - if: "self::m:math and starts-with($NavCommand, 'ZoomOut')"
-        then: [t: "увеличение всё ещё", pause: "medium"]
+        then: [t: "выражение уже показано целиком", pause: "medium"]
       - else_if: "IsNode(., 'leaf') and starts-with($NavCommand, 'ZoomIn')"
-        then: [t: "увеличение полностью", pause: "medium"]
+        then: [t: "достигнута максимальная детализация", pause: "medium"]
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "'увеличение'"]]          # phrase('zoom' in to see more details)     
+            then: [set_variables: [Prefix: "'переход'"]]          # phrase('zoom' in to see more details)     
           - else_if: "starts-with($NavCommand, 'Move')"
             then: [set_variables: [Prefix: "'перемещение'"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
@@ -66,25 +66,25 @@
             then:
             - x: "$Prefix"
             - test:
-              - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
+              - if: "$NavCommand = 'ZoomIn'"
                 then: [t: "внутрь"]                                  # phrase(zoom 'in' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'InAll'"
+              - else_if: "$NavCommand = 'ZoomInAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "полностью"]                     # phrase(zoom 'out all the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Out'"
+                then: [t: "к максимальной детализации"]                     # phrase(zoom 'out all the way' to see more details)
+              - else_if: "$NavCommand = 'ZoomOut'"
                 then: [t: "наружу"]                                 # phrase(zoom 'out' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'OutAll'"
+              - else_if: "$NavCommand = 'ZoomOutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
-                then: [t: "полностью"]                     # phrase(zoom 'out all the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
+                then: [t: "к выражению целиком"]                     # phrase(zoom 'out all the way' to see more details)
+              - else_if: "$NavCommand = 'MoveNext' or $NavCommand = 'ReadNext' or $NavCommand = 'DescribeNext'"
                 then: [t: "вправо"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
+              - else_if: "$NavCommand = 'MovePrevious' or $NavCommand = 'ReadPrevious' or $NavCommand = 'DescribePrevious'"
                 then: [t: "влево"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
+              - else_if: "$NavCommand = 'ReadCurrent' or $NavCommand = 'DescribeCurrent'"
                 then: [t: "текущий"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
+              - else_if: "$NavCommand = 'MoveLineStart' or $NavCommand = 'ReadLineStart'"
                 then: [t: "в начало строки"]                                 # phrase(move 'to start of line')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
+              - else_if: "$NavCommand = 'MoveLineEnd' or $NavCommand = 'ReadLineEnd'"
                 then: [t: "в конец строки"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "1"]
@@ -95,72 +95,153 @@
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='mfrac' or self::m:mfrac)"
   replace:
-  - x: "$Move2D"
   - test:
-      if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "числитель"]            # phrase(the 'numerator' of a fraction)
-      else: [t: "знаменатель"]          # phrase(the 'denominator' of a fraction)
+    - if: "$Move2D = 'in' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "в числитель"]            # phrase(the 'numerator' of a fraction)
+    - else_if: "$Move2D = 'in'"
+      then: [t: "в знаменатель"]          # phrase(the 'denominator' of a fraction)
+    - else_if: "$Move2D = 'out of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "из числителя"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из знаменателя"]
+    - else_if: "$Move2D = 'end of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "конец числителя"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец знаменателя"]
+    - else_if: "$Move2D = 'start of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "начало числителя"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало знаменателя"]
   - pause: "medium"
 
 - name: into-or-out-of-msqrt
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='msqrt' or self::m:msqrt)"
   replace:
-  - x: "$Move2D"
-  - t: "квадратный корень"                    # phrase(the 'square root' of x)
+  - test:
+    - if: "$Move2D = 'in'"
+      then: [t: "в подкоренное выражение"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из подкоренного выражения"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец подкоренного выражения"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало подкоренного выражения"]
   - pause: "medium"
 
 - name: into-or-out-of-mroot
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='mroot' or self::m:mroot)"
   replace:
-  - x: "$Move2D"
   - test:
-      if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "корень"]               # phrase(the cube 'root' of x)
-      else: [t: "индекс корня"]         # phrase(the 'root index' of x is 3)
+    - if: "$Move2D = 'in' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "в подкоренное выражение"]               # phrase(the cube 'root' of x)
+    - else_if: "$Move2D = 'in'"
+      then: [t: "в показатель корня"]         # phrase(the 'root index' of x is 3)
+    - else_if: "$Move2D = 'out of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "из подкоренного выражения"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из показателя корня"]
+    - else_if: "$Move2D = 'end of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "конец подкоренного выражения"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец показателя корня"]
+    - else_if: "$Move2D = 'start of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "начало подкоренного выражения"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало показателя корня"]
   - pause: "medium"
 
 - name: into-or-out-of-msub
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='msub' or self::m:msub)"
   replace:
-  - x: "$Move2D"
   - test:
-      if: "count($Child2D/preceding-sibling::*)=0"
-      then: [t: "основание"]              # phrase(the 'base' of the power)
-      else: [t: "нижний индекс"]         # phrase(x with 'subscript' 2)
+    - if: "$Move2D = 'in' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "в основание"]              # phrase(the 'base' of the power)
+    - else_if: "$Move2D = 'in'"
+      then: [t: "в нижний индекс"]         # phrase(x with 'subscript' 2)
+    - else_if: "$Move2D = 'out of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "из основания"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из нижнего индекса"]
+    - else_if: "$Move2D = 'end of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "конец основания"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец нижнего индекса"]
+    - else_if: "$Move2D = 'start of' and count($Child2D/preceding-sibling::*)=0"
+      then: [t: "начало основания"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало нижнего индекса"]
   - pause: "medium"
 
 - name: into-or-out-of-msup
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='msup' or self::m:msup)"
   replace:
-  - x: "$Move2D"
   - test:
-      if: "not($Child2D/preceding-sibling::*)"
-      then: [t: "основание"]            # phrase(the 'base' of the power)
-      else: [t: "верхний индекс"]     # phrase(x with 'superscript' 2)  # FIX: it would be better to use the word used when reading (power, exponent, ...)
+    - if: "$Move2D = 'in' and not($Child2D/preceding-sibling::*)"
+      then: [t: "в основание"]            # phrase(the 'base' of the power)
+    - else_if: "$Move2D = 'in'"
+      then: [t: "в верхний индекс"]     # phrase(x with 'superscript' 2)  # FIX: it would be better to use the word used when reading (power, exponent, ...)
+    - else_if: "$Move2D = 'out of' and not($Child2D/preceding-sibling::*)"
+      then: [t: "из основания"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из верхнего индекса"]
+    - else_if: "$Move2D = 'end of' and not($Child2D/preceding-sibling::*)"
+      then: [t: "конец основания"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец верхнего индекса"]
+    - else_if: "$Move2D = 'start of' and not($Child2D/preceding-sibling::*)"
+      then: [t: "начало основания"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало верхнего индекса"]
   - pause: "medium"
 
 - name: into-or-out-of-msubsup
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='msubsup' or self::m:msubsup)"
   replace:
-  - x: "$Move2D"
   - test:
-    - if: "not($Child2D/preceding-sibling::*)"
-      then: [t: "основание"]             # phrase(the 'base' of the power)
-    - else_if: "count($Child2D/preceding-sibling::*)=1"
-      then: [t: "нижний индекс"]        # phrase(x with 'subscript' 2)
-      else: [t: "верхний индекс"]      # phrase(x with 'superscript' 2)  # FIX: it would be better to use the word used when reading (power, exponent, ...)
+    - if: "$Move2D = 'in' and not($Child2D/preceding-sibling::*)"
+      then: [t: "в основание"]             # phrase(the 'base' of the power)
+    - else_if: "$Move2D = 'in' and count($Child2D/preceding-sibling::*)=1"
+      then: [t: "в нижний индекс"]        # phrase(x with 'subscript' 2)
+    - else_if: "$Move2D = 'in'"
+      then: [t: "в верхний индекс"]      # phrase(x with 'superscript' 2)  # FIX: it would be better to use the word used when reading (power, exponent, ...)
+    - else_if: "$Move2D = 'out of' and not($Child2D/preceding-sibling::*)"
+      then: [t: "из основания"]
+    - else_if: "$Move2D = 'out of' and count($Child2D/preceding-sibling::*)=1"
+      then: [t: "из нижнего индекса"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из верхнего индекса"]
+    - else_if: "$Move2D = 'end of' and not($Child2D/preceding-sibling::*)"
+      then: [t: "конец основания"]
+    - else_if: "$Move2D = 'end of' and count($Child2D/preceding-sibling::*)=1"
+      then: [t: "конец нижнего индекса"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец верхнего индекса"]
+    - else_if: "$Move2D = 'start of' and not($Child2D/preceding-sibling::*)"
+      then: [t: "начало основания"]
+    - else_if: "$Move2D = 'start of' and count($Child2D/preceding-sibling::*)=1"
+      then: [t: "начало нижнего индекса"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало верхнего индекса"]
   - pause: "medium"
 
 - name: into-or-out-of-munder
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='munder' or self::m:munder)"
   replace:
-  - x: "$Move2D"
+  - test:
+    - if: "$Move2D = 'in'"
+      then: [t: "в"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало"]
   - test:
       if: "count($Child2D/preceding-sibling::*)=0"
       then: [t: "основание"]          # phrase(the 'base' of the power)
@@ -171,7 +252,15 @@
   tag: "*"
   match: "$Move2D != '' and @data-from-mathml='mover' or self::m:mover"
   replace:
-  - x: "$Move2D"
+  - test:
+    - if: "$Move2D = 'in'"
+      then: [t: "в"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало"]
   - test:
       if: "count($Child2D/preceding-sibling::*)=0"
       then: [t: "основание"]         # phrase(the 'base' of the power)
@@ -182,7 +271,15 @@
   tag: "*"
   match: "$Move2D != '' and (@data-from-mathml='munderover' or self::m:munderover)"
   replace:
-  - x: "$Move2D"
+  - test:
+    - if: "$Move2D = 'in'"
+      then: [t: "в"]
+    - else_if: "$Move2D = 'out of'"
+      then: [t: "из"]
+    - else_if: "$Move2D = 'end of'"
+      then: [t: "конец"]
+    - else_if: "$Move2D = 'start of'"
+      then: [t: "начало"]
   - test:
     - if: "count($Child2D/preceding-sibling::*)=0"
       then: [t: "основание"]           # phrase(the 'base' of the power)
@@ -202,7 +299,15 @@
           variables:
           - NumPrecedingSiblings: "count($Child2D/preceding-sibling::*)"
           replace:
-          - x: "$Move2D"
+          - test:
+            - if: "$Move2D = 'in'"
+              then: [t: "в"]
+            - else_if: "$Move2D = 'out of'"
+              then: [t: "из"]
+            - else_if: "$Move2D = 'end of'"
+              then: [t: "конец"]
+            - else_if: "$Move2D = 'start of'"
+              then: [t: "начало"]
           - test:
             - if: "$NumPrecedingSiblings=0"
               then: [t: "основание"]                 # phrase(the 'base' of the power)
@@ -254,13 +359,13 @@
       then:
       - test:
         - if: "$PreviousNavCommand = 'ZoomIn'"
-          then: [t: "отмена увеличения"]                       # phrase('undo zoom in')
+          then: [t: "отмена перехода внутрь"]                       # phrase('undo zoom in')
         - else_if: "$PreviousNavCommand = 'ZoomOut'"
-          then: [t: "отмена уменьшения"]                      # phrase('undo zoom out')
+          then: [t: "отмена перехода наружу"]                      # phrase('undo zoom out')
         - else_if: "$PreviousNavCommand = 'ZoomInAll'"
-          then: [t: "отмена полного увеличения"]        # phrase('undo zooming in all the way')
+          then: [t: "отмена перехода к максимальной детализации"]        # phrase('undo zooming in all the way')
         - else_if: "$PreviousNavCommand = 'ZoomOutAll'"
-          then: [t: "отмена полного уменьшения"]       # phrase('undo zooming out all the way')
+          then: [t: "отмена перехода к выражению целиком"]       # phrase('undo zooming out all the way')
         - else_if: "$PreviousNavCommand = 'MovePrevious' or $PreviousNavCommand = 'MovePreviousZoom'"
           then: [t: "отмена перемещения влево"]                     # phrase('undo move left')
         - else_if: "$PreviousNavCommand = 'MoveNext' or $PreviousNavCommand = 'MoveNextZoom'"
@@ -289,7 +394,7 @@
   replace:
   - test:
       if: "$MatchCounter = 0 and $NavVerbosity != 'Terse'"
-      then: [t: "увеличение полностью", pause: "long"]    # phrase('zoomed in all of the way')
+      then: [t: "достигнута максимальная детализация", pause: "long"]    # phrase('zoomed in all of the way')
   - test:
       if: "$ReadZoomLevel!=-1"
       then:
@@ -1651,7 +1756,7 @@
         - if: "$NavCommand = 'ReadCurrent'"
           then: [t: "читать"]                                  # phrase('read' next entry in table) 
           else: [t: "описать"]                              # phrase('describe' next entry in table)     
-      - t: "текущая"                                         # phrase('current' entry in table)
+      - t: "текущее"                                         # phrase('current' entry in table)
       - pause: long
   - set_variables: [NavNode: "@id"]
 

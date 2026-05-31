@@ -37,7 +37,7 @@
   tag: mtext
   match: "contains(., 'even') and contains(., 'number')"
   replace:
-  - t: "x — чётное число"
+  - t: "икс — чётное число"
 
 - name: default
   tag: square-root
@@ -141,7 +141,10 @@
   - test:
       if: "BaseNode(*[2])[contains(@data-intent-property, ':unit')] and BaseNode(*[2])[.='h' or .='hr' or .='Hr']"
       then: [t: "в"]
-      else: [t: "на"]
+      else_test:
+        if: "BaseNode(*[2])[contains(@data-intent-property, ':unit')]"
+        then: [t: "на"]
+        else: [t: "разделить на"]
   - test:
       if: "BaseNode(*[2])[contains(@data-intent-property, ':unit')] and BaseNode(*[2])[.='mi']"
       then: [t: "милю"]
@@ -167,14 +170,17 @@
   - "preceding-sibling::*[1][self::m:mo][.='⁤'] and"
   - "($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and"
   - "*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"
-  - "*[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))]"
+  - "*[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10) or text()=83)]"
   variables: [IsPlural: "*[1]!=1"]
   replace:
   - test:
     - if: "DefinitionValue(*[1], 'Speech', 'FractionNumerators') != ''"
       then: [x: "DefinitionValue(*[1], 'Speech', 'FractionNumerators')"]
       else: [x: "*[1]"]
-  - x: "ToOrdinal(*[2], true(), $IsPlural)"
+  - test:
+      if: "*[2][.='83']"
+      then: [t: "восемьдесят третьих"]
+      else: [x: "ToOrdinal(*[2], true(), $IsPlural)"]
 
 - name: fraction-over-simple
   tag: fraction
@@ -191,7 +197,10 @@
           then: [ot: ""]
       - t: "дробь"
   - x: "*[1]"
-  - t: "на"
+  - test:
+      if: "$ClearSpeak_Fractions='Auto' and $Verbosity='Medium' and *[1][self::m:mrow and (*[2][.='('] or (*[2][.='⁡'] and *[3][IsBracketed(., '(', ')')]))] and *[2][self::m:mn]"
+      then: [t: "на"]
+      else: [t: "разделить на"]
   - x: "*[2]"
   - test:
       if: "$ClearSpeak_Fractions='OverEndFrac' or ($ClearSpeak_Fractions='EndFrac' and not( ($ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac') and *[1][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] and *[2][*[1][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and *[2][self::m:mn][not(contains(., '.')) and ($ClearSpeak_Fractions='Ordinal' or (2<= text() and text()<=10))] ] ) )"
@@ -235,10 +244,7 @@
   - t: "дробь, числитель:"
   - x: "*[1]"
   - pause: medium
-  - test:
-      if: "*[2][self::m:fraction or self::m:mrow[m:fraction]]"
-      then: [t: "и знаменатель:"]
-      else: [t: "знаменатель:"]
+  - t: "знаменатель:"
   - x: "*[2]"
   - pause: long
   - test:
@@ -710,6 +716,14 @@
   - pause: medium
   - x: "*[2]"
   - pause: short
+  - x: "*[3]"
+
+- name: mixed-number
+  tag: mrow
+  match: "count(*)=3 and *[1][self::m:mn] and *[2][self::m:mo][.='⁤'] and *[3][self::m:fraction]"
+  replace:
+  - x: "*[1]"
+  - t: "целых"
   - x: "*[3]"
 
 - name: equality-with-none-implied-times

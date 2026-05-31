@@ -40,7 +40,7 @@
   replace:
   - test:
     - if: "*[1][.='u']"
-      then: [t: "u"]
+      then: [t: "у"]
     - else: [x: "*[1]"]
   - x: "*[2]"
   - x: "*[3]"
@@ -493,15 +493,15 @@
     - else_if: "$SpeechStyle='SimpleSpeak' and (text()='n' or text()='k') and parent::*[self::m:mrow and count(*)=3 and *[2][.='+'] and *[3][self::m:mn]] and ancestor::*[name()='fraction']"
       then_test:
       - if: "text()='n'"
-        then: [t: "n"]
-      - else: [t: "k"]
+        then: [t: "эн"]
+      - else: [t: "ка"]
     - else_if: "text()='n' and parent::*[self::m:mrow and parent::*[self::m:power] and count(*)>1]"
       then: [t: "эн"]
     - else_if: "(text()='n' or text()='k') and ancestor::*[name()='binomial']"
       then_test:
       - if: "text()='n'"
-        then: [t: "n"]
-      - else: [t: "k"]
+        then: [t: "эн"]
+      - else: [t: "ка"]
     - else_if: "text()='i' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators') or .//*[self::m:large-op or IsInDefinition(., 'LargeOperators')]]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
       then: [t: "и"]
     - else_if: "text()='n' and (ancestor::*[self::m:large-op] or ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators') or .//*[self::m:large-op or IsInDefinition(., 'LargeOperators')]]] or preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')])"
@@ -511,23 +511,23 @@
     - else_if: "text()='b' and parent::*[self::m:mover or self::m:modified-variable]"
       then: [t: "б"]
     - else_if: "text()='x' and ancestor::*[self::m:limit]"
-      then: [t: "x"]
+      then: [t: "икс"]
     - else_if: "text()='x' and (($SpeechStyle='ClearSpeak' and ancestor::*[name()='set']) or (ancestor::*[name()='set' and not(.//*[.='∈'])] and ancestor::*[self::m:mrow and *[2][.=':']]))"
       then: [t: "икс"]
     - else_if: "text()='i' and $SpeechStyle='ClearSpeak' and ancestor-or-self::*[following-sibling::*[.='∉']]"
       then: [t: "и"]
     - else_if: "text()='i' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
-      then: [t: "i"]
+      then: [t: "и"]
     - else_if: "text()='j' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
-      then: [t: "j"]
+      then: [t: "джей"]
     - else_if: "text()='k' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
-      then: [t: "k"]
+      then: [t: "ка"]
     - else_if: "text()='l' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
-      then: [t: "l"]
+      then: [t: "эль"]
     - else_if: "text()='m' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
-      then: [t: "m"]
+      then: [t: "эм"]
     - else_if: "text()='n' and (parent::*[self::m:binomial or self::m:pochhammer] or (parent::*[self::m:mmultiscripts] and preceding-sibling::*) or (parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*) or parent::*[self::m:mrow and parent::*[self::m:indexed-by or self::m:msub or self::m:power[@data-from-mathml='msubsup']] and preceding-sibling::*])"
-      then: [t: "n"]
+      then: [t: "эн"]
     - else_if: "string-length(.)=1 and contains('ABCDEFGHIJKLMNOPQRSTUVWXYZ', text()) and ancestor::*[preceding-sibling::*[1][self::m:large-op or IsInDefinition(., 'LargeOperators')]]"
       then:
       - x: "translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
@@ -590,7 +590,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "дробь x "               # phrase("the fraction x 'over' y")
+  - t: "разделить на"               # phrase("the fraction x 'over' y")
   - x: "*[2]"
   - pause: short
 
@@ -598,13 +598,13 @@
   tag: mfrac
   match: "."
   replace:
-  - t: "начать"              # phrase("'start'  fraction x over y end of fraction")
+  - t: "дробь, числитель:"              # phrase("'start'  fraction x over y end of fraction")
   - pause: short
   - x: "*[1]"
   - test:
       if: "not(IsNode(*[1],'leaf'))"
       then: [pause: short]
-  - t: "дробь x "               # phrase("the fraction x 'over' y")
+  - t: "знаменатель:"               # phrase("the fraction x 'over' y")
   - test:
       if: "not(IsNode(*[2],'leaf'))"
       then: [pause: short]
@@ -612,7 +612,7 @@
   - pause: short
   - test:
       if: "$Impairment = 'Blindness'"
-      then: [t: "начало дроби x над y "]          # phrase("start of fraction x over y 'end over'")
+      then: [t: "конец дроби"]          # phrase("start of fraction x over y 'end over'")
   - pause: medium
 
 
@@ -621,18 +621,15 @@
   tag: msqrt
   match: "."
   replace:
+  - t: "квадратный корень"
   - test:
       if: "$Verbosity!='Terse'"
-      then: [t: "корень x"]    # phrase("'the' root of x")
-  - t: "корень"
-  - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "корень"]    # phrase("the root 'of' x")
+      then: [t: "из"]    # phrase("the root 'of' x")
   - x: "*[1]"
   - pause: short
   - test:
       if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
-      then: [t: "корень x "] # phrase("root of x 'end root symbol'")
+      then: [t: "конец корня"] # phrase("root of x 'end root symbol'")
 
 # not sure what really should be said for these since we should not assume they are square roots
 - name: literal-default
@@ -640,17 +637,20 @@
   match: "."
   replace:
   - test:
-      if: "$Verbosity!='Terse'"
-      then: [t: "корень x"]   # phrase("'the' root of x")
-  - t: "корень с индексом" # phrase("the 'root with index' 3 of 5")
+    - if: "*[2][.='2']"
+      then: [t: "квадратный корень"]
+    - else_if: "*[2][.='3']"
+      then: [t: "кубический корень"]
+    - else:
+      - t: "корень степени" # phrase("the 'root with index' 3 of 5")
+      - x: "*[2]"
+  - pause: short
+  - t: "из"              # phrase("the root 'of' x")
   - x: "*[1]"
   - pause: short
-  - t: "корень"              # phrase("the root 'of' x")
-  - x: "*[2]"
-  - pause: short
   - test:
-      if: "not(IsNode(*[2],'leaf'))"
-      then: [t: "корень x "] # phrase("root of x 'end root symbol'")
+      if: "not(IsNode(*[1],'leaf')) or $Impairment = 'Blindness'"
+      then: [t: "конец корня"] # phrase("root of x 'end root symbol'")
 
 
 - name: simple-sub
@@ -701,7 +701,7 @@
   - test:
       if: "name(.)='msubsup'"
       then:
-      - t: "sub"          # phrase(x 'sub' 2)
+      - t: "нижний индекс"          # phrase(x 'sub' 2)
       - x: "*[2]"
   - test:
       if: "*[last()][translate(., '′″‴⁗†‡°*', '')='']"
@@ -709,21 +709,21 @@
       else_test:
           if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"  # FIX: is this test necessary?
           then:
-          - t: "super"      # phrase(x 'super' 2)
+          - t: "верхний индекс"      # phrase(x 'super' 2)
           - x: "*[last()]"
           - test:
               if: "not(IsNode(*[last()], 'simple')) or $Impairment = 'Blindness'"
-              then: [t: "end of super"]      # phrase(x super 2 'end of super')
+              then: [t: "конец верхнего индекса"]      # phrase(x super 2 'end of super')
           else:
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "суперпид"]
-              else: [t: "супер"]
+              then: [t: "верхний индекс"]
+              else: [t: "в степени"]
           - x: "*[last()]"
           - test:
               if: "$Verbosity='Verbose'"
-              then: [t: "конец superscript"]
-              else: [t: "конец супер"]
+              then: [t: "конец верхнего индекса"]
+              else: [t: "конец степени"]
 
 - name: default
   tag: munder
@@ -789,8 +789,8 @@
       then:
       - with:
           variables:
-          - PreSubscript: "'перед нижний'"
-          - PreSuperscript: "'перед верхний'"
+          - PreSubscript: "'левый нижний индекс'"
+          - PreSuperscript: "'левый верхний индекс'"
           replace:
           - test: # only bother announcing if there is more than one prescript
               if: "count($Prescripts) > 2"

@@ -237,7 +237,7 @@
         then: [t: "умножить на"]                        	# 	(en: 'times', google translation)
         else_test:
             if: $ClearSpeak_MultSymbolX = 'By'
-            then: [t: "на"]                      	# 	(en: 'by')
+            then: [t: "умножить на"]                      	# 	(en: 'by')
             else: [t: "векторное произведение"]               	# 	(en: 'cross')
  - "÷": [t: "разделить на"]                     	#  0xf7	(en: 'divided by')
  - "̀": [t: "знак грависа"]       	#  0x300	(en: 'grave accent embellishment', google translation)
@@ -516,7 +516,7 @@
      - test: 
          if: "$Verbosity!='Terse'"
          then: [t: ""]                  	# 	(en: 'is', google translation)
-     - t: "изогнутая s"              	# 	(en: 'most positive')
+     - t: "изогнутая эс"              	# 	(en: 'most positive')
  - "∿": [t: "синусоидальная волна"]             	#  0x223f	(en: 'sine wave')
  - "≠":                                         	#  0x2260
      - test: 

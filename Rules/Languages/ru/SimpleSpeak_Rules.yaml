@@ -140,6 +140,15 @@
       then: [t: "милю"]
       else: [x: "*[2]"]
 
+- name: simple-text-fraction
+  tag: fraction
+  match: "*[1][.='rise'] and *[2][.='run']"
+  replace:
+  - x: "*[1]"
+  - t: "на"
+  - x: "*[2]"
+  - pause: short
+
 - name: simple
   # don't include nested fractions. E.g, fraction a plus b over c + 1 end fraction" is ambiguous
   # by simplistic SimpleSpeak's rules "b over c" is a fraction, but if we say nested fractions
@@ -150,7 +159,7 @@
   - "not(ancestor::*[name() != 'mrow'][1]/self::m:fraction)" # FIX: can't test for mrow -- what should be used???
   replace:
   - x: "*[1]"
-  - t: "на"      # (en: 'over')
+  - t: "разделить на"      # (en: 'over')
   - x: "*[2]"
   - pause: short
 
@@ -338,7 +347,9 @@
   replace:
   - x: "*[1]"
   - t: "целых"
-  - x: "*[2]"
+  - test:
+      if: "*[3]/*[2][.='83']"
+      then: [x: "*[2]"]
   - x: "*[3]"
 
 - name: plus-before-nested-fraction

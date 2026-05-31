@@ -78,7 +78,7 @@
   - pause: short
   - insert:
       nodes: "*"
-      replace: [t: "comma", pause: auto]      # phrase(f of x 'comma' y)
+      replace: [t: "запятая", pause: auto]      # phrase(f of x 'comma' y)
   - pause: short
   - test:
       if: "($SpeechStyle='ClearSpeak' and $Verbosity='Verbose') or not(IsNode(*[last()],'leaf'))"

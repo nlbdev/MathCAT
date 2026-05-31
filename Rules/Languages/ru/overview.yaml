@@ -21,10 +21,13 @@
       if: "IsNode(*[1], 'simple') and IsNode(*[2], 'simple')"
       then:
       - x: "*[1]"
-      - t: "на"  # (en: 'over')
+      - t: "разделить на"  # (en: 'over')
       - x: "*[2]"
       else:
-      - t: "дробь"  # (en: 'fraction')
+      - t: "дробь, числитель:"  # (en: 'fraction')
+      - x: "*[1]"
+      - t: "знаменатель:"
+      - x: "*[2]"
 
 - name: overview-default
   tag: [msqrt, "square-root"]
@@ -32,12 +35,9 @@
   replace:
   - t: "квадратный корень"
   - test:
-      if: "IsNode(*[1], 'simple')"
-      then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "из"]
-      - x: "*[1]"
+      if: "$Verbosity!='Terse'"
+      then: [t: "из"]
+  - x: "*[1]"
 
 - name: overview-default
   tag: [mroot, root]
@@ -61,12 +61,9 @@
           else: {x: "*[2]"}
       - t: "корень"
   - test:
-      if: "IsNode(*[1], 'simple')"
-      then:
-      - test:
-          if: "$Verbosity!='Terse'"
-          then: [t: "из"]
-      - x: "*[1]"
+      if: "$Verbosity!='Terse'"
+      then: [t: "из"]
+  - x: "*[1]"
 
 - name: matrix-override
   tag: mrow

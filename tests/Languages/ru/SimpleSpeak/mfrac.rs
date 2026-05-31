@@ -38,7 +38,7 @@ fn not_SimpleSpeak_common_fraction_tenths() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "89 на 10")?;
+    test("ru", "SimpleSpeak", expr, "89 разделить на 10")?;
     return Ok(());
 }
 
@@ -89,7 +89,7 @@ fn deeply_nested_fraction_msqrt() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("ru", "SimpleSpeak", expr, "дробь, числитель: икс плюс, квадратный корень из 1 на игрек, конец корня; знаменатель: икс минус игрек, конец дроби")?;
+    test("ru", "SimpleSpeak", expr, "дробь, числитель: икс плюс, квадратный корень из 1 разделить на игрек, конец корня; знаменатель: икс минус игрек, конец дроби")?;
     return Ok(());
 }
 
@@ -106,7 +106,7 @@ fn deeply_nested_fraction_mrow_msqrt() -> Result<()> {
         </mrow>
     </math>
                             ";
-    test("ru", "SimpleSpeak", expr, "дробь, числитель: икс плюс, квадратный корень из 2 плюс 1 на игрек, конец корня; знаменатель: икс минус игрек, конец дроби")?;
+    test("ru", "SimpleSpeak", expr, "дробь, числитель: икс плюс, квадратный корень из 2 плюс 1 разделить на игрек, конец корня; знаменатель: икс минус игрек, конец дроби")?;
     return Ok(());
 }
 
@@ -179,7 +179,7 @@ fn mixed_number() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>1</mn> <mn>2</mn> </mfrac>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "3 целых и одна вторая")?;
+    test("ru", "SimpleSpeak", expr, "3 целых одна вторая")?;
     return Ok(());
 }
 
@@ -190,7 +190,7 @@ fn explicit_mixed_number() -> Result<()> {
                     <mo>&#x2064;</mo>
                     <mfrac> <mn>1</mn> <mn>8</mn> </mfrac>
                 </math>";
-    test("ru", "SimpleSpeak", expr, "3 целых и одна восьмая")?;
+    test("ru", "SimpleSpeak", expr, "3 целых одна восьмая")?;
     return Ok(());
 }
 
