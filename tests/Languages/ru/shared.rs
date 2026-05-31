@@ -400,7 +400,7 @@ fn literal_speak() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("ru", "LiteralSpeak", expr, "заглавная а со стрелкой, перпендикулярно, заглавная бэ со стрелкой")?;
+  test("ru", "LiteralSpeak", expr, "заглавная а со стрелкой перпендикулярно заглавная бэ со стрелкой")?;
   return Ok(());
 }
 
@@ -459,7 +459,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("ru", "SimpleSpeak", expr, "заглавная а со стрелкой, перпендикулярно, заглавная бэ со стрелкой")?;
+  test("ru", "SimpleSpeak", expr, "заглавная а со стрелкой перпендикулярно заглавная бэ со стрелкой")?;
   return Ok(());
 }
 

@@ -1165,13 +1165,20 @@
 - name: silent-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
-  match: "count(*)>0 and contains(@data-intent-property, ':silent:')"
+  match: "count(*)>0 and (contains(@data-intent-property, ':silent:') or translate(name(.), '-_', '')='')"
   replace:
   - x: "*"
   - test:
       if: "IsNode(., '2D')"
       then: [pause: short]
       else: [pause: auto]
+
+- name: nofix-intent
+  # uncaught intent -- the args have been inserted in the order of speech 
+  tag: "*"
+  match: "contains(@data-intent-property, ':nofix:') "
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
 - name: prefix-intent
   # uncaught intent -- the args have been inserted in the order of speech 
