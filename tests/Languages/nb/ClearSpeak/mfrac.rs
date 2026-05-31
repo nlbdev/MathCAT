@@ -311,3 +311,27 @@ fn binomial() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn mixed_number_1() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>1</mn>
+    <mfrac><mn>2</mn><mn>3</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 og 2 tredjedeler")?;
+    return Ok(());
+
+}
+
+#[test]
+fn mixed_number_2() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>2</mn>
+    <mfrac><mn>4</mn><mn>4</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "2 og 4 fjerdedeler")?;
+    return Ok(());
+
+}
