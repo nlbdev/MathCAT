@@ -193,8 +193,7 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math> <mn>1</mn> <mi>kg</mi> <msup> <mi intent=':unit'>sec</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> <msup> <mi intent='unit'>m</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> </math>
-
+<math><mi>vi</mi><mo>-</mo><mi mathvariant='normal'>i</mi><mo>=</mo><mtext>v</mtext></math>
          "#;
   // let instant = Instant::now();
 
