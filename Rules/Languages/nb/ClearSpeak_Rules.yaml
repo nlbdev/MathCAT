@@ -143,8 +143,7 @@
   - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)]   and"    # NORWEGIAN: Changed decimal point to $DecimalSeparators
   - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]"                             # NORWEGIAN: Removed $ClearSpeak_Fractions='Ordinal', cause the pattern for ordinal fractions is not right. 
   variables:
-  - IsPlural: "not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064'])"     # '\u2064' is invisible plus and is used in mixed fractions
-  - IsPluralNoUnit: "not(*[1]=1)"   # mixed numbers without following units should pluralize on numerator
+  - IsPlural: "not(*[1]=1)"
     # set right level for the location of the common fraction/mixed fraction
   - IsMixedFraction: "preceding-sibling::*[1][.='\u2064']"
   - UnitSibling: "IfThenElse($IsMixedFraction, .., .)"
@@ -170,11 +169,11 @@
     - if: "not($UnitNode)"
       then:
       - x: "*[1]"
-      - x: "ToOrdinal(*[2], true(), $IsPluralNoUnit)"   # extra args specify fractional ordinal and whether it is plural
+      - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
     # unit follows the fraction -- special cases
     - else:
       - test:
-          if: "$NeuterUnitFollows and (*[1]=1 or ($IsMixedFraction and preceding-sibling::*[2][.=1]))"
+          if: "$NeuterUnitFollows and *[1]=1"
           then: [T: "ett"]
           else: [x: "*[1]"]
       - test:

@@ -75,8 +75,7 @@
   - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                               # NORWEGIAN: Changed decimal point to $DecimalSeparators
   - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]"
   variables:
-  - IsPlural: "not(*[1]=1 or preceding-sibling::*[1][self::m:mo and .='\u2064'])"     # '\u2064' is invisible plus and is used in mixed fractions
-  - IsPluralNoUnit: "not(*[1]=1)"   # mixed numbers without following units should pluralize on numerator
+  - IsPlural: "not(*[1]=1)"
   - UnitSibling: "IfThenElse(preceding-sibling::*[1][.='\u2064'],  .., .)"
     # set the potential unit node -- otherwise set it to a empty node set (use a made up name)
   - UnitNodeLocation: "IfThenElse($UnitSibling/..[self::m:mrow and count(*)=3 and *[2][.='\u2062']],
@@ -100,7 +99,7 @@
     - if: "not($UnitNode)"
       then:
       - x: "*[1]"
-      - x: "ToOrdinal(*[2], true(), $IsPluralNoUnit)"   # extra args specify fractional ordinal and whether it is plural
+      - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
     # unit follows the fraction -- special cases
     - else:
       - test:

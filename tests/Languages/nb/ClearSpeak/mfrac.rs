@@ -313,7 +313,7 @@ fn binomial() -> Result<()> {
 }
 
 #[test]
-fn mixed_number_1() -> Result<()> {
+fn mixed_number_one() -> Result<()> {
     let expr = r#"
     <math>
     <mn>1</mn>
@@ -325,7 +325,7 @@ fn mixed_number_1() -> Result<()> {
 }
 
 #[test]
-fn mixed_number_2() -> Result<()> {
+fn mixed_number_two() -> Result<()> {
     let expr = r#"
     <math>
     <mn>2</mn>

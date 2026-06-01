@@ -1065,3 +1065,59 @@ fn currency_plural() -> Result<()> {
     return Ok(());
 
 }
+
+#[test]
+fn common_fraction_mixed_unit_masculine() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>1</mn>
+    <mfrac><mn>3</mn><mn>4</mn></mfrac>
+    <mi mathvariant="normal" intent=":unit">m</mi>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 og 3 fjerdedels, meter")?;
+    test("nb", "SimpleSpeak", expr, "1 og 3 fjerdedels, meter")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_mixed_unit_neuter() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>1</mn>
+    <mfrac><mn>3</mn><mn>4</mn></mfrac>
+    <mi mathvariant="normal" intent=":unit">s</mi>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "ett og 3 fjerdedels, sekund")?;
+    test("nb", "SimpleSpeak", expr, "ett og 3 fjerdedels, sekund")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_mixed_unit_plural_neuter() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>2</mn>
+    <mfrac><mn>4</mn><mn>5</mn></mfrac>
+    <mi mathvariant="normal" intent=":unit">s</mi>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "2 og 4 femtedels, sekund")?;
+    test("nb", "SimpleSpeak", expr, "2 og 4 femtedels, sekund")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_mixed_unit_plural_masculine() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mn>2</mn>
+    <mfrac><mn>4</mn><mn>5</mn></mfrac>
+    <mi mathvariant="normal" intent=":unit">hr</mi>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "2 og 4 femtedels, time")?;
+    test("nb", "SimpleSpeak", expr, "2 og 4 femtedels, time")?;
+    return Ok(());
+
+}
