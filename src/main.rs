@@ -193,9 +193,7 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math> <mn>1</mn> <mi>kg</mi> <msup> <mi intent=':unit'>sec</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> <msup> <mi intent='unit'>m</mi> <mrow><mo>−</mo><mn>1</mn></mrow> </msup> </math>
-
-         "#;
+<math> <munderover> <mo>⋂</mo> <mrow><mi>i</mi><mo>=</mo><mn>1</mn> </mrow> <mn>10</mn> </munderover> <msub><mi>S</mi><mi>i</mi></msub> </math>         "#;
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -211,7 +209,7 @@ fn main() {
   set_preference("DecimalSeparator", "Auto").unwrap();
   set_preference("BrailleCode", "UEB").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
-  set_preference("TTS", "None").unwrap();
+  set_preference("TTS", "SSML").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
   set_preference("NavMode", "Enhanced").unwrap();
