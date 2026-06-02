@@ -446,7 +446,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "sec"]         # phrase(to 'seek' a solution)
+      then: [T: "sek"]         # phrase(to 'seek' a solution)
       else: [T: "sekans"]     # phrase(a 'secant' intersects a curve at two or more points)
 
 - name: csc   # audit-ignore
@@ -506,7 +506,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "sec hyperbolicus"]                   # phrase('sheck' is shorthand for hyperbolic secant)
+      then: [T: "sek hyperbolicus"]                   # phrase('sheck' is shorthand for hyperbolic secant)
       else: [T: "sekans hyperbolicus"]        # phrase('hyperbolic secant' is a mathematical function) 
 
 - name: csch
