@@ -100,8 +100,8 @@
  - "/":                         #  0x2f (en: 'divided by')
      - test:
         if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [t: "skråstrek"]                 # 0x2f
-        else: [t: "delt på"]                   # 0x2f
+        then: [T: "skråstrek"]                 # 0x2f
+        else: [T: "delt på"]                   # 0x2f
  - ":": [T: "kolon"]                             #  0x3a (en: 'colon')
  - ";": [T: "semikolon"]                         #  0x3b (en: 'semicolon')
  - "<":                                          #  0x3c
