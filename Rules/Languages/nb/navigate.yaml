@@ -56,38 +56,38 @@
         else:
         - test:
           - if: "starts-with($NavCommand, 'Zoom')"
-            then: [set_variables: [Prefix: "'zoom'"]]          # phrase('zoom' in to see more details)     
+            then: [set_variables: [Prefix: "'zoom'", CommandOffset: "5"]]          # phrase('zoom' in to see more details)     
           - else_if: "starts-with($NavCommand, 'Move')"
-            then: [set_variables: [Prefix: "'gå'"]]          # phrase('move' to next entry in table)     
+            then: [set_variables: [Prefix: "'gå'", CommandOffset: "5"]]          # phrase('move' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Read')"
-            then: [set_variables: [Prefix: "'les'"]]          # phrase('read' to next entry in table)     
+            then: [set_variables: [Prefix: "'les'", CommandOffset: "5"]]          # phrase('read' to next entry in table)     
           - else_if: "starts-with($NavCommand, 'Describe')"
-            then: [set_variables: [Prefix: "'beskriv'"]]      # phrase('describe' to next entry in table)
+            then: [set_variables: [Prefix: "'beskriv'", CommandOffset: "9"]]      # phrase('describe' to next entry in table)
         - test:
             if: "$Prefix != ''"
             then:
             - x: "$Prefix"
             - test:
-              - if: "substring($NavCommand, string-length($Prefix)+1) = 'In'"
+              - if: "substring($NavCommand, $CommandOffset) = 'In'"
                 then: [T: "inn"]                                  # phrase(zoom 'in' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'InAll'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'InAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
                 then: [T: "\uF8FEet helt inn"]                     # phrase(zoom 'out all of the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Out'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Out'"
                 then: [T: "ut"]                                 # phrase(zoom 'out' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'OutAll'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'OutAll'"
                 # HACK: '\uF8FE' is used internally for the concatenation char by 'ct' -- this gets "ed" concatenated to "zoom"
                 then: [T: "\uF8FEet helt ut"]                     # phrase(zoom 'out all of the way' to see more details)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Next'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Next'"
                 then: [T: "høyre"]                               # phrase(move to the 'right')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Previous'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Previous'"
                 then: [T: "venstre"]                                # phrase(move to the 'left')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'Current'"
+              - else_if: "substring($NavCommand, $CommandOffset) = 'Current'"
                 then: [T: "nåværende"]                                 # phrase(who is the 'current' president)
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineStart'"
-                then: [T: "til starten av linja"]                                 # phrase(move 'to start of line')
-              - else_if: "substring($NavCommand, string-length($Prefix)+1) = 'LineEnd'"
-                then: [T: "til slutten av linja"]                                 # phrase(move 'to end of line')
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineStart'"
+                then: [T: "til starten av raden"]                                 # phrase(move 'to start of line')
+              - else_if: "substring($NavCommand, $CommandOffset) = 'LineEnd'"
+                then: [T: "til slutten av raden"]                                 # phrase(move 'to end of line')
             - pause: "medium"
   - set_variables: [MatchCounter: "$MatchCounter + 1"]
 
@@ -96,6 +96,11 @@
   # saying "out of row n" is not very useful, so skip it
   match: "$Move2D != '' and (not(@data-from-mathml) or @data-from-mathml = name(.)) and
           (name(.)='mrow' or name(.) = 'mtr' or name(.) = 'mlabeledtr' or @data-from-mathml = 'mtable')"
+  replace: []
+
+- name: into-or-out-of-minus-silent-on-zoom-out
+  tag: "*"
+  match: "$Move2D != '' and name(.)='minus' and count(*)=1 and ($NavCommand = 'ZoomOut' or $NavCommand = 'ZoomOutAll')"
   replace: []
 
 - name: into-or-out-of-mtr
@@ -521,10 +526,10 @@
             - if: "$NavCommand = 'MoveStart'"
               then: [T: "gå til starten av uttrykket"]                  # phrase('move to start of math')
             - else_if: "$NavCommand = 'MoveLineStart'"
-              then: [T: "gå til starten av linja"]                  # phrase('move to start of line')
+              then: [T: "gå til starten av raden"]                  # phrase('move to start of line')
             - else_if: "$NavCommand = 'MoveEnd'"
               then: [T: "gå til slutten av uttrykket"]                    # phrase('move to end of math')
-              else: [T: "gå til slutten av linja"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+              else: [T: "gå til slutten av raden"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
           - pause: "medium"
       - test:
           if: "$NavCommand = 'MoveStart' or $NavCommand = 'MoveLineStart'"
@@ -564,8 +569,8 @@
       then:
       - test:
           if: "$NavCommand = 'MoveLineStart'"
-          then: [T: "gå til starten av linja"]                                # phrase('move to start of line')
-          else: [T: "gå til slutten av linja"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
+          then: [T: "gå til starten av raden"]                                # phrase('move to start of line')
+          else: [T: "gå til slutten av raden"] # "$NavCommand = 'MoveLineEnd'"  # phrase('move to end of line')
       - pause: "medium"
   - test:
       if: "self::m:mrow or @data-from-mathml = 'mrow'"
@@ -1447,7 +1452,7 @@
         - else_if: "starts-with($NavCommand, 'MoveTo')"
           then: [T: "gå til "]                              # phrase('move to' the next entry in table) 
           else: [T: "angi"]                                   # phrase('set' the value of the next entry in table) 
-      - T: "plassholder"                                     # phrase('placeholder' for the value)
+      - T: "markør"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1459,7 +1464,7 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - T: "angi plassholder"                                 # phrase('set placeholder' to the value) 
+      - T: "angi markør"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "@id"]
