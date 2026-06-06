@@ -796,7 +796,7 @@ fn fraction_not_ordinal_units_neuter() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>3</mn><mn>11</mn></mfrac><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "3 over 11 minutter")?;
+    test("nb", "ClearSpeak", expr, "3 over 11, minutter")?;
     test("nb", "SimpleSpeak", expr, "3 over 11, minutter")?;
     return Ok(());
 
@@ -808,7 +808,7 @@ fn fraction_not_ordinal_units_masculine_feminine() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>3</mn><mn>11</mn></mfrac><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "3 over 11 timer")?;
+    test("nb", "ClearSpeak", expr, "3 over 11, timer")?;
     test("nb", "SimpleSpeak", expr, "3 over 11, timer")?;
     return Ok(());
 
@@ -819,7 +819,7 @@ fn fraction_not_ordinal_2_units_neuter() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21 minutter")?;
+    test("nb", "ClearSpeak", expr, "7 over 21, minutter")?;
     test("nb", "SimpleSpeak", expr, "7 over 21, minutter")?;
     return Ok(());
 
@@ -831,7 +831,7 @@ fn fraction_not_ordinal_2_units_masculine_feminine() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21 timer")?;
+    test("nb", "ClearSpeak", expr, "7 over 21, timer")?;
     test("nb", "SimpleSpeak", expr, "7 over 21, timer")?;
     return Ok(());
 
@@ -929,7 +929,7 @@ fn fraction_not_ordinal_units_neuter_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">nsek</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21 nano-sekunder")?;
+    test("nb", "ClearSpeak", expr, "7 over 21, nano-sekunder")?;
     test("nb", "SimpleSpeak", expr, "7 over 21, nano-sekunder")?;
     return Ok(());
 
@@ -941,7 +941,7 @@ fn fraction_not_ordinal_units_masculine_feminine_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">ml</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21 milli-liter")?;
+    test("nb", "ClearSpeak", expr, "7 over 21, milli-liter")?;
     test("nb", "SimpleSpeak", expr, "7 over 21, milli-liter")?;
     return Ok(());
 

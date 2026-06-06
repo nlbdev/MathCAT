@@ -211,6 +211,8 @@
       - pause: short
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
       - pause: short
+      else: 
+      - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
   name: fraction-over-text
@@ -239,6 +241,8 @@
       then:
       - pause: short
       - T: "slutt brøk"      # phrase(7 over 8 'end fraction')
+      - pause: short
+      else: 
       - pause: short
 
 # NORWEGIAN: Changed to English version
