@@ -174,9 +174,9 @@ fn nested_simple_fractions() -> Result<()> {
             </math>";
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 halv over 2 tredjedeler")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 halv over 2 tredjedeler")?;
-    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 over 2 over 2 over 3")?;
+    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 over 2, over 2 over 3")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
-            "brøken brøken 1 over 2 over brøken 2 over 3")?;
+            "brøken brøken 1 over 2, over brøken 2 over 3")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
             "brøken med teller brøken med teller 1; og nevner 2; og nevner brøken med teller 2; og nevner 3")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 halv over 2 tredjedeler")?;
