@@ -1452,7 +1452,7 @@
         - else_if: "starts-with($NavCommand, 'MoveTo')"
           then: [T: "gå til "]                              # phrase('move to' the next entry in table) 
           else: [T: "angi"]                                   # phrase('set' the value of the next entry in table) 
-      - T: "markør"                                     # phrase('placeholder' for the value)
+      - T: "plassmerker"                                     # phrase('placeholder' for the value)
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "$PlaceMarker"]
@@ -1464,7 +1464,7 @@
   - test:
       if: "$NavVerbosity != 'Terse'"
       then:
-      - T: "angi markør"                                 # phrase('set placeholder' to the value) 
+      - T: "angi plassmerker"                                 # phrase('set placeholder' to the value) 
       - x: "$PlaceMarkerIndex"
       - pause: long
   - set_variables: [NavNode: "@id"]
