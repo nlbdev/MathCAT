@@ -38,7 +38,7 @@
           then: [T: "av"]
       - x: "*[1]"
 
-- name: overview-default
+- name: overview-default    # audit-ignore
   tag: [mroot, root]
   match: "."
   replace:

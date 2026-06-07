@@ -215,7 +215,7 @@
       - pause: short
 
 - # fraction with text or numbers followed by text in both numerator and denominator
-  name: fraction-over-text
+  name: fraction-over-text    # audit-ignore
   tag: fraction
   match:
   - "not($ClearSpeak_Fractions='General' or $ClearSpeak_Fractions='GeneralEndFrac') and"
@@ -295,7 +295,7 @@
       else: [T: "i tredje"]      # phrase(625 equals 5 'cubed')
 
 # The following element is invisible function application. Used for expressions like sin^n x.
-- name: function-power
+- name: function-power    # audit-ignore
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
@@ -345,7 +345,7 @@
   - T: "i tredje"      # phrase(5 'cubed' equals 125)
 
 # Norwegian: Changed to longer pause at the end.
-- name: simple-integer
+- name: simple-integer    # audit-ignore
   tag: power
   match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           # NORWEGIAN: Changed decimal point to $DecimalSeparators 
   replace:
@@ -356,7 +356,7 @@
   - pause: medium
 
 # Norwegian: Changed to longer pause at the end.
-- name: simple-negative-integer
+- name: simple-negative-integer    # audit-ignore
   tag: power
   match:
   - "*[2][self::m:minus and count(*)=1 and"
@@ -370,7 +370,7 @@
   - pause: medium
 
 # Norwegian: Changed to longer pause at the end.
-- name: simple-var
+- name: simple-var    # audit-ignore
   tag: power
   match: "*[2][self::m:mi][string-length(.)=1]"
   replace:
@@ -390,7 +390,7 @@
 #   If these are allowed for non-Auto values, then you end up with "...power power...".
 - # [xxx]^n
   # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
-  name: nested-squared-or-cubed
+  name: nested-squared-or-cubed   # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -415,7 +415,7 @@
 
 - # - [xxx]^n
   # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
-  name: nested-negative-squared-or-cubed
+  name: nested-negative-squared-or-cubed    # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -442,7 +442,7 @@
 
 - # [xxx] var^n
   # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
-  name: nested-var-squared-or-cubed
+  name: nested-var-squared-or-cubed   # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -471,7 +471,7 @@
 
 - # -[xxx] var^n
   # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
-  name: nested-negative-var-squared-or-cubed
+  name: nested-negative-var-squared-or-cubed    # audit-ignore
   tag: power
   match:
   - "$ClearSpeak_Exponents = 'Auto' and"
@@ -513,7 +513,7 @@
   - T: "slutt eksponent"      # phrase(and now 'end exponent' has been reached)
 
 # Norwegian: Added "end exponent" for verbose, and longer pause for terse and medium.
-- name: default
+- name: default   # audit-ignore
   tag: power
   match: "."
   replace:
@@ -678,7 +678,7 @@
           then: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' of x)
           else: [SPELL: "'ln'"]
 
-- name: ClearSpeak-multi-line
+- name: ClearSpeak-multi-line   # audit-ignore
   tag: [piecewise, system-of-equations, lines] # these are ignored in favor of the ClearSpeak prefs
   match: "."
   variables:

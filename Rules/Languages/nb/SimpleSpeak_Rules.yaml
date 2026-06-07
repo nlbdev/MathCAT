@@ -191,7 +191,7 @@
       else: [T: "i tredje"]      # phrase(5 'cubed' equals 125)
 
 # The following element is invisible function application. Used for expressions like sin^n x.
-- name: function-power
+- name: function-power    # audit-ignore
   tag: power
   match:
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
@@ -278,7 +278,7 @@
 # Norwegian: Added "end exponent" at the end. This doesn't apply if the parent is a power. 
 # For example: x^((4/5)^(n+1))
 # The outer power is caught by the nested rule. Avoid duplicated "end exponent".
-- name: default
+- name: default   # audit-ignore
   tag: power
   match: "."
   replace:
