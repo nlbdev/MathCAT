@@ -550,7 +550,7 @@
 
 # consider to change this to be equal to the ClearSpeak rule. 
 - # handle both log and ln
-  name: log
+  name: log   # audit-ignore
   tag: mi
   variables: [log_is_simple: "IsNode(following-sibling::*[2],'simple')"] # skip function apply
   match: ".='log' or .='ln' or .='lg'"
@@ -579,7 +579,7 @@
           - if: "$Verbosity!='Verbose'"
             then: [SPELL: "'lg'"]      # phrase(the 'lg' of x)
             else: [T: "tier-logaritmen"]
-        - else_if: "$Verbosity='Terse'"
+        - else_if: "$Verbosity!='Verbose'"
           then: [SPELL: "'ln'"]
           else: [T: "den naturlige logaritmen"]      # phrase(the 'natural log' function is used in mathematics)
 
@@ -855,7 +855,11 @@
   - test:
       if: "self::m:determinant"
       then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [T: "matrise"]      # phrase(the 2 by 2 'matrix')
+      else:
+      - test:
+          if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+          then: [T: "utvidet matrise"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [T: "matrise"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
@@ -878,7 +882,11 @@
   - test:
       if: "self::m:determinant"
       then: [T: "determinant"]      # phrase(the 2 by 2 'determinant')
-      else: [T: "matrise"]      # phrase(the 2 by 2 'matrix')
+      else:
+      - test:
+          if: "@columnlines and (contains(normalize-space(@columnlines), 'solid') or contains(normalize-space(@columnlines), 'dashed'))"
+          then: [T: "utvidet matrise"]      # phrase(the 2 by 2 'augmented matrix')
+          else: [T: "matrise"]      # phrase(the 2 by 2 'matrix')
   - pause: long
   - x: "*"
   - test:
