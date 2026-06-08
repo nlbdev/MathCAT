@@ -32,6 +32,7 @@
     "minus": "infix=minus || prefix=minus",
     "plus": "infix=pluss || prefix=pluss",
     "real-part": "function=den reelle delen",
+    "set-of-integers": "nofix=mengden av alle heltallene",
 
     "transpose": "postfix=transponert || function=transponert",
     #"norm": "function=; normen; slutt norm",                                            # NORWEGIAN: We say "normen til" (the norm to), so this rule is in linear-algebra
