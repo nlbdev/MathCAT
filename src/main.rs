@@ -193,7 +193,10 @@ fn main() {
   //   </math>";
 
   let expr = r#"
-<math> <munderover> <mo>⋂</mo> <mrow><mi>i</mi><mo>=</mo><mn>1</mn> </mrow> <mn>10</mn> </munderover> <msub><mi>S</mi><mi>i</mi></msub> </math>         "#;
+<math>
+    <mn data-from-mathml='mn' id='ID.0214'>𝟢</mn>
+    </math>
+ "#;
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -209,7 +212,7 @@ fn main() {
   set_preference("DecimalSeparator", "Auto").unwrap();
   set_preference("BrailleCode", "UEB").unwrap();
   set_preference("BrailleNavHighlight", "On").unwrap();
-  set_preference("TTS", "SSML").unwrap();
+  set_preference("TTS", "None").unwrap();
   set_preference("Verbosity", "Verbose").unwrap();
   set_preference("NavVerbosity", "Verbose").unwrap();
   set_preference("NavMode", "Enhanced").unwrap();
@@ -233,10 +236,15 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  // match do_navigate_command("ZoomIn".to_string())  {
-  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
-  //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  // }
+  match do_navigate_command("ZoomIn".to_string())  {
+    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  }
+  match do_navigate_command("ZoomIn".to_string())  {
+    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  }
+  info!("\n");
   // match do_navigate_command("ToggleZoomLockUp".to_string()) {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("ToggleZoomLockUp speech: '{speech}'"),
