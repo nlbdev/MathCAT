@@ -158,7 +158,7 @@
   - pause: short
 
 
-# Used for expression where the subscript is a leaf or and mrow where the second element is a comma.
+# Used for expression where the subscript is a leaf or an mrow where the second element is a comma.
 # NORWEGIAN: Removed the following test: if: "$Verbosity!='Terse' or not(*[2][self::m:mn])", which is in the Swedish translation. 
 # NORWEGIAN: Added "pause: short" before "senket"
 - name: no-end-sub      # audit-ignore

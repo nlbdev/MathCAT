@@ -3691,7 +3691,7 @@
     - SPELL: "translate('.', '', '∂εθκφρπ')"
 
  - "": [T: "fet nabla"]                          #  0xf509    (en: 'bold nabla', google translation)
- - "𝞩": [T: "fet nabla"]                          #  0x1d7a9    (en: 'bold nabla', google translation
+ - "𝞩": [T: "fet nabla"]                          #  0x1d7a9    (en: 'bold nabla', google translation)
 
  - "-":    # 0xf52e - 0xf537  (old MathType)
     - test:
