@@ -341,7 +341,11 @@
  - "∃": [T: "det eksisterer"]                     #  0x2203 (en: 'there exists')
  - "∄": [T: "det eksisterer ikke"]                #  0x2204 (en: 'there does not exist')
  - "∅": [T: "den tomme mengden"]                     #  0x2205 (en: 'empty set')
- - "∆": [T: "laplace av"]                     # 0x2206 (en: 'laplacian of')  # audit-ignore
+ - "∆":                     # 0x2206
+    - test: 
+        if: "following-sibling::*"
+        then: [T: "laplas av"]        #  (en: 'laplacian of') # Norwegian: "laplace" is not pronounced correctly
+        else: [T: "laplas"]
  - "∈":                                          #  0x2208 # audit-ignore
     - test:
         if: "$SpeechStyle != 'ClearSpeak'"

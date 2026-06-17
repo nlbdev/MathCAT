@@ -730,8 +730,11 @@
  - "∃": [T: "det eksisterer"]                        #  0x2203    (en: 'there exists')
  - "∄": [T: "det eksisterer ikke"]                   #  0x2204    (en: 'there does not exist')
  - "∅": [T: "den tomme mengden"]                        #  0x2205    (en: 'empty set')
- - "∆":                                             #  0x2206
-     - T: "laplace av"                               #     (en: 'laplacian of')
+ - "∆":                                          #  0x2206                          
+     - test: 
+        if: "following-sibling::*"
+        then: [T: "laplas av"]        #  (en: 'laplacian of') # Norwegian: "laplace" is not pronounced correctly
+        else: [T: "laplas"]
  - "∇": [T: "nabla"]                     # 0x2207 (en: 'gradient of', google: 'lutning av')
  - "∈":                                          #  0x2208
     - test:
