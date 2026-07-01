@@ -3132,8 +3132,30 @@ mod tests {
     use crate::interface::*;
     use log::debug;
 
+    fn braille_test<F>(f: F) -> Result<()>
+    where
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
+    {
+        use std::panic::{catch_unwind, AssertUnwindSafe};
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(f));
+        return report_any_panic(result);
+    }
+
+    fn init_braille_mathml(mathml: &str) -> Result<()> {
+        use std::panic::{catch_unwind, AssertUnwindSafe};
+        init_panic_handler();
+        let result = catch_unwind(AssertUnwindSafe(|| {
+            set_rules_dir(super::super::abs_rules_dir_path())?;
+            set_mathml(mathml)?;
+            return Ok( () );
+        }));
+        return report_any_panic(result);
+    }
+
     #[test]
     fn ueb_highlight_24() -> Result<()> {       // issue 24
+        return braille_test(|| {
         let mathml_str = "<math display='block' id='id-0'>
             <mrow id='id-1'>
                 <mn id='id-2'>4</mn>
@@ -3143,10 +3165,9 @@ mod tests {
                 <mi id='id-6'>c</mi>
             </mrow>
         </math>";
-        crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        set_mathml(mathml_str).unwrap();
-        set_preference("BrailleCode", "UEB").unwrap();
-        set_preference("BrailleNavHighlight", "All").unwrap();
+        init_braille_mathml(mathml_str)?;
+        set_preference("BrailleCode", "UEB")?;
+        set_preference("BrailleNavHighlight", "All")?;
         let braille = get_braille("id-2")?;
         assert_eq!("⣼⣙⠰⠁⠉", braille);
         set_navigation_node("id-2", 0)?;
@@ -3157,11 +3178,13 @@ mod tests {
         set_navigation_node("id-4", 0)?;
         assert_eq!( get_braille_position()?, (2,4));
         return Ok( () );
+        });
     }
     
     #[test]
     // This test probably should be repeated for each braille code and be taken out of here
     fn find_mathml_from_braille() -> Result<()> { 
+        return braille_test(|| {
         use std::time::Instant;
         let mathml_str = "<math id='id-0'>
         <mrow data-changed='added' id='id-1'>
@@ -3199,11 +3222,10 @@ mod tests {
           </mfrac>
         </mrow>
        </math>";
-        crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        set_mathml(mathml_str).unwrap();
-        set_preference("BrailleNavHighlight", "Off").unwrap();
+        init_braille_mathml(mathml_str)?;
+        set_preference("BrailleNavHighlight", "Off")?;
 
-        set_preference("BrailleCode", "Nemeth").unwrap();
+        set_preference("BrailleCode", "Nemeth")?;
         let _braille = get_braille("")?;
         let answers= &[2, 3, 3, 3, 3, 4, 7, 8, 9, 9,   10, 13, 12, 14, 12, 15, 17, 19, 21, 10,   4, 23, 25, 4];
         let answers = answers.map(|num| format!("id-{}", num));
@@ -3217,7 +3239,7 @@ mod tests {
             assert_eq!(*answer, id, "\nNemeth test ith position={}", i);
         }
 
-        set_preference("BrailleCode", "UEB").unwrap();
+        set_preference("BrailleCode", "UEB")?;
         let _braille = get_braille("")?;
         let answers= &[0, 0, 0, 2, 3, 3, 3, 3, 4, 7,   7, 8, 9, 9, 10, 13, 12, 14, 14, 15,   15, 17, 17, 19, 19, 21, 10, 4, 4, 23,   23, 25, 25, 4, 0, 0];
         let answers = answers.map(|num| format!("id-{}", num));
@@ -3230,7 +3252,7 @@ mod tests {
             debug!("Time taken: {}ms", instant.elapsed().as_millis());
             assert_eq!(*answer, id, "\nUEB test ith position={}", i);
         }
-        set_preference("BrailleCode", "CMU").unwrap();
+        set_preference("BrailleCode", "CMU")?;
         let braille = get_braille("")?;
         let answers= &[2, 3, 5, 7, 8, 9, 9, 9, 10, 10,   11, 13, 12, 14, 14, 15, 17, 17, 19, 19,   21, 11, 5, 4, 22, 23, 23, 25, 25, 22,];
         let answers = answers.map(|num| format!("id-{}", num));
@@ -3245,21 +3267,23 @@ mod tests {
             assert_eq!(*answer, id, "\nCMU test ith position={}", i);
         }
         return Ok( () );
+        });
     }
     
     #[test]
     #[allow(non_snake_case)]
     fn test_UEB_start_mode() -> Result<()> {
+        return braille_test(|| {
         let mathml_str = "<math><msup><mi>x</mi><mi>n</mi></msup></math>";
-        crate::interface::set_rules_dir(super::super::abs_rules_dir_path()).unwrap();
-        set_mathml(mathml_str).unwrap();
-        set_preference("BrailleCode", "UEB").unwrap();
-        set_preference("UEB_START_MODE", "Grade2").unwrap();
+        init_braille_mathml(mathml_str)?;
+        set_preference("BrailleCode", "UEB")?;
+        set_preference("UEB_START_MODE", "Grade2")?;
         let braille = get_braille("")?;
         assert_eq!("⠭⠰⠔⠝", braille, "Grade2");
-        set_preference("UEB_START_MODE", "Grade1").unwrap();
+        set_preference("UEB_START_MODE", "Grade1")?;
         let braille = get_braille("")?;
         assert_eq!("⠭⠔⠝", braille, "Grade1");
         return Ok( () );
+        });
     }
 }

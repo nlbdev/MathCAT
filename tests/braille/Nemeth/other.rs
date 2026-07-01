@@ -78,9 +78,7 @@ fn extra_indicators_bug_343() -> Result<()> {
 
 #[test]
 fn find_baseline_indicator_bug_364() -> Result<()> {
-    use libmathcat::interface::*;
-
-    // https://github.com/NSoiffer/MathCAT/issues/343 -- extra indicators before baseline indicator due to -x^2, not there for x^2
+    // https://github.com/NSoiffer/MathCAT/issues/364
     let expr = r#" <math id='id-0'>
         <mrow data-changed='added' id='id-1'>
             <mi id='id-2'>π</mi>
@@ -91,19 +89,7 @@ fn find_baseline_indicator_bug_364() -> Result<()> {
             </msup>
         </mrow>
     </math>"#;
-    set_rules_dir(abs_rules_dir_path()).unwrap();
-    set_preference("BrailleNavHighlight", "Off").unwrap();
-    set_preference("BrailleCode", "Nemeth").unwrap();
-    if let Err(e) = set_mathml(expr) {
-        panic!("{}", errors_to_string(&e));
-    };
-    match get_navigation_node_from_braille_position(4) {
-        Ok((node_id, offset)) => {
-            assert_eq!(&node_id, "id-6");
-            assert_eq!(offset, 0);
-        }
-        Err(e) => panic!("{}", errors_to_string(&e)),
-    };
+    test_braille_nav_position("Nemeth", expr, 4, "id-6", 0)?;
     return Ok(());
 }
 
