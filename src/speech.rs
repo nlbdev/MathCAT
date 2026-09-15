@@ -293,7 +293,7 @@ pub fn process_include<F>(current_file: &Path, new_file_name: &str, mut read_new
             // get the subdir ...Rules/Braille/en/...
             // could have ...Rules/Braille/definitions.yaml, so 'next()' doesn't exist in this case, but the file wasn't zipped up
             if let Some(subdir) = new_file.strip_prefix(unzip_dir).unwrap().iter().next() {
-                let default_lang = if unzip_dir.ends_with("Languages") {"en"} else {"UEB;"};
+                let default_lang = if unzip_dir.ends_with("Languages") {"en"} else {"UEB"};
                 PreferenceManager::unzip_files(unzip_dir, subdir.to_str().unwrap(), Some(default_lang)).unwrap_or_default();
             }
         }
@@ -2868,8 +2868,6 @@ pub fn braille_replace_chars(str: &str, mathml: Element) -> Result<String> {
             ),
             Err(e) => Err(e),
         }                   
-
-
     })
 }
 
