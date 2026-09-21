@@ -532,37 +532,46 @@
   - x: "*[2]"
   - pause: short
   - test:
-      if: "not($is_intervals_start_infinity)"
+      if: "not($is_intervals_start_infinity) and starts-with(name(.), 'open')"
       then:
-      - test:
-          if: "starts-with(name(.), 'open')"
-          then: [T: "no"]
+      - T: "nicht einschließlich"
+      - x: "*[1]"
+  - test:
+      if: "not($is_intervals_start_infinity) and not(starts-with(name(.), 'open'))"
+      then:
       - T: "einschließlich"
       - x: "*[1]"
-    # logic to deal with [not] arg #1
   - test:
-      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity)"
-      then_test:
-      - if: "name(.)='open-interval'"
-        then: [T: "ohne"]
-      - else_if: "name(.)='closed-interval'"
-        then: [T: "mit"]
-        else: [T: "ohne"]
-    # some ugly logic dealing with connectives: or, but, but, and (cleaner to be part of next clause?)
-  - test:
-      if: not($is_intervals_end_infinity)
+      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity) and name(.)='open-interval'"
       then:
-      - test:
-          # there is some asymmetry to the test because of the and/or/but logic above
-          if: not( name(.)='open-interval' or name(.)='closed-interval' ) or $is_intervals_start_infinity
-          then:
-          - test:
-              if: "name(.) = 'open-interval' or name(.) = 'closed-open-interval'"
-              then: [T: "ohne"]
-          - T: "einschließlich"
+      - T: "und nicht einschließlich"
+      - x: "*[2]"
+  - test:
+      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity) and name(.)='open-closed-interval'"
+      then:
+      - T: "aber einschließlich"
+      - x: "*[2]"
+  - test:
+      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity) and name(.)='closed-open-interval'"
+      then:
+      - T: "aber nicht einschließlich"
+      - x: "*[2]"
+  - test:
+      if: "not($is_intervals_start_infinity or $is_intervals_end_infinity) and name(.)='closed-interval'"
+      then:
+      - T: "und"
+      - x: "*[2]"
+  - test:
+      if: "$is_intervals_start_infinity and not($is_intervals_end_infinity) and (name(.)='open-interval' or name(.)='closed-open-interval')"
+      then:
+      - T: "nicht einschließlich"
+      - x: "*[2]"
+  - test:
+      if: "$is_intervals_start_infinity and not($is_intervals_end_infinity) and (name(.)='open-closed-interval' or name(.)='closed-interval')"
+      then:
+      - T: "einschließlich"
       - x: "*[2]"
 
-    # onto the [not] [including]... part
 - name: binomial-frac-vector
   tag: matrix
   match:
