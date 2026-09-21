@@ -3,6 +3,27 @@
 use crate::common::*;
 use anyhow::Result;
 
+#[test]
+fn clear_speak_short_pause_intent() -> Result<()> {
+    // A short pause intent should survive intent inference and render as a comma.
+    let expr = "<math><mrow><mi>x</mi><mi intent=':pause-short:y'>y</mi></mrow></math>";
+    test("de", "ClearSpeak", expr, "x, y")
+}
+
+#[test]
+fn clear_speak_medium_pause_intent() -> Result<()> {
+    // An unsuffixed pause intent requests the default medium pause.
+    let expr = "<math><mrow><mi>x</mi><mi intent=':pause:y'>y</mi></mrow></math>";
+    test("de", "ClearSpeak", expr, "x; y")
+}
+
+#[test]
+fn clear_speak_long_pause_intent() -> Result<()> {
+    // A long pause intent should be preserved in ClearSpeak text output.
+    let expr = "<math><mrow><mi>x</mi><mi intent=':pause-long:y'>y</mi></mrow></math>";
+    test("de", "ClearSpeak", expr, "x; y")
+}
+
 
 #[test]
 fn silent_intent() -> Result<()> {
