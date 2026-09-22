@@ -317,7 +317,23 @@
           then: [x: "concat('\uF8FE', DefinitionValue($Word, 'Speech', 'PluralForms'))", ct: " "]
           else: [x: "concat('\uF8FE', $Word)", ct: "s"]
 
-    
+# Currency symbols precede amounts in MathML but are spoken after them in German: $ 3 -> 3 dollar.
+- name: currency
+  tag: mrow
+  match: "count(*)=3 and DefinitionValue(*[1], 'Speech', 'CurrencySymbols') != ''"
+  variables:
+  - IsSingular: "*[3][self::m:mn and .=1] and *[2]='\u2062'"
+  - CurrencyWord: "DefinitionValue(*[1], 'Speech', 'CurrencySymbols')"
+  replace:
+  - bookmark: "*[3]/@id"
+  - x: "*[3]"
+  - test:
+    - if: "$IsSingular"
+      then: [x: "$CurrencyWord"]
+    - else_if: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms') != ''"
+      then: [x: "DefinitionValue($CurrencyWord, 'Speech', 'PluralForms')"]
+      else: [x: "$CurrencyWord"]
+
 - name: sin
   tag: mi
   match: ".='sin'"
