@@ -109,6 +109,10 @@ fn currency_symbol_precedes_amount() -> Result<()> {
     let expr = r#"<math><mi>$</mi><mn>3</mn></math>"#;
     test("de", "ClearSpeak", expr, "3 dollar")?;
     test("de", "SimpleSpeak", expr, "3 dollar")?;
+
+    let expr = r#"<math><mi>€</mi><mn>1</mn></math>"#;
+    test("de", "ClearSpeak", expr, "1 euro")?;
+    test("de", "SimpleSpeak", expr, "1 euro")?;
     Ok(())
 }
 
