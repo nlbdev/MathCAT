@@ -40,6 +40,40 @@ fn sulfate() -> Result<()> {
 
 }
 
+#[test]
+fn chemical_state_names_are_german_adjectives() -> Result<()> {
+  // Chemical state suffixes should use the standard German adjectival names.
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><mi>Na</mi><mrow><mo>(</mo><mi mathvariant='normal'>s</mi><mo>)</mo></mrow></math>",
+    "groß n a, fest",
+  )?;
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><msub><mi>H</mi><mn>2</mn></msub><mi>O</mi><mrow><mo>(</mo><mi mathvariant='normal'>l</mi><mo>)</mo></mrow></math>",
+    "groß h, 2 groß o, flüssig",
+  )?;
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><mi>HCl</mi><mrow><mo>(</mo><mi mathvariant='normal'>g</mi><mo>)</mo></mrow></math>",
+    "groß h, groß c l, gasförmig",
+  )?;
+  test_prefs(
+    "de",
+    "ClearSpeak",
+    vec![("Verbosity", "Terse")],
+    "<math><mi>HCl</mi><mrow><mo>(</mo><mi>aq</mi><mo>)</mo></mrow></math>",
+    "groß h, groß c l, wässrig",
+  )?;
+  Ok(())
+}
+
 
 /* // ignored below
 #[test]

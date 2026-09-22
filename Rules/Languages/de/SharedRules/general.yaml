@@ -1005,12 +1005,12 @@
   - bookmark: "*[1]/@id"
   - test:
     - if: ".='s'"
-      then: [T: "solide"]      # phrase(Boron is a 'solid' in its natural state)
+      then: [T: "fest"]      # phrase(Boron is a 'solid' in its natural state)
     - else_if: ".='l'"
-      then: [T: "flüssigkeit"]      # phrase(water is a 'liquid')
+      then: [T: "flüssig"]      # phrase(water is a 'liquid')
     - else_if: ".='g'"
-      then: [T: "gas"]      # phrase(hydrogen is a 'gas' )
-      else: [T: "wässrige"]      # phrase(an 'aqueous' solution is contained in water)
+      then: [T: "gasförmig"]      # phrase(hydrogen is a 'gas' )
+      else: [T: "wässrig"]      # phrase(an 'aqueous' solution is contained in water)
   - pause: short
 
 - name: chemical-formula-operator-bond
