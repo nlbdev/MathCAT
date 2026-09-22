@@ -103,6 +103,15 @@ fn non_si_unit_plural_regression() -> Result<()> {
     Ok(())
 }
 
+#[test]
+fn currency_symbol_precedes_amount() -> Result<()> {
+    // German speaks a prefixed currency symbol after its amount.
+    let expr = r#"<math><mi>$</mi><mn>3</mn></math>"#;
+    test("de", "ClearSpeak", expr, "3 dollar")?;
+    test("de", "SimpleSpeak", expr, "3 dollar")?;
+    Ok(())
+}
+
 /*
 #[test]
 fn si_base_with_prefixes() -> Result<()> {
