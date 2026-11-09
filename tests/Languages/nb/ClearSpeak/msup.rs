@@ -118,7 +118,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </msup>
                 </math>";
-  test("nb", "ClearSpeak", expr, "x opphøyd i 1 tredjedel")?;
+  test("nb", "ClearSpeak", expr, "x opphøyd i 1 tredel")?;
   return Ok(());
 
 }
@@ -182,7 +182,7 @@ fn nested_cubed_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("nb", "ClearSpeak", expr, "y opphøyd i 4 femtedeler i tredje")?;
+  test("nb", "ClearSpeak", expr, "y opphøyd i 4 femdeler i tredje")?;
   return Ok(());
 
 }
@@ -201,7 +201,7 @@ fn nested_cubed_power_with_neg_base() -> Result<()> {
         </mrow>
     </msup>
     </math>";
-  test("nb", "ClearSpeak", expr, "y opphøyd i minus 4 femtedeler i tredje")?;
+  test("nb", "ClearSpeak", expr, "y opphøyd i minus 4 femdeler i tredje")?;
   return Ok(());
 
 }
@@ -320,7 +320,7 @@ fn nested_default_power() -> Result<()> {
     </msup>
   </msup>
 </math>";
-  test("nb", "ClearSpeak", expr, "t opphøyd i eksponenten, 4 femtedeler opphøyd i n; slutt eksponent")?;
+  test("nb", "ClearSpeak", expr, "t opphøyd i eksponenten, 4 femdeler opphøyd i n; slutt eksponent")?;
   return Ok(());
 
 }

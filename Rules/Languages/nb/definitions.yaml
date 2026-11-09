@@ -420,8 +420,8 @@
 
     # stop when regularity begins
 - OrdinalFractionalDenominatorsForUnits: {
-         "0": "", "1": "", "2": "todels", "3": "tredjedels", "4": "fjerdedels", "5": "femtedels",
-         "6": "sjettedels", "7": "sjudels", "8": "åttedels", "9": "nidels", "10": "tidels",
+         "0": "", "1": "", "2": "todels", "3": "tredels", "4": "firedels", "5": "femdels",
+         "6": "seksdels", "7": "sjudels", "8": "åttedels", "9": "nidels", "10": "tidels",
     }
 
 # ----------------  Cardinal and Ordinal Numbers  --------------------------
@@ -442,15 +442,8 @@
 # The definitions for the "ones" should extend until a regular pattern begins
 #   The minimum length is 10.
 
-# NORWEGIAN: The pattern for fraction is not correct. 
-# 1/20 = "1 tjuende". Needs a number set for NumbersOrdinalFractionalTens. ("tidel", "tjuedel"...)
-# 2/24 = "2 tjue fjerde". The set NumbersOrdinalPluralOnes should be changed to ("", "endeler", "todeler", "tredeler"...)
-# 1/100 = "1 hundrede". Needs a number set for NumbersOrdinalFractionalHundreds". ("hundredel", "to hundredel"...)
-# 1/1000 = "1 én tusende". Needs number set for NumbersOrdinalFractionalLargeNumbers, and "én" should be removed. ("tusendel", "milliondel"...)
-# 2/1000 = "2 én tusendeler". Needs to remove "én".
-# 2/1008 = "2 én tusen åttende"
-
 # For English, a regular pattern starts at twenty
+
 # NORWEGIAN: Added in front of the numbers in "NumbersOrdinalLarge" and "NumbersLarge". Easiest to just remove "én", but you will probably never see these big ordinal numbers. 
 - NumbersOnes: [
          "null", "én", "to", "tre", "fire", "fem", "seks", "sju", "åtte", "ni",
@@ -464,22 +457,24 @@
          "syttende", "attende", "nittende"
     ]
 
-# NORWEGIAN: Should be changed to "", "endeler", "todeler"...Then, for example, the fraction 2/24 will be "2 tjue firedeler"
+# Norwegian: Used for the last part in words like "femtiseksdeler"
 - NumbersOrdinalPluralOnes: [
-         "nullte", "første", "andre", "tredje", "fjerde", "femte", "sjette", "sjuende", "åttende", "niende",
-         "tiende", "ellevte", "tolvte", "trettende", "fjortende", "femtende", "sekstende",
-         "syttende", "attende", "nittende"
+         "nulldeler", "endeler", "todeler", "tredeler", "firedeler", "femdeler", "seksdeler", "sjudeler", "åttedeler", "nideler",
     ]
 
     # stop when regularity begins
+
+# Norwegian: Used for common-fractions where the numerator is 1, and the denominator is 1-19.
 - NumbersOrdinalFractionalOnes: [
-         "nulldel", "hel", "halv", "tredjedel", "fjerdedel", "femtedel", "sjettedel", "sjudel", "åttedel", "nidel", "tidel", "ellevedel",
+         "nulldel", "hel", "halv", "tredel", "firedel", "femdel", "seksdel", "sjudel", "åttedel", "nidel", "tidel", "ellevedel",
          "tolvdel", "trettendel", "fjortendel", "femtendel", "sekstendel", "syttendel", "attendel", "nittendel"
     ]
 
     # stop when regularity begins
+
+# Norwegian: Used for common-fractions where the denominator is 1-19.
 - NumbersOrdinalFractionalPluralOnes: [
-         "nulldeler", "hele", "halve", "tredjedeler", "fjerdedeler", "femtedeler", "sjettedeler", "sjudeler", "åttedeler", "nideler",
+         "nulldeler", "hele", "halve", "tredeler", "firedeler", "femdeler", "seksdeler", "sjudeler", "åttedeler", "nideler",
          "tideler", "ellevedeler", "tolvdeler", "trettendeler", "fjortendeler", "femtendeler", "sekstendeler",
          "syttendeler", "attendeler", "nittendeler"
     ]

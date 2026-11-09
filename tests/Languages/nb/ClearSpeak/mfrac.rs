@@ -19,7 +19,7 @@ fn common_fraction_thirds() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>2</mn> <mn>3</mn> </mfrac>
                 </math>";
-    test("nb", "ClearSpeak", expr, "2 tredjedeler")?;
+    test("nb", "ClearSpeak", expr, "2 tredeler")?;
     return Ok(());
 
 }
@@ -41,7 +41,7 @@ fn not_ClearSpeak_common_fraction_tenths() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "89 over 10")?;
+    test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Auto")], expr, "89 tideler")?;
     test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Fractions", "Ordinal")], expr, "89 tideler")?;
     return Ok(());
 
@@ -121,7 +121,7 @@ fn mixed_number_big() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
                 </math>";
-    test("nb", "ClearSpeak", expr, "3 og 7 over 83")?;
+    test("nb", "ClearSpeak", expr, "3 og 7 åttitredeler")?;
     return Ok(());
 
 }
@@ -172,14 +172,14 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 halv over 2 tredjedeler")?;
-    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 halv over 2 tredjedeler")?;
+    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Auto")], expr, "1 halv over 2 tredeler")?;
+    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Ordinal")], expr, "1 halv over 2 tredeler")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "Over")], expr, "1 over 2, over 2 over 3")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "FracOver")], expr,
             "brøken brøken 1 over 2, over brøken 2 over 3")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "General")], expr,
             "brøken med teller brøken med teller 1; og nevner 2; og nevner brøken med teller 2; og nevner 3")?;
-    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 halv over 2 tredjedeler")?;
+    test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "EndFrac")], expr, "1 halv over 2 tredeler")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "GeneralEndFrac")], expr,
             "brøken med teller brøken med teller 1; og nevner 2; slutt brøk; og nevner brøken med teller 2; og nevner 3; slutt brøk; slutt brøk")?;
     test_prefs("nb", "ClearSpeak", vec![("ClearSpeak_Fractions", "OverEndFrac")], expr,
@@ -205,7 +205,7 @@ fn semi_nested_fraction() -> Result<()> {
                     </mfrac>
                 </mrow>
                 </math>";
-    test("nb", "ClearSpeak", expr, "2 tredjedeler x over 6")?;
+    test("nb", "ClearSpeak", expr, "2 tredeler x over 6")?;
     return Ok(());
 
 }
@@ -319,7 +319,7 @@ fn mixed_number_one() -> Result<()> {
     <mn>1</mn>
     <mfrac><mn>2</mn><mn>3</mn></mfrac>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "1 og 2 tredjedeler")?;
+    test("nb", "ClearSpeak", expr, "1 og 2 tredeler")?;
     return Ok(());
 
 }
@@ -331,7 +331,106 @@ fn mixed_number_two() -> Result<()> {
     <mn>2</mn>
     <mfrac><mn>4</mn><mn>4</mn></mfrac>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "2 og 4 fjerdedeler")?;
+    test("nb", "ClearSpeak", expr, "2 og 4 firedeler")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_plural() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>3</mn><mn>52</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "3 femtitodeler")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_singular() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>1</mn><mn>52</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 femtitodel")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_plural_2() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>21</mn><mn>52</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "21 femtitodeler")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_plural_3() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>99</mn><mn>100</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "99 hundredeler")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_singular_hundred() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>1</mn><mn>100</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 hundredel")?;
+    return Ok(());
+
+}
+
+#[test]
+fn common_fraction_singular_ten() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>1</mn><mn>20</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 tjuedel")?;
+    return Ok(());
+
+}
+
+#[test]
+fn fraction_singular_large_denominator() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>1</mn><mn>103</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "1 over 103")?;
+    return Ok(());
+
+}
+
+#[test]
+fn fraction_plural_large_denominator() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>4</mn><mn>200</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "4 over 200")?;
+    return Ok(());
+
+}
+
+#[test]
+fn fraction_plural_large_numerator() -> Result<()> {
+    let expr = r#"
+    <math>
+    <mfrac><mn>103</mn><mn>82</mn></mfrac>
+</math>"#;
+    test("nb", "ClearSpeak", expr, "103 over 82")?;
     return Ok(());
 
 }

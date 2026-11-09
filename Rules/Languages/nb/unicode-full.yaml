@@ -499,20 +499,20 @@
  - "ⅎ": [T: "rotert f"]                        #  0x214e    (en: 'turned F', google: 'vände f')
  #--------------------------------------------------------------------------------------------------------------
  #Number formats OK
- - "¼": [T: "én fjerdedel"]                         # 0x00bc
+ - "¼": [T: "én firedel"]                         # 0x00bc
  - "½": [T: "én halv"]                            # 0x00bd
- - "¾": [T: "tre fjerdedeler"]                      # 0x00be
+ - "¾": [T: "tre firedeler"]                      # 0x00be
  - "⅐": [T: "én sjudel"]                         #  0x2150    (en: 'one seventh', google: 'en sjunde')
  - "⅑": [T: "én nidel"]                           #  0x2151    (en: 'one ninth', google: 'en nionde')
  - "⅒": [T: "én tidel"]                           #  0x2152    (en: 'one tenth')
- - "⅓": [T: "én tredjedel"]            #  0x2153    (en: 'one third')
- - "⅔": [T: "to tredjedeler"]           #  0x2154    (en: 'two thirds')
- - "⅕": [T: "én femtedel"]            #  0x2155    (en: 'one fifth')
- - "⅖": [T: "to femtedeler"]           #  0x2156    (en: 'two fifths')
- - "⅗": [T: "tre femtedeler"]         #  0x2157    (en: 'three fifths')
- - "⅘": [T: "fire femtedeler"]          #  0x2158    (en: 'four fifths')
- - "⅙": [T: "én sjettedel"]            #  0x2159    (en: 'one sixth')
- - "⅚": [T: "fem sjettedeler"]          #  0x215a    (en: 'five sixths')
+ - "⅓": [T: "én tredel"]            #  0x2153    (en: 'one third')
+ - "⅔": [T: "to tredeler"]           #  0x2154    (en: 'two thirds')
+ - "⅕": [T: "én femdel"]            #  0x2155    (en: 'one fifth')
+ - "⅖": [T: "to femdeler"]           #  0x2156    (en: 'two fifths')
+ - "⅗": [T: "tre femdeler"]         #  0x2157    (en: 'three fifths')
+ - "⅘": [T: "fire femdeler"]          #  0x2158    (en: 'four fifths')
+ - "⅙": [T: "én seksdel"]            #  0x2159    (en: 'one sixth')
+ - "⅚": [T: "fem seksdeler"]          #  0x215a    (en: 'five sixths')
  - "⅛": [T: "én åttedel"]           #  0x215b    (en: 'one eighth')
  - "⅜": [T: "tre åttedeler"]        #  0x215c    (en: 'three eighths')
  - "⅝": [T: "fem åttedeler"]         #  0x215d    (en: 'five eighths')
@@ -550,7 +550,7 @@
  - "ⅽ": [T: "c"]                                    #  0x217d    (en: 'C', google translation)      
  - "ⅾ": [T: "d"]                                    #  0x217e    (en: 'D', google translation)     
  - "ⅿ": [T: "m"]                                    #  0x217f    (en: 'M', google translation)     
- - "↉": [T: "null tredjedeler"]                     #  0x2189    (en: 'zero thirds')
+ - "↉": [T: "null tredeler"]                     #  0x2189    (en: 'zero thirds')
  #-----------------------------------------------------------------------------------------------------
  #Arrows OK
  - "←": [T: "venstrepil"]                       #  0x2190    (en: 'leftwards arrow')

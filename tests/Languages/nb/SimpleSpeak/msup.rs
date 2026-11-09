@@ -102,7 +102,7 @@ fn simple_fraction_power() -> Result<()> {
                       <mfrac><mn>1</mn><mn>3</mn></mfrac>
                   </msup>
               </math>";
-  test("nb", "SimpleSpeak", expr, "x opphøyd i 1 tredjedel, slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "x opphøyd i 1 tredel, slutt eksponent")?;
   return Ok(());
 
 }
@@ -162,7 +162,7 @@ fn nested_cubed_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("nb", "SimpleSpeak", expr, "y opphøyd i 4 femtedeler i tredje, slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "y opphøyd i 4 femdeler i tredje, slutt eksponent")?;
   return Ok(());
 
 }
@@ -181,7 +181,7 @@ fn nested_cubed_power_with_neg_base() -> Result<()> {
         </mrow>
     </msup>
     </math>";
-  test("nb", "SimpleSpeak", expr, "y opphøyd i minus 4 femtedeler i tredje, slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "y opphøyd i minus 4 femdeler i tredje, slutt eksponent")?;
   return Ok(());
 
 }
@@ -290,7 +290,7 @@ fn nested_simple_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("nb", "SimpleSpeak", expr, "t opphøyd i 4 femtedeler opphøyd i n; slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "t opphøyd i 4 femdeler opphøyd i n; slutt eksponent")?;
   return Ok(());
 
 }
@@ -306,9 +306,9 @@ fn nested_end_exponent_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("nb", "SimpleSpeak", expr, "t opphøyd i 4 femtedeler opphøyd i n pluss 1, slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "t opphøyd i 4 femdeler opphøyd i n pluss 1, slutt eksponent")?;
   test_prefs("nb", "SimpleSpeak", vec![("Impairment", "LearningDisability")], expr,
-  "t opphøyd i 4 femtedeler opphøyd i n pluss 1")?;
+  "t opphøyd i 4 femdeler opphøyd i n pluss 1")?;
   return Ok(());
 
 }
@@ -324,7 +324,7 @@ fn nested_end_exponent_neg_power() -> Result<()> {
       </msup>
     </msup>
   </math>";
-  test("nb", "SimpleSpeak", expr, "t opphøyd i 4 femtedeler opphøyd i minus 3; slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "t opphøyd i 4 femdeler opphøyd i minus 3; slutt eksponent")?;
   return Ok(());
 
 }
@@ -392,7 +392,7 @@ fn nested_default_extra() -> Result<()> {
     </mrow>
     </msup>
   </math>";
-  test("nb", "SimpleSpeak", expr, "x opphøyd i 1 pluss, 4 femtedeler opphøyd i n pluss 1, slutt eksponent, slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "x opphøyd i 1 pluss, 4 femdeler opphøyd i n pluss 1, slutt eksponent, slutt eksponent")?;
   return Ok(());
 
 }
@@ -411,7 +411,7 @@ fn default_default_extra() -> Result<()> {
     </mrow>
     </msup>
   </math>";
-  test("nb", "SimpleSpeak", expr, "x opphøyd i 4 femtedeler opphøyd i n pluss 1, slutt eksponent; pluss 1, slutt eksponent")?;
+  test("nb", "SimpleSpeak", expr, "x opphøyd i 4 femdeler opphøyd i n pluss 1, slutt eksponent; pluss 1, slutt eksponent")?;
   return Ok(());
 
 }

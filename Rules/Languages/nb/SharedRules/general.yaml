@@ -316,8 +316,8 @@
                                             IfThenElse($SpeechStyle='ClearSpeak',
                                                        $ClearSpeak_Fractions='Auto' or $ClearSpeak_Fractions='Ordinal' or $ClearSpeak_Fractions='EndFrac',
                                                        $SpeechStyle='SimpleSpeak') and
-                                            *[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<20)] and
-                                            *[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=10)]
+                                            *[1][self::m:mn][not(contains(., $DecimalSeparators)) and ($ClearSpeak_Fractions='Ordinal' or text()<100)] and
+                                            *[2][self::m:mn][not(contains(., $DecimalSeparators)) and (2<= text() and text()<=100)]
                                            ) or
                                            (self::m:mrow and *[2][self::m:mo and .='\u2064'])
                                           ]

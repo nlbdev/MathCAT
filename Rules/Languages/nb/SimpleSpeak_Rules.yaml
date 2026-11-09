@@ -72,10 +72,11 @@
 - name: common-fraction   # audit-ignore
   tag: fraction
   match:
-  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<20]   and"                               # NORWEGIAN: Changed decimal point to $DecimalSeparators
-  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=10]"
+  - "*[1][self::m:mn][not(contains(., $DecimalSeparators)) and text()<100]   and"                               # NORWEGIAN: Changed decimal point to $DecimalSeparators
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 2<= text() and text()<=100]"
   variables:
   - IsPlural: "not(*[1]=1)"
+  - PluralDenominator: "ToOrdinal(*[2], true(), true())"
   - UnitSibling: "IfThenElse(preceding-sibling::*[1][.='\u2064'],  .., .)"
     # set the potential unit node -- otherwise set it to a empty node set (use a made up name)
   - UnitNodeLocation: "IfThenElse($UnitSibling/..[self::m:mrow and count(*)=3 and *[2][.='\u2062']],
@@ -99,7 +100,12 @@
     - if: "not($UnitNode)"
       then:
       - x: "*[1]"
-      - x: "ToOrdinal(*[2], true(), $IsPlural)"   # extra args specify fractional ordinal and whether it is plural
+      - test:
+        - if: "*[1]=1 and *[2] > 19"
+          then:
+          - x: "translate(substring($PluralDenominator, 1, string-length($PluralDenominator) - 2), ' ', '')"
+        - else:
+          - x: "translate(ToOrdinal(*[2], true(), $IsPlural), ' ', '')"
     # unit follows the fraction -- special cases
     - else:
       - test:
@@ -114,7 +120,7 @@
             else: [T: "halv"]
         - else_if: "*[2] <= 10"
           then: [x: "DefinitionValue(*[2], 'Speech', 'OrdinalFractionalDenominatorsForUnits')"]
-          else: [x: "*[2]", CT: "dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
+          else: [x: "*[2]", CT: "-dels"]   # this is wrong but shouldn't occur normally -- need to write a function to compute cardinal numbers as words
 
 # Units (e.g., meters per second, m^2/s^2, (3m^2)/s)
 # NORWEGIAN: Added rule for t="time"

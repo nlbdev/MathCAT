@@ -157,7 +157,7 @@ fn simple_fraction_power() -> Result<()> {
                         <mfrac><mn>1</mn><mn>3</mn></mfrac>
                     </mroot>
                 </math>";
-    test("nb", "ClearSpeak", expr, "roten av grad 1 tredjedel, av x")?;
+    test("nb", "ClearSpeak", expr, "roten av grad 1 tredel, av x")?;
     return Ok(());
 
 }

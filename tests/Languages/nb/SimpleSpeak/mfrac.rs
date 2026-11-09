@@ -19,7 +19,7 @@ fn common_fraction_thirds() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>2</mn> <mn>3</mn> </mfrac>
                 </math>";
-    test("nb", "SimpleSpeak", expr, "2 tredjedeler")?;
+    test("nb", "SimpleSpeak", expr, "2 tredeler")?;
     return Ok(());
 
 }
@@ -40,7 +40,7 @@ fn not_SimpleSpeak_common_fraction_tenths() -> Result<()> {
     let expr = "<math>
                     <mfrac> <mn>89</mn> <mn>10</mn> </mfrac>
                 </math>";
-    test("nb", "SimpleSpeak", expr, "89 over 10")?;
+    test("nb", "SimpleSpeak", expr, "89 tideler")?;
     return Ok(());
 
 }
@@ -247,7 +247,7 @@ fn mixed_number_big() -> Result<()> {
                     <mn>3</mn>
                     <mfrac> <mn>7</mn> <mn>83</mn> </mfrac>
                 </math>";
-    test("nb", "SimpleSpeak", expr, "3 og 7 over 83")?;
+    test("nb", "SimpleSpeak", expr, "3 og 7 åttitredeler")?;
     return Ok(());
 
 }
@@ -298,7 +298,7 @@ fn nested_simple_fractions() -> Result<()> {
                 </mfrac>
                 </mrow>
             </math>";
-    test("nb", "SimpleSpeak", expr, "brøk, 1 halv, over, 2 tredjedeler, slutt brøk")?;
+    test("nb", "SimpleSpeak", expr, "brøk, 1 halv, over, 2 tredeler, slutt brøk")?;
     return Ok(());
 
 }
@@ -362,7 +362,7 @@ fn mixed_number_one() -> Result<()> {
     <mn>1</mn>
     <mfrac><mn>2</mn><mn>3</mn></mfrac>
 </math>"#;
-    test("nb", "SimpleSpeak", expr, "1 og 2 tredjedeler")?;
+    test("nb", "SimpleSpeak", expr, "1 og 2 tredeler")?;
     return Ok(());
 
 }
@@ -374,7 +374,7 @@ fn mixed_number_two() -> Result<()> {
     <mn>2</mn>
     <mfrac><mn>4</mn><mn>4</mn></mfrac>
 </math>"#;
-    test("nb", "SimpleSpeak", expr, "2 og 4 fjerdedeler")?;
+    test("nb", "SimpleSpeak", expr, "2 og 4 firedeler")?;
     return Ok(());
 
 }

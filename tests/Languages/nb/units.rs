@@ -575,8 +575,8 @@ fn one_third_neuter_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">as</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "ett tredjedels buesekund")?;
-    test("nb", "SimpleSpeak", expr, "ett tredjedels buesekund")?;
+    test("nb", "ClearSpeak", expr, "ett tredels buesekund")?;
+    test("nb", "SimpleSpeak", expr, "ett tredels buesekund")?;
     return Ok(());
 
 }
@@ -590,8 +590,8 @@ fn one_third_masculine_feminine_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">m</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "1 tredjedels meter")?;
-    test("nb", "SimpleSpeak", expr, "1 tredjedels meter")?;
+    test("nb", "ClearSpeak", expr, "1 tredels meter")?;
+    test("nb", "SimpleSpeak", expr, "1 tredels meter")?;
     return Ok(());
 
 }
@@ -605,8 +605,8 @@ fn five_thirds_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "5 tredjedels time")?;
-    test("nb", "SimpleSpeak", expr, "5 tredjedels time")?;
+    test("nb", "ClearSpeak", expr, "5 tredels time")?;
+    test("nb", "SimpleSpeak", expr, "5 tredels time")?;
     return Ok(());
 
 }
@@ -683,8 +683,8 @@ fn mixed_fractions_third_neuter_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "ett og ett tredjedels, minutt")?;
-    test("nb", "SimpleSpeak", expr, "ett og ett tredjedels, minutt")?;
+    test("nb", "ClearSpeak", expr, "ett og ett tredels, minutt")?;
+    test("nb", "SimpleSpeak", expr, "ett og ett tredels, minutt")?;
     return Ok(());
 
 }
@@ -699,8 +699,8 @@ fn mixed_fractions_third_masculine_feminine_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "1 og 1 tredjedels, time")?;
-    test("nb", "SimpleSpeak", expr, "1 og 1 tredjedels, time")?;
+    test("nb", "ClearSpeak", expr, "1 og 1 tredels, time")?;
+    test("nb", "SimpleSpeak", expr, "1 og 1 tredels, time")?;
     return Ok(());
 
 }
@@ -714,8 +714,8 @@ fn mixed_fractions_two_and_two_thirds_unit() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "2 og 2 tredjedels, time")?;
-    test("nb", "SimpleSpeak", expr, "2 og 2 tredjedels, time")?;
+    test("nb", "ClearSpeak", expr, "2 og 2 tredels, time")?;
+    test("nb", "SimpleSpeak", expr, "2 og 2 tredels, time")?;
     return Ok(());
 
 }
@@ -796,8 +796,8 @@ fn fraction_not_ordinal_units_neuter() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>3</mn><mn>11</mn></mfrac><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "3 over 11, minutter")?;
-    test("nb", "SimpleSpeak", expr, "3 over 11, minutter")?;
+    test("nb", "ClearSpeak", expr, "3 11-dels minutt")?;
+    test("nb", "SimpleSpeak", expr, "3 11-dels minutt")?;
     return Ok(());
 
 }
@@ -808,8 +808,8 @@ fn fraction_not_ordinal_units_masculine_feminine() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>3</mn><mn>11</mn></mfrac><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "3 over 11, timer")?;
-    test("nb", "SimpleSpeak", expr, "3 over 11, timer")?;
+    test("nb", "ClearSpeak", expr, "3 11-dels time")?;
+    test("nb", "SimpleSpeak", expr, "3 11-dels time")?;
     return Ok(());
 
 }
@@ -819,8 +819,8 @@ fn fraction_not_ordinal_2_units_neuter() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">min</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21, minutter")?;
-    test("nb", "SimpleSpeak", expr, "7 over 21, minutter")?;
+    test("nb", "ClearSpeak", expr, "7 21-dels minutt")?;
+    test("nb", "SimpleSpeak", expr, "7 21-dels minutt")?;
     return Ok(());
 
 }
@@ -831,8 +831,8 @@ fn fraction_not_ordinal_2_units_masculine_feminine() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21, timer")?;
-    test("nb", "SimpleSpeak", expr, "7 over 21, timer")?;
+    test("nb", "ClearSpeak", expr, "7 21-dels time")?;
+    test("nb", "SimpleSpeak", expr, "7 21-dels time")?;
     return Ok(());
 
 }
@@ -886,8 +886,8 @@ fn third_neuter_unit_prefix() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">mt</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "ett tredjedels milli-tonn")?;
-    test("nb", "SimpleSpeak", expr, "ett tredjedels milli-tonn")?;
+    test("nb", "ClearSpeak", expr, "ett tredels milli-tonn")?;
+    test("nb", "SimpleSpeak", expr, "ett tredels milli-tonn")?;
     return Ok(());
 
 }
@@ -901,8 +901,8 @@ fn mixed_fractions_third_masculine_feminine_unit_prefix() -> Result<()> {
     </mfrac>
     <mi mathvariant="normal" intent=":unit">dN</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "1 og 1 tredjedels, desi-newton")?;
-    test("nb", "SimpleSpeak", expr, "1 og 1 tredjedels, desi-newton")?;
+    test("nb", "ClearSpeak", expr, "1 og 1 tredels, desi-newton")?;
+    test("nb", "SimpleSpeak", expr, "1 og 1 tredels, desi-newton")?;
     return Ok(());
 
 }
@@ -929,8 +929,8 @@ fn fraction_not_ordinal_units_neuter_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">nsek</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21, nano-sekunder")?;
-    test("nb", "SimpleSpeak", expr, "7 over 21, nano-sekunder")?;
+    test("nb", "ClearSpeak", expr, "7 21-dels nano-sekund")?;
+    test("nb", "SimpleSpeak", expr, "7 21-dels nano-sekund")?;
     return Ok(());
 
 }
@@ -941,8 +941,8 @@ fn fraction_not_ordinal_units_masculine_feminine_prefix() -> Result<()> {
     let expr = r#"<math>
     <mfrac><mn>7</mn><mn>21</mn></mfrac><mi mathvariant="normal" intent=":unit">ml</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "7 over 21, milli-liter")?;
-    test("nb", "SimpleSpeak", expr, "7 over 21, milli-liter")?;
+    test("nb", "ClearSpeak", expr, "7 21-dels milli-liter")?;
+    test("nb", "SimpleSpeak", expr, "7 21-dels milli-liter")?;
     return Ok(());
 
 }
@@ -997,8 +997,8 @@ fn density_thirds() -> Result<()> {
     <mfrac><mn>1</mn><mn>3</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">kg</mi><msup><mi mathvariant="normal" intent=":unit">m</mi><mn>3</mn></msup></mfrac>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "ett tredjedels, kilo-gram per meter i tredje")?;
-    test("nb", "SimpleSpeak", expr, "ett tredjedels, kilo-gram per meter i tredje")?;
+    test("nb", "ClearSpeak", expr, "ett tredels, kilo-gram per meter i tredje")?;
+    test("nb", "SimpleSpeak", expr, "ett tredels, kilo-gram per meter i tredje")?;
     return Ok(());
 
 }
@@ -1025,8 +1025,8 @@ fn density_two_fifths() -> Result<()> {
     <mfrac><mn>2</mn><mn>5</mn></mfrac>
     <mfrac><mi mathvariant="normal" intent=":unit">kg</mi><msup><mi mathvariant="normal" intent=":unit">m</mi><mn>3</mn></msup></mfrac>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "2 femtedels, kilo-gram per meter i tredje")?;
-    test("nb", "SimpleSpeak", expr, "2 femtedels, kilo-gram per meter i tredje")?;
+    test("nb", "ClearSpeak", expr, "2 femdels, kilo-gram per meter i tredje")?;
+    test("nb", "SimpleSpeak", expr, "2 femdels, kilo-gram per meter i tredje")?;
     return Ok(());
 
 }
@@ -1074,8 +1074,8 @@ fn common_fraction_mixed_unit_masculine() -> Result<()> {
     <mfrac><mn>3</mn><mn>4</mn></mfrac>
     <mi mathvariant="normal" intent=":unit">m</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "1 og 3 fjerdedels, meter")?;
-    test("nb", "SimpleSpeak", expr, "1 og 3 fjerdedels, meter")?;
+    test("nb", "ClearSpeak", expr, "1 og 3 firedels, meter")?;
+    test("nb", "SimpleSpeak", expr, "1 og 3 firedels, meter")?;
     return Ok(());
 
 }
@@ -1088,8 +1088,8 @@ fn common_fraction_mixed_unit_neuter() -> Result<()> {
     <mfrac><mn>3</mn><mn>4</mn></mfrac>
     <mi mathvariant="normal" intent=":unit">s</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "ett og 3 fjerdedels, sekund")?;
-    test("nb", "SimpleSpeak", expr, "ett og 3 fjerdedels, sekund")?;
+    test("nb", "ClearSpeak", expr, "ett og 3 firedels, sekund")?;
+    test("nb", "SimpleSpeak", expr, "ett og 3 firedels, sekund")?;
     return Ok(());
 
 }
@@ -1102,8 +1102,8 @@ fn common_fraction_mixed_unit_plural_neuter() -> Result<()> {
     <mfrac><mn>4</mn><mn>5</mn></mfrac>
     <mi mathvariant="normal" intent=":unit">s</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "2 og 4 femtedels, sekund")?;
-    test("nb", "SimpleSpeak", expr, "2 og 4 femtedels, sekund")?;
+    test("nb", "ClearSpeak", expr, "2 og 4 femdels, sekund")?;
+    test("nb", "SimpleSpeak", expr, "2 og 4 femdels, sekund")?;
     return Ok(());
 
 }
@@ -1116,8 +1116,8 @@ fn common_fraction_mixed_unit_plural_masculine() -> Result<()> {
     <mfrac><mn>4</mn><mn>5</mn></mfrac>
     <mi mathvariant="normal" intent=":unit">hr</mi>
 </math>"#;
-    test("nb", "ClearSpeak", expr, "2 og 4 femtedels, time")?;
-    test("nb", "SimpleSpeak", expr, "2 og 4 femtedels, time")?;
+    test("nb", "ClearSpeak", expr, "2 og 4 femdels, time")?;
+    test("nb", "SimpleSpeak", expr, "2 og 4 femdels, time")?;
     return Ok(());
 
 }
