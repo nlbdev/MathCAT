@@ -87,7 +87,7 @@ fn trig_cubed() -> Result<()> {
 #[test]
 fn trig_fourth() -> Result<()> {
     let expr = "<math><msup><mi>sec</mi><mn>4</mn></msup><mi>x</mi></math>";
-    test("nb", "ClearSpeak", expr, "sekans opphøyd i 4, av x")?;
+    test("nb", "ClearSpeak", expr, "sekans i fjerde av x")?;
     return Ok(());
 
 }

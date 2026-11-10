@@ -288,18 +288,17 @@
         then: [bookmark: "*[2]/@id", T: "arcus", x: "*[1]"]      # phrase(the 'buelenge' of a circle)
         else: [bookmark: "*[2]/@id", T: "invers", x: "*[1]"] # default/Auto      # phrase(8 over 5 is the 'inverse' of 5 over 8)
 
-- name: function-squared-or-cubed
+# NORWEGIAN: exponents 2-20 are spoken as ordinals ("i andre", "i tredje", ..., "i tjuende")
+- name: function-ordinal-exponent
   tag: power
   match:
-  - "*[2][self::m:mn][.='2' or .='3'] and"
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 1<=text() and text()<=20] and"
   - "following-sibling::*[1][self::m:mo][.='⁡']" #invisible function apply
   replace:
   - x: "*[1]"
   - bookmark: "*[2]/@id"
-  - test:
-      if: "*[2][.='2']"
-      then: [T: "i andre"]      # phrase(25 equals 5 'squared')
-      else: [T: "i tredje"]      # phrase(625 equals 5 'cubed')
+  - T: "i"      # phrase(25 equals 5 'squared')
+  - x: "ToOrdinal(*[2])"
 
 # The following element is invisible function application. Used for expressions like sin^n x.
 - name: function-power    # audit-ignore
@@ -335,51 +334,28 @@
   - x: "*[2]"
   - pause: short
 
-- name: squared
-  tag: power
-  match: "*[2][self::m:mn][.='2'] and $ClearSpeak_Exponents = 'Auto'"
-  replace:
-  - x: "*[1]"
-  - bookmark: "*[2]/@id"
-  - T: "i andre"      # phrase(7 'squared' equals 49)
-
-- name: cubed
-  tag: power
-  match: "*[2][self::m:mn][.='3'] and $ClearSpeak_Exponents = 'Auto'"
-  replace:
-  - x: "*[1]"
-  - bookmark: "*[2]/@id"
-  - T: "i tredje"      # phrase(5 'cubed' equals 125)
-
-# Norwegian: Changed to longer pause at the end.
-- name: simple-integer    # audit-ignore
-  tag: power
-  match: "*[2][self::m:mn][not(contains(., $DecimalSeparators))]"           # NORWEGIAN: Changed decimal point to $DecimalSeparators 
-  replace:
-  - x: "*[1]"
-  - T: "opphøyd i"                 
-  - bookmark: "*[2]/@id"
-  - x: "*[2]"
-  - pause: medium
-
-# Norwegian: Changed to longer pause at the end.
-- name: simple-negative-integer    # audit-ignore
+# NORWEGIAN: integer exponents 2-20 are spoken as ordinals ("i andre", "i tredje", ..., "i tjuende")
+- name: ordinal-exponent
   tag: power
   match:
-  - "*[2][self::m:minus and count(*)=1 and"
-  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"       # NORWEGIAN: Changed decimal point to $DecimalSeparators 
-  - "    ]"
+  - "$ClearSpeak_Exponents = 'Auto' and"
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators)) and 1<=text() and text()<=20]"
   replace:
   - x: "*[1]"
-  - T: "opphøyd i"
   - bookmark: "*[2]/@id"
-  - x: "*[2]"
-  - pause: medium
+  - T: "i"      # phrase(7 'squared' equals 49)
+  - x: "ToOrdinal(*[2])"
 
 # Norwegian: Changed to longer pause at the end.
-- name: simple-var    # audit-ignore
+# Merged: integer, negative integer and single-letter variable exponents.
+- name: simple-exponent    # audit-ignore
   tag: power
-  match: "*[2][self::m:mi][string-length(.)=1]"
+  match:
+  - "*[2][self::m:mn][not(contains(., $DecimalSeparators))] or"       # NORWEGIAN: Changed decimal point to $DecimalSeparators
+  - "*[2][self::m:minus and count(*)=1 and"
+  - "     *[1][self::m:mn][not(contains(., $DecimalSeparators))]"
+  - "    ] or"
+  - "*[2][self::m:mi][string-length(.)=1]"
   replace:
   - x: "*[1]"
   - T: "opphøyd i"

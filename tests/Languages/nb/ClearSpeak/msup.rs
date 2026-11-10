@@ -36,7 +36,7 @@ fn ordinal_power() -> Result<()> {
   let expr = "<math>
                   <msup> <mn>3</mn> <mn>5</mn> </msup>
               </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i 5")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 i femte")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i 5")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i 5")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i 5")?;
@@ -273,7 +273,7 @@ fn nested_expr_to_tenth() -> Result<()> {
       </msup>
       </mrow>
       </math>";
-  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Auto")], expr, "3 opphøyd i eksponenten, 3 i tiende, slutt eksponent")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "Ordinal")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "OrdinalPower")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
   test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Medium"), ("ClearSpeak_Exponents", "AfterPower")], expr, "3 opphøyd i eksponenten, 3 opphøyd i 10; slutt eksponent")?;
@@ -380,3 +380,31 @@ fn default_power() -> Result<()> {
   return Ok(());
 
 }
+
+
+#[test]
+fn function_ordinal_exponent_one() -> Result<()> {
+    let expr = "<math>
+      <msup>
+      <mi>sin</mi><mn>1</mn>
+      </msup>
+      <mi>x</mi>
+  </math>";
+  test("nb", "ClearSpeak", expr, "sinus i første av x")?;
+  return Ok(());
+
+}
+
+#[test]
+fn ordinal_exponent_one() -> Result<()> {
+    let expr = "<math>
+      <msup>
+      <mi>x</mi><mn>1</mn>
+      </msup>
+  </math>";
+  test("nb", "ClearSpeak", expr, "x i første")?;
+  return Ok(());
+
+}
+
+
