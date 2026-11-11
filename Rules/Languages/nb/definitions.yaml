@@ -298,7 +298,8 @@
     "u": "atommasseenhet",     # 'u' is correct: https://en.wikipedia.org/wiki/Dalton_(unit)
     "eV": "elektronvolt",
     "rad": "radian",             # should only take negative powers
-    "sr": "steradian",          # should only take negative powers      
+    "sr": "steradian",          # should only take negative powers   
+    "Wh": "watt-time",   
   
     # others that take a prefix
     "a": "annuum",               # should only take positive powers

@@ -1121,3 +1121,458 @@ fn common_fraction_mixed_unit_plural_masculine() -> Result<()> {
     return Ok(());
 
 }
+
+/// Derived unit with :unit on the outer mrow; "/" should be "per".
+#[test]
+fn derived_unit_watts_per_metre_squared() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mo>/</mo>
+            <msup>
+                <mi>m</mi>
+                <mn>2</mn>
+            </msup>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "watt per meter i andre")?;
+    test("nb", "ClearSpeak", expr, "watt per meter i andre")?;
+    Ok(())
+}
+
+/// Unit product with ·; multiplication is silent and only the last factor is plural.
+#[test]
+fn derived_unit_newton_metres() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>N</mi>
+            <mo>⋅</mo>
+            <mi>m</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "newton meter")?;
+    test("nb", "ClearSpeak", expr, "newton meter")?;
+    Ok(())
+}
+
+/// Juxtaposed unit letters under :unit (invisible times inserted by canonicalize).
+/// Norwegian: Should be "watt time". Need to set NumberlessUnitPlural: ["same"] to none, but then fractions followed by units become wrong.
+#[test]
+fn derived_unit_watt_hours_invisible_times() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mi>h</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "watt timer")?;
+    test("nb", "ClearSpeak", expr, "watt timer")?;
+    Ok(())
+}
+
+/// K·Wh: Wh is not in the English unit definitions, so it is spoken as text.
+#[test]
+fn derived_unit_kelvin_wh() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>K</mi>
+            <mo>·</mo>
+            <mi>Wh</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "kelvin watt-time")?;
+    test("nb", "ClearSpeak", expr, "kelvin watt-time")?;
+    Ok(())
+}
+
+/// Mixed product and quotient: kg⋅m/s².
+#[test]
+fn derived_unit_kg_m_per_s_squared() -> Result<()> {
+    let expr = r#"<math>
+        <mrow intent=":unit">
+            <mi>kg</mi>
+            <mo>⋅</mo>
+            <mi>m</mi>
+            <mo>/</mo>
+            <msup>
+                <mi>s</mi>
+                <mn>2</mn>
+            </msup>
+        </mrow>
+    </math>"#;
+    // "kg" is spoken via SI prefix + unit ("kilo-gram"); a short pause separates product factors.
+    test("nb", "SimpleSpeak", expr, "kilo-gram, meter per sekund i andre")?;
+    test("nb", "ClearSpeak", expr, "kilo-gram, meter per sekund i andre")?;
+    Ok(())
+}
+
+/// Coefficient 1 with a compound unit stays singular on every factor.
+#[test]
+fn derived_unit_one_newton_metre() -> Result<()> {
+    let expr = r#"<math>
+        <mn>1</mn>
+        <mrow intent=":unit">
+            <mi>N</mi>
+            <mo>⋅</mo>
+            <mi>m</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "1 newton meter")?;
+    test("nb", "ClearSpeak", expr, "1 newton meter")?;
+    return Ok(());
+}
+
+/// A lone normal known unit token is not confirmed without quantity/product/equality context.
+#[test]
+fn lone_likely_unit_not_spoken_as_unit() -> Result<()> {
+    let expr = r#"<math><mi mathvariant="normal">m</mi></math>"#;
+    test("nb", "SimpleSpeak", expr, "m")?;
+    test("nb", "ClearSpeak", expr, "m")?;
+    return Ok(());
+}
+
+/// SI derived unit as base-unit product: N = kg · m · s⁻² (mathvariant=normal, no :unit).
+/// Norwegian: Should be "newton er lik; kilo-gram meter, sekund opphøyd i minus 2"
+#[test]
+fn derived_unit_newton_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">N</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <mi mathvariant="normal">m</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "newton er lik; kilo-gram meter, sekunder opphøyd i minus 2")?;
+    test("nb", "ClearSpeak", expr, "newton er lik; kilo-gram meter sekunder opphøyd i minus 2")?;
+    return Ok(());
+}
+
+/// J = kg · m² · s⁻².
+/// Norwegian: Should be "joule er lik; kilo-gram meter i andre, sekund opphøyd i minus 2"
+#[test]
+fn derived_unit_joule_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">J</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "joule er lik; kilo-gram meter i andre, sekunder opphøyd i minus 2")?;
+    test("nb", "ClearSpeak", expr, "joule er lik; kilo-gram meter i andre sekunder opphøyd i minus 2")?;
+    return Ok(());
+}
+
+/// W = kg · m² · s⁻³.
+/// Norwegian: Should be "watt er lik; kilo-gram meter i andre, sekund opphøyd i minus 3"
+#[test]
+fn derived_unit_watt_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">W</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>3</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "watt er lik; kilo-gram meter i andre, sekunder opphøyd i minus 3")?;
+    test("nb", "ClearSpeak", expr, "watt er lik; kilo-gram meter i andre sekunder opphøyd i minus 3")?;
+    return Ok(());
+}
+
+/// Pa = kg · m⁻¹ · s⁻².
+/// Norwegian: Should be "pascal er lik; kilo-gram meter opphøyd i minus 1; sekund opphøyd i minus 2"
+#[test]
+fn derived_unit_pascal_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">Pa</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "pascal er lik; kilo-gram meter opphøyd i minus 1; sekunder opphøyd i minus 2")?;
+    test("nb", "ClearSpeak", expr, "pascal er lik; kilo-gram meter opphøyd i minus 1; sekunder opphøyd i minus 2")?;
+    return Ok(());
+}
+
+/// Hz = s⁻¹.
+/// Norwegian: Should be "hertz er lik, sekund opphøyd i minus 1"
+#[test]
+fn derived_unit_hertz_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">Hz</mi>
+        <mo>=</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "hertz er lik, sekunder opphøyd i minus 1")?;
+    test("nb", "ClearSpeak", expr, "hertz er lik sekunder opphøyd i minus 1")?;
+    return Ok(());
+}
+
+/// C = s · A.
+#[test]
+fn derived_unit_coulomb_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">C</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">s</mi>
+        <mo>&#xB7;</mo>
+        <mi mathvariant="normal">A</mi>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "coulomb er lik sekund ampere")?;
+    test("nb", "ClearSpeak", expr, "coulomb er lik sekund ampere")?;
+    return Ok(());
+}
+
+/// V = kg · m² · s⁻³ · A⁻¹.
+#[test]
+fn derived_unit_volt_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">V</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>3</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "volt er lik; kilo-gram meter i andre sekund opphøyd i minus 3; ampere opphøyd i minus 1")?;
+    test("nb", "ClearSpeak", expr, "volt er lik; kilo-gram meter i andre sekund opphøyd i minus 3; ampere opphøyd i minus 1")?;
+    return Ok(());
+}
+
+/// Ω = kg · m² · s⁻³ · A⁻².
+#[test]
+fn derived_unit_ohm_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">&#x3A9;</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>3</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "ohm er lik; kilo-gram meter i andre sekund opphøyd i minus 3; ampere opphøyd i minus 2")?;
+    test("nb", "ClearSpeak", expr, "ohm er lik; kilo-gram meter i andre sekund opphøyd i minus 3; ampere opphøyd i minus 2")?;
+    return Ok(());
+}
+
+/// T = kg · s⁻² · A⁻¹.
+#[test]
+fn derived_unit_tesla_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">T</mi>
+        <mo>=</mo>
+        <mi mathvariant="normal">kg</mi>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "tesla er lik; kilo-gram sekund opphøyd i minus 2; ampere opphøyd i minus 1")?;
+    test("nb", "ClearSpeak", expr, "tesla er lik; kilo-gram sekund opphøyd i minus 2; ampere opphøyd i minus 1")?;
+    return Ok(());
+}
+
+/// Currency rates: `€5/l` should pluralize like a unit numerator (`euros per litre`).
+#[test]
+fn currency_per_unit() -> Result<()> {
+    let expr = r#"<math><mfrac><mrow><mi>€</mi><mn>5</mn></mrow><mi mathvariant="normal">l</mi></mfrac></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 euro per liter")?;
+    test("nb", "ClearSpeak", expr, "5 euro per liter")?;
+
+    let expr = r#"<math><mn>5</mn><mfrac><mi>€</mi><mi mathvariant="normal">l</mi></mfrac></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 euro per liter")?;
+    test("nb", "ClearSpeak", expr, "5 euro per liter")?;
+
+    let expr = r#"<math><mrow><mi>€</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 euro per liter")?;
+    test("nb", "ClearSpeak", expr, "5 euro per liter")?;
+
+    let expr = r#"<math><mrow><mi>€</mi><mn>1</mn><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("nb", "SimpleSpeak", expr, "1 euro per liter")?;
+    test("nb", "ClearSpeak", expr, "1 euro per liter")?;
+
+    // Postfix amount binds before the solidus: `(5 €) / l`.
+    let expr = r#"<math><mrow><mn>5</mn><mi>€</mi><mo>/</mo><mi mathvariant="normal">l</mi></mrow></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 euro per liter")?;
+    test("nb", "ClearSpeak", expr, "5 euro per liter")?;
+    return Ok(());
+}
+
+#[test]
+fn currency_per_unit_2() -> Result<()> {
+    let expr = r#"<math><mfrac><mrow><mi>kr</mi><mn>5</mn></mrow><mi mathvariant="normal">h</mi></mfrac></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 kroner per time")?;
+    test("nb", "ClearSpeak", expr, "5 kroner per time")?;
+
+    let expr = r#"<math><mn>5</mn><mfrac><mi>kr</mi><mi mathvariant="normal">h</mi></mfrac></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 kroner per time")?;
+    test("nb", "ClearSpeak", expr, "5 kroner per time")?;
+
+    let expr = r#"<math><mrow><mi>kr</mi><mn>5</mn><mo>/</mo><mi mathvariant="normal">h</mi></mrow></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 kroner per time")?;
+    test("nb", "ClearSpeak", expr, "5 kroner per time")?;
+
+    let expr = r#"<math><mrow><mi>kr</mi><mn>1</mn><mo>/</mo><mi mathvariant="normal">h</mi></mrow></math>"#;
+    test("nb", "SimpleSpeak", expr, "1 krone per time")?;
+    test("nb", "ClearSpeak", expr, "1 krone per time")?;
+
+    // Postfix amount binds before the solidus: `(5 €) / l`.
+    let expr = r#"<math><mrow><mn>5</mn><mi>kr</mi><mo>/</mo><mi mathvariant="normal">h</mi></mrow></math>"#;
+    test("nb", "SimpleSpeak", expr, "5 kroner per time")?;
+    test("nb", "ClearSpeak", expr, "5 kroner per time")?;
+    return Ok(());
+}
+
+/// F = kg⁻¹ · m⁻² · s⁴ · A².
+#[test]
+fn derived_unit_farad_base_expansion() -> Result<()> {
+    let expr = r#"<math>
+        <mi mathvariant="normal">F</mi>
+        <mo>=</mo>
+        <msup>
+            <mi mathvariant="normal">kg</mi>
+            <mrow><mo>-</mo><mn>1</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mrow><mo>-</mo><mn>2</mn></mrow>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">s</mi>
+            <mn>4</mn>
+        </msup>
+        <mo>&#xB7;</mo>
+        <msup>
+            <mi mathvariant="normal">A</mi>
+            <mn>2</mn>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "farad er lik; kilo-gram opphøyd i minus 1; meter opphøyd i minus 2; sekund opphøyd i 4; ampere i andre")?;
+    test("nb", "ClearSpeak", expr, "farad er lik; kilo-gram opphøyd i minus 1; meter opphøyd i minus 2; sekund opphøyd i 4; ampere i andre")?;
+    return Ok(());
+}
+
+#[test]
+fn plural_seconds_per_meter_squared() -> Result<()> {
+    let expr = r#"<math>
+    <mn>5</mn>
+<mi mathvariant="normal">s</mi>
+        <mo>/</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "5, sekunder per meter i andre")?;
+    test("nb", "ClearSpeak", expr, "5, sekunder per meter i andre")?;
+    return Ok(());
+}
+
+#[test]
+fn singular_second_per_meter_squared() -> Result<()> {
+    let expr = r#"<math>
+    <mn>1</mn>
+<mi mathvariant="normal">s</mi>
+        <mo>/</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "ett, sekund per meter i andre")?;
+    test("nb", "ClearSpeak", expr, "ett, sekund per meter i andre")?;
+    return Ok(());
+}
+
+#[test]
+fn singular_compund_unit() -> Result<()> {
+    let expr = r#"<math>
+    <mn>1</mn>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mi>h</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "1 watt time")?;
+    test("nb", "ClearSpeak", expr, "1 watt time")?;
+    Ok(())
+}
+
+#[test]
+fn plural_compound_unit() -> Result<()> {
+    let expr = r#"<math>
+    <mn>2</mn>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mi>h</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "2 watt timer")?;
+    test("nb", "ClearSpeak", expr, "2 watt timer")?;
+    Ok(())
+}

@@ -97,11 +97,13 @@
         if: "parent::*[1][self::m:mn]"
         then: [T: "punktum"]                       #  (en: 'point', google translation)                               
         else: [T: "prikk"]                       #  (en: 'dot')                                                     
- - "/":                         #  0x2f (en: 'divided by')
-     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
-        then: [T: "skråstrek"]                 # 0x2f
-        else: [T: "delt på"]                   # 0x2f
+ - "/":                                           # 0x2f
+    - test:
+        - if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')]"
+          then: [T: "skråstrek"]                        # 0x2f
+        - else_if: "parent::*[contains(@data-intent-property, ':unit:')] or preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] or following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: "per"]
+          else: [T: "delt på"]                   # 0x2f
  - ":": [T: "kolon"]                             #  0x3a (en: 'colon')
  - ";": [T: "semikolon"]                         #  0x3b (en: 'semicolon')
  - "<":                                          #  0x3c
@@ -187,11 +189,13 @@
  - "°": [T: "grader"]                              #  0xb0 (en: 'degrees')
  - "±": [T: "pluss minus"]                        #  0xb1 (en: 'plus or minus')
  - "´": [T: "akutt aksent"]                       #  0xb4 (en: 'acute')
- - "·":                                          #  0xB7
+ - "·":                                            # 0xB7
     - test:
-        if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
-        then: [T: "midtstilt prikk"]                       #  (en: 'times', google translation)                        
-        else: [T: "ganger"]               #  (en: 'dot', MathPlayer: 'mellanpunkt', google: 'punkt')             
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] or not($SpeechStyle = 'ClearSpeak' and $ClearSpeak_MultSymbolDot = 'Auto')"
+          then: [T: "midtstilt prikk"]
+          else: [T: "ganger"]             
  - "×":                                          # 0xd7
     - test:
         if: "$SpeechStyle = 'ClearSpeak'"

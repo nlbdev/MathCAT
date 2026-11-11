@@ -1049,11 +1049,13 @@
  - "⋂": [T: "snitt"]                                #  0x22c2    (en: 'intersection')
  - "⋃": [T: "union"]                                #  0x22c3
  - "⋄": [T: "diamant-operator"]                     #  0x22c4
- - "⋅":                                             #  0x22c5
-    - test: 
-        if: "@data-chem-formula-op"
-        then: [T: "ganger"]                          #     (en: 'dot', google translation)
-        else: [T: "ganger"]                          #     (en: 'times')
+ - "⋅":                                             # 0x22c5
+    - test:
+        - if: "not(ancestor-or-self::*[contains(@data-intent-property, ':literal:')]) and preceding-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')] and following-sibling::*[1][self::m:unit or contains(@data-intent-property, ':unit:')]"
+          then: [T: ""]
+        - else_if: "@data-chem-formula-op"
+          then: [T: "ganger"]
+          else: [T: "ganger"]
 
  - "⋆": [T: "stjerne"]                              #  0x22c6    (en: 'times')
  - "⋇": [T: "divisjon ganger"]                      #  0x22c7    (en: 'division times')
