@@ -271,9 +271,71 @@ fn augmented_matrix_2x3() -> Result<()> {
       <mo>]</mo></mrow></mrow>
     </math>
                                 ";
-    test("nb", "ClearSpeak",  expr, "2 ganger 3 utvidet matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6")?;
-    test("nb", "SimpleSpeak", expr, "2 ganger 3 utvidet matrise; rad 1; 3, 1, 4; rad 2; 0, 2, 6")?;
+    test("nb", "ClearSpeak",  expr, "2 ganger 3 utvidet matrise; rad 1; 3, 1, skilletegn, 4; rad 2; 0, 2, skilletegn, 6")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 3 utvidet matrise; rad 1; 3, 1, skilletegn, 4; rad 2; 0, 2, skilletegn, 6")?;
     Ok(())
+}
+
+#[test]
+fn dashed_augmented_matrix_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable columnlines='dashed'>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd><mtd><mn>3</mn></mtd></mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("nb", "ClearSpeak", expr, "1 ganger 3 rad-matrise; 1, skilletegn, 2, skilletegn, 3")?;
+    test("nb", "SimpleSpeak", expr, "1 ganger 3 rad-matrise; 1, skilletegn, 2, skilletegn, 3")?;
+    Ok(())
+}
+
+/// A horizontal line is announced once, after the row it separates from the next row.
+#[test]
+fn matrix_row_separator() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("nb", "ClearSpeak", expr, "2 ganger 2 matrise; rad 1; 1, 2, rad-skille; rad 2; 3, 4")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 2 matrise; rad 1; 1, 2, rad-skille; rad 2; 3, 4")?;
+    Ok(())
+}
+
+/// Horizontal and vertical lines use distinct announcements at their respective boundaries.
+#[test]
+fn matrix_row_and_column_separators() -> Result<()> {
+    let expr = "
+    <math xmlns='http://www.w3.org/1998/Math/MathML'>
+      <mrow><mo>[</mo>
+        <mtable rowlines='dashed' columnlines='solid'>
+          <mtr>
+            <mtd><mn>1</mn></mtd>
+            <mtd><mn>2</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd><mn>3</mn></mtd>
+            <mtd><mn>4</mn></mtd>
+          </mtr>
+        </mtable>
+      <mo>]</mo></mrow>
+    </math>";
+    test("nb", "ClearSpeak", expr, "2 ganger 2 utvidet matrise; rad 1; 1, skilletegn, 2, rad-skille; rad 2; 3, skilletegn, 4")?;
+    test("nb", "SimpleSpeak", expr, "2 ganger 2 utvidet matrise; rad 1; 1, skilletegn, 2, rad-skille; rad 2; 3, skilletegn, 4")?;
+    Ok(())
+
 }
 
 #[test]
@@ -921,13 +983,9 @@ let expr = "<math display='block' xmlns='http://www.w3.org/1998/Math/MathML'>
   </mrow>
 </math>";
 test_ClearSpeak("nb", "ClearSpeak_Matrix", "EndMatrix",
-        expr, "3 ganger 4 utvidet matrise; rad 1; kolonne 1; 1, kolonne 2; 2, kolonne 3; minus 1, kolonne 4; 3; \
-               rad 2; kolonne 1; minus 3, kolonne 2; 3, kolonne 3; minus 1, kolonne 4; 2; \
-               rad 3; kolonne 1; 2, kolonne 2; 3, kolonne 3; 2, kolonne 4; minus 1; slutt matrise")?;
+        expr, "3 ganger 4 utvidet matrise; rad 1; kolonne 1; 1, kolonne 2; 2, kolonne 3; minus 1, skilletegn, kolonne 4; 3; rad 2; kolonne 1; minus 3, kolonne 2; 3, kolonne 3; minus 1, skilletegn, kolonne 4; 2; rad 3; kolonne 1; 2, kolonne 2; 3, kolonne 3; 2, skilletegn, kolonne 4; minus 1; slutt matrise")?;
     test("nb", "SimpleSpeak",
-        expr, "3 ganger 4 utvidet matrise; rad 1; kolonne 1; 1, kolonne 2; 2, kolonne 3; minus 1, kolonne 4; 3; \
-               rad 2; kolonne 1; minus 3, kolonne 2; 3, kolonne 3; minus 1, kolonne 4; 2; \
-               rad 3; kolonne 1; 2, kolonne 2; 3, kolonne 3; 2, kolonne 4; minus 1; slutt matrise")?;
+        expr, "3 ganger 4 utvidet matrise; rad 1; kolonne 1; 1, kolonne 2; 2, kolonne 3; minus 1, skilletegn, kolonne 4; 3; rad 2; kolonne 1; minus 3, kolonne 2; 3, kolonne 3; minus 1, skilletegn, kolonne 4; 2; rad 3; kolonne 1; 2, kolonne 2; 3, kolonne 3; 2, skilletegn, kolonne 4; minus 1; slutt matrise")?;
     Ok(())
   }
 
@@ -1114,6 +1172,89 @@ fn matrix_binomial() -> Result<()> {
 }
 
 #[test]
+fn matrix_simple_table() -> Result<()> {
+  let expr = "<math>
+        <mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+  test("nb", "ClearSpeak", expr, "tabell med 2 rader and 1 kolonne; rad 1; kolonne 1; 3; rad 2; kolonne 1; 2")
+}
+
+#[test]
+#[ignore] // There is space before and after parentheses in the Norwegian translation, so I have some trouble with this test.
+fn mtable_prefix_op() -> Result<()>{
+    // When a table is prefixed with a non-blank operator, assume it is something besides array intent
+    for (op, speech) in [("(", "startparentes"),
+			 ("[", "start hakeparentes"),
+			 ("|", "vertikal strek"),
+			 ("f", "f")] {
+	let expr = format!("<math>
+        <mo>{op}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>");
+	test("nb", "ClearSpeak", &expr, &format!("{speech}, 2 rader; rad 1; 3; rad 2; 2"))?;
+    }
+    Ok(())
+}
+
+#[test]
+fn mtable_blank_op() -> Result<()>{
+    // When a table is prefixed with a blank operator, still assume array intent
+    let expr = "<math>
+        <mo>\u{2062}</mo><mtable><mtr><mtd><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd></mtr></mtable>
+    </math>";
+    test("nb", "ClearSpeak", expr, "; tabell med 2 rader and 1 kolonne; rad 1; kolonne 1; 3; rad 2; kolonne 1; 2")
+}
+
+#[test]
+fn mtable_colspan_table() -> Result<()>{
+  let expr = "<math>
+        <mtable><mtr><mtd colspan=\"2\"><mn>3</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable>
+    </math>";
+  test("nb", "ClearSpeak", expr, "tabell med 2 rader and 1 kolonne; rad 1; kolonne 1; 3; rad 2; kolonne 1; 2, kolonne 2; 4")
+}
+
+#[test]
+fn bug_mtable_rowspan_colspan() -> Result<()>{
+  // Currently, the code correctly computes the number of rows and
+  // columns, but it does not correctly compute the column number whnen
+  // colspans are involved.
+  let expr = "<math>
+        <mtable>
+           <mtr>
+             <mtd rowspan=\"2\" colspan=\"2\"><mi>a</mi></mtd>
+             <mtd rowspan=\"2\"><mi>b</mi></mtd>
+             <mtd colspan=\"2\"><mi>c</mi></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mi>d</mi></mtd><mtd><mi>e</mi></mtd>
+           </mtr>
+        </mtable>
+    </math>";
+    test("nb", "ClearSpeak", expr,
+	 "tabell med 2 rader and 3 kolonner; rad 1; kolonne 1; a, kolonne 2; b, kolonne 3; c; rad 2; kolonne 1; d, kolonne 2; e")
+}
+
+#[test]
+fn mtable_array_no_comma_between_rows() -> Result<()> {
+  // Issue #890: an unfenced table gets 'array' intent; its rows must not be separated by "comma"
+  let expr = "<math display=\"inline\">
+      <mtable class=\"menv-arraylike\">
+        <mtr>
+          <mtd><mi>a</mi></mtd>
+          <mtd><mi>b</mi></mtd>
+        </mtr>
+        <mtr>
+          <mtd><mi>c</mi></mtd>
+          <mtd><mi>d</mi></mtd>
+        </mtr>
+      </mtable>
+    </math>";
+  test("nb", "ClearSpeak", expr,
+    "tabell med 2 rader and 2 kolonner; rad 1; kolonne 1; a, kolonne 2; b; rad 2; kolonne 1; c, kolonne 2; d")?;
+  test("nb", "SimpleSpeak", expr,
+    "tabell med 2 rader and 2 kolonner; rad 1; kolonne 1; a, kolonne 2; b; rad 2; kolonne 1; c, kolonne 2; d")
+}
+
+#[test]
 fn matrix_times() -> Result<()> {
   let expr = "<math>
     <mfenced><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr><mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr></mtable></mfenced>
@@ -1240,4 +1381,65 @@ fn diagonal_matrix() -> Result<()> {
   // test_prefs("en", "SimpleSpeak", vec![("Verbosity", "Verbose")],
   //     expr, "the 3 by 3 diagonal matrix; row 1, column 1, 2; row 2, column 2, 1; row 3, column 3, x squared");
   return Ok(());
+}
+
+#[test]
+fn single_line_with_label() -> Result<()> {
+  let expr = r#"<math>
+  <mtable class="gather" displaystyle="true" intent=":system-of-equations">
+    <mtr>
+      <mtd intent=":equation-label"> <mtext>(2)</mtext> </mtd>
+      <mtd> <mi>𝑏</mi> <mo>=</mo> <mn>2</mn> </mtd>
+    </mtr>
+  </mtable>
+  </math>"#;
+  test_prefs("nb", "ClearSpeak", vec![("Verbosity", "Terse")],
+      expr, "1 rad, med etiketten 2; b lik 2")?;
+  test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Terse")],
+      expr, "1 likning, med etiketten 2; b lik 2")?;
+    return Ok(());
+}
+
+#[test]
+fn matrix_raised_to_power() -> Result<()> {
+  // A parenthesized matrix as the base of msup must speak as "the matrix ... squared".
+  // Regression for #762: the mrow 'matrix' intent rule returns a bare `x:`, so the intent tree
+  // carried a nested TEMP_NAME wrapper into `power` and NVDA read "TEMP NAME of the 2 by 2 matrix ...".
+  let expr = "<math><msup>
+      <mrow><mo>(</mo>
+        <mtable>
+          <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+          <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+        </mtable>
+      <mo>)</mo></mrow>
+      <mn>2</mn>
+    </msup></math>";
+  test("nb", "ClearSpeak", expr, "2 ganger 2 matrise; rad 1; 1, 2; rad 2; 3, 4; i andre")
+}
+
+#[test]
+fn matrix_raised_to_power_lualatex_spacing() -> Result<()> {
+  // The exact MathML from #762 (LuaLaTeX pmatrix output): negative-width mspace around the
+  // table and fence attributes on the parens. Canonicalization must fold the spacing away so
+  // the matrix is still recognized as the base of the power.
+  let expr = "<math display='block'>
+    <msup>
+      <mrow>
+        <mo fence='true' lspace='0' rspace='0' symmetric='true'>(</mo>
+        <mspace width='-4.981pt'/>
+        <mrow>
+          <mspace width='4.981pt'/>
+          <mtable>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+            <mtr><mtd><mn>3</mn></mtd><mtd><mn>4</mn></mtd></mtr>
+          </mtable>
+          <mspace width='4.981pt'/>
+        </mrow>
+        <mspace width='-4.981pt'/>
+        <mo fence='true' lspace='0' rspace='0' symmetric='true'>)</mo>
+      </mrow>
+      <mn>2</mn>
+    </msup>
+  </math>";
+  test("nb", "ClearSpeak", expr, "2 ganger 2 matrise; rad 1; 1, 2; rad 2; 3, 4; i andre")
 }

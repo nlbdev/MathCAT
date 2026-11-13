@@ -436,24 +436,24 @@
                           - x: "$Postscripts[position() > 8]"
                           - T: "slutt indeks"      # phrase(At this point 'end scripts' occurs)
 
-# NORWEGIAN: Changed to English version
 - name: default
-  tag: mtable
+  tag: [mtable, array]
   variables:
   - IsColumnSilent: "false()"
   - NumColumns: "count(*[1]/*) - IfThenElse(*/self::m:mlabeledtr, 1, 0)"
   match: "."
   replace:
-  - T: "tabell med"      # phrase(the 'table with' 3 rows)
+  - x: "IfThenElse(self::m:mtable, 'tabell', 'tabell')"
+  - T: "med"      # phrase(the 'table with' 3 rows)
   - x: count(*)
   - test:
       if: count(*)=1
       then: [T: "rad"]      # phrase(the table with 1 'row')
       else: [T: "rader"]      # phrase(the table with 3 'rows')
-  - T: "og"      # phrase(the table with 3 rows 'and' 4 columns)
+  - t: "and"      # phrase(the table with 3 rows 'and' 4 columns)
   - x: "$NumColumns"
   - test:
-      if: "NumColumns=1"
+      if: "$NumColumns=1"
       then: [T: "kolonne"]      # phrase(the table with 3 rows and 1 'column')
       else: [T: "kolonner"]      # phrase(the table with 3 rows and 4 'columns')
   - pause: long
@@ -493,6 +493,17 @@
       - x: "count(preceding-sibling::*)+IfThenElse(parent::m:mlabeledtr, 0, 1)"
       - pause: medium
   - x: "*"
+  - test:
+      if: "HasVisibleColumnLine(../.., count(preceding-sibling::*) + 1)"
+      then:
+      - pause: short
+      - T: "skilletegn"
+  - test:
+      # Announce a row separator only after the row's final cell, so it is spoken once per horizontal boundary.
+      if: "count(following-sibling::*) = 0 and HasVisibleRowLine(../.., count(../preceding-sibling::*) + 1)"
+      then:
+      - pause: short
+      - T: "rad-skille"
   - test:
     # short pause after each element; medium pause if last element in a row; long pause for last element in matrix
     - if: count(following-sibling::*) > 0
