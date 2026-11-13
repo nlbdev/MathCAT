@@ -21,8 +21,7 @@ fn modified_vars() -> Result<()> {
         <mover> <mi>t</mi> <mo>→</mo> </mover>
         </mrow> </math>";
     test("nb", "SimpleSpeak", expr, 
-        "a grav aksent, b tilde, c breve, b hake, c grav aksent; pluss \
-            r hake pluss; x prikk, y prikk, z trema, u trippel prikk; v fire prikker; pluss x hatt, pluss vektoren t")?;
+        "a grav aksent, b tilde, c breve, b hake, c grav aksent; pluss r hake pluss; x prikk, y prikk, z trema, u trippel prikk; v fire prikker; pluss x hatt, pluss vektor t")?;
             return Ok(());
 
 }

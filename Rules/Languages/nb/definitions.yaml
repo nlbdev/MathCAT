@@ -82,44 +82,305 @@
 #   "ratio": "function=ratio : to | the ratio : to | the ratio : to"  # verbosity of name:glue pairs
 #
 - IntentMappings: {
-    "indexed-by": "infix= ; senket| senket| nedre indeks; slutt senket| slutt senket| slutt nedre indeks",
-    "modified-variable": "silent= ",
-    "say-super": "infix=opphøyd| øvre indeks| øvre indeks",   # used with 'mo' for superscripts (e.g, "<")
-    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+
+    "binomial": "infix=binomialkoeffisient; over; slutt binomialkoeffisient",
+
+    ### Functions and Inverses
+    # Interval intents (open-/closed-interval, etc.) are handled by rules due to special cases involving ∞.
+
+    "inverse":"function=invers || postfix=invers",
+
+    "domain": "function= ; definisjonsmengden",
+    "codomain": "function= ; verdimengden",
+
+    "image":"function=bildet",
+    "mixed-fraction":"infix=og", # NOTE: in website says function, but follow infix speech pattern
+    "quotient":"function=heltallsdel: delt på", # Norwegian: Not sure how to translate
+    "evaluated-at":"infix=evaluert i",
+    "remainder":"function=resten: delt på",
+
+    "max":"function=maks",
+    "min":"function=min",
+
+    "power":"infix=opphøyd i",
+    "root":"function=rot",
+
+    "greatest-common-divisor": "function=gcd: og| største felles divisor: og",
+    "least-common-multiple":"function=lcm: og| minste felles multiplum: og", # In webpage typo "lest common"
 
     "absolute-value": "function= ; absoluttverdien; slutt absoluttverdi",
-    "binomial": "infix=binomialkoeffisient; over; slutt binomialkoeffisient",
-    "dimension-product": "infix=ganger",
-    #"greatest-common-divisor": "function=gcd: gcd: største felles divisor",              # NORWEGIAN: We say "største felles divisor til 8 og 4" (greatest common divisor to 8 and 4)
-    "imaginary-part": "function=den imaginære delen",
-    #"least-common-multiple": "function=lcm: lcm: minste felles multiplum"                # NORWEGIAN: We say "minste felles multiplum til 2 og 6" (least common multiplum to 2 and 6)
-    "limit": "prefix=grenseverdien når",
-    "lim-sup": "prefix=den øvre grenseverdien når", 
-    "lim-inf": "prefix=den nedre grenseverdien når", 
-    "logarithm-with-base": "prefix=log med grunntall| logaritmen med grunntall| logaritmen med grunntall",
-    "natural-logarithm": "function=l n| den naturlige logaritmen| den naturlige logaritmen",
-    "minus": "infix=minus || prefix=minus",
-    "plus": "infix=pluss || prefix=pluss",
+    "complex-conjugate":"function=kompleks-konjugert",
+    "complex-arg":"function=argument", # Norwegian: Should probably be in the list FunctionApplicationWordTil
     "real-part": "function=den reelle delen",
-    "set-of-integers": "nofix=mengden av alle heltallene",
+    "imaginary-part": "function=den imaginære delen",
 
-    "transpose": "postfix=transponert || function=transponert",
-    #"norm": "function=; normen; slutt norm",                                            # NORWEGIAN: We say "normen til" (the norm to), so this rule is in linear-algebra
-    "trace": "function= ; sporet; slutt spor",
-    #"dimension": "function=; dimensjonen; slutt dimensjon",                             # NORWEGIAN: We say "dimensjonen til" (the dimension to), so this rule is in linear-algebra
-    # "homomorphism": "function= ; homomorfi; slutt homomorfi",                                # doesn't fit function pattern
-    # "kernel": "function= ; nullrommet ; slutt nullrommet                               # NORWEGIAN: We say "nullrommet til" (the kernel to), so this rule is in linear-algebra
-    "vector": "function= ; vektor| vektoren| vektoren || prefix=vektor| vektoren| vektoren",
-    "cross-product": "infix=kryss| kryssprodukt| kryssprodukt",
-    "dot-product": "infix=prikk| skalarprodukt| skalarprodukt",
+    "polar-coordinate":"function=polarkoordinat",
+    "spherical-coordinate":"function=sfærisk koordinat",
+    "cartesian-coordinate":"function=kartesisk koordinat",
+    "coordinate":"function=koordinat",
+    "floor":"function=gulvfunksjon",
+    "ceiling":"function=takfunksjon",
+    "round":"function=avrundet verdi",
+    "fractional-part":"function=desimaldelen",
 
-    #"divergence": "function= ; div: divergens: divergens; slutt divergens",             #NORWEGIAN: We say "divergensen til" (the divergence to), so this rule is in calculus. 
-    #"curl": "function= ; curl; slutt curl",                                             #NORWEGIAN: We say "curlen til" (the curl to), so this rule is in calculus
-    #"gradient": "function= ; grad: gradient: gradient; slutt gradient",                 #NORWEGIAN: We say "gradienten til" (the gradient to), so this rule is in calculus
-    "laplacian": "function=laplace",   # speech engines don't do a good job with "laplacian" (swedish ones might)
+    ### Calculus
+    # "definite-integral":"function=integral over || function=integral from; to", # Property ???
+    # "derivative":"function=the derivative; with respect to", # Property ???
+    # "partial-derivative":"function=partial", ## Note, included with infix, but separately under calculus tab has ??? for functionality
+
+    "limit": "prefix=grenseverdien når",
+    "tends-to":"infix=går mot",
+    #"tends-to-from-above":"infix=går mot ovenfra", # Norwegian: Works bad in Norwegian
+    #"tends-to-from-below":"infix=går mot nedenfra", # Norwegian: Works bad in Norwegian
+
+    ### Sets
+    "set": "function=mengden",
+    "set-difference":"function=mengdedifferanse: og || infix=minus",
+    "complement":"function=komplement",
+    "empty-set":"nofix=tom mengde",
+    "cardinality":"function=kardinaliteten", # NOTE: does not have a defined speech template in website
+    "list":"function=liste",
+    "tuple": "function=tuppel",
+
+    ### Sequence and Series
+    "sum": "function=sum: over: fra,til",
+    "product": "function=produkt: over: fra,til",
+
+    ### Elementary classical functions
+    "sine":"function=sin | sinus",
+    "cosine":"function=kos | cosinus", # Norwegian "cos" is not said correctly
+    "tangent":"function=tan | tangens",
+    "secant":"function=sek | sekans",
+    "cosecant":"function=cosec | cosekans",
+    "cotangent":"function=cotan | cotangens",
+
+    "arcsine":"function=arcsin | arcus sinus",
+    "arccosine":"function=arckos | arcus cosinus",
+    "arctangent":"function=arctan | arcus tangens",
+    "arcsecant":"function=arcsek | arcus sekans",
+    "arccosecant":"function=arc-cosec | arcus cosekans",
+    "arccotangent":"function=arc-cotan | arcus cotangens",
+
+    "hyperbolic-sine":"function=sin hyperbolicus | sinus hyperbolicus",
+    "hyperbolic-cosine":"function=kos hyperbolicus | cosinus hyperbolicus", # Norwegian: "cos" is not said correctly
+    "hyperbolic-tangent":"function=tan hyperbolicus | tangens hyperbolicus",
+    "hyperbolic-secant":"function=sek hyperbolicus | sekans hyperbolicus",
+    "hyperbolic-cosecant":"function=cosec hyperbolicus | cosekans hyperbolicus",
+    "hyperbolic-cotangent":"function=cotan hyperbolicus | cotangens hyperbolicus",
+
+    "arc-hyperbolic-sine":"function=arcus sinus hyperbolicus",
+    "arc-hyperbolic-cosine":"function=arcus cosinus hyperbolicus",
+    "arc-hyperbolic-tangent":"function=arcus tangens hyperbolicus",
+    "arc-hyperbolic-secant":"function=arcus sekans hyperbolicus",
+    "arc-hyperbolic-cosecant":"function=arcus cosekans hyperbolicus",
+    "arc-hyperbolic-cotangent":"function=arcus cotangens hyperbolicus",
+
+    "exponential":"function=eksponentialfunksjonen",
+    "natural-logarithm": "function=l n| den naturlige logaritmen",
+    "logarithm":"function=log | logaritmen", ##Check arity 2 
+
+    ### Statistics and Probability
+    "mean":"function=gjennomsnitt", 
+    "standard-deviation":"function=standardavviket",
+    "variance":"function=variansen",
+    "median":"function=medianen",
+    "mode":"function=typetallet",
+
+    "conditional-probability":"function=sannsynligheten: gitt", 
+
+    ### Linear Algebra
+    "vector": "function= ; vektor || prefix=vektor", # prefix not tested, also prefix not on webpage
+    "matrix":"function=matrise", # NOTE: Failing test, recheck
+    "determinant":"function=determinant",
+    "adjugate":"function=adjungert",
+    "magnitude":"function=størrelsen",
+    "norm": "function=; normen; slutt norm",
+    "span":"function=spennet",
+
+    "unit-vector":"prefix=enhetsvektor",
+
+    "identity-matrix":"nofix=identitetsmatrise", # NOTE: no function specified
+    "transpose":"postfix=transponert || function=transponert",
+    "dimensional-product":"infix=ganger", # INFIX
+
+    ### Constants and Sets
+    "set-of-integers":"nofix=ℤ| mengden av alle heltall",
+    "set-of-reals":"nofix=ℝ| mengden av alle reelle tall",
+    "set-of-rationals":"nofix=ℚ| mengden av alle rasjonale tall",
+    "set-of-natural-numbers":"nofix=ℕ| mengden av alle naturlige tall",
+    "set-of-complex-numbers":"nofix=ℂ| mengden av alle komplekse tall",
+    "set-of-primes":"nofix=ℙ| mengden av alle primtall",
+
+    ### Geometry
+    "line-segment":"prefix=linjestykke",
+    "directed-line-segment":"prefix=rettet linjestykke", 
+    "line":"prefix=linje",
+    "ray":"prefix=stråle",
+    "arc":"prefix=bue",
+
+    "length":"function=lengden",
+    "area":"function=arealet",
+
+    "point":"prefix=punkt",  ## NOTE: Has ??? for property in site. Should it be prefix? Or something else.
+
+        ### Separators
+    "time-separator":"infix=",
+
+    ### General Concepts 
+    "fenced-group":"function=gruppert uttrykk", # appears both under general concepts and grouping
+     # NOTE: in site mentions "the pair x and y", due to being defined as function, needs the "of" keyword #Norwegian: Not sure how to translate
+    "ordered-pair": "function=paret: og", # Needs to be tested
+    # Simple last arg: "x sub k". Complex: "… end sub" (terse/medium) / "end subscript" (verbose) via infix-intent.
+    "indexed-by": "infix= ; senket | senket | nedre indeks; slutt senket| slutt senket| slutt nedre indeks",
     
-    "chemistry-concentration": "function= ; konsentrasjon| konsentrasjonen av| konsentrasjonen av; slutt konsentrasjon",
+    "highlight":"postfix=uthevet",
+    "least-common-denominator":"function=minste felles nevner",
+    "rate":"infix=per",
+    "translation":"function=translasjon med",
+    "constraint":"infix= ; med begrensning; ", 
+    
+    "binomial-coefficient":"infix=over",
+    "pochhammer":"function=permutasjon",
+    "permutation-cycle":"function=syklisk permutasjon",
+    "embellished-name":"infix=med merknad",
+
+    ### Grouping
+    "annotation":"infix= ; som er ;",              # NOTE: Follows the same order as indexed-by, in site listed as function. Should it be infix?
+    "braced-group":"function= ; gruppering; slutt gruppering",  # NOTE: not tested, site is missing "of" keyword function introduces
+    #"repeating-decimal":"function=repeating decimal", # NOTE: BREAKS TEST. Check again. Site is missing "of" keyword function introduces.
+   
+    ### Other
+    ## Default fixity function
+    "curl": "function=curl | curlen",
+    "divergence": "function=div|divergensen",
+    "gradient": "function=gradienten",
+    "laplacian": "function=laplas",
+
+    ## Default fixity prefix
+    "angle": "prefix=vinkel",
+    "angle-measure": "prefix=vinkelmål",
+    "change": "prefix=endring i",
+    "for-all": "prefix=for alle",
+    "measured-angle": "prefix=målt vinkel",
+    "not": "prefix=ikke",
+    "number-of": "prefix=antall av",
+    "partial-derivative": "prefix=partiell derivert",
+    "right-angle": "prefix=rett vinkel",
+    "square-root-of": "prefix=kvadratrot av",
+    "there-does-not-exist": "prefix=det eksisterer ikke",
+    "there-exists": "prefix=det eksisterer",
+
+    ## Default fixity infix
+    "and": "infix=og",
+    "applied-to": "infix=anvendt på",
+    "approximately": "infix=omtrent",
+    "congruent": "infix=kongruent med",
+    "cartesian-product": "infix=kartesisk produkt",
+    "composed-with": "infix=sammensatt med",
+    "cross-product": "infix=kryss| kryssprodukt",
+    "defined-as": "infix=definert som",
+    "divided-by": "infix=delt på",
+    "divides": "infix=deler",
+    "does-not-belong-to": "infix=tilhører ikke",
+    "does-not-divide": "infix=deler ikke",
+    "dot-product": "infix=prikk | skalarprodukt",
+    "downwards-diagonal-ellipsis": "infix=nedadgående diagonal ellipse",
+    "direct-product": "infix=direkte produkt",
+    "element-of": "infix=element av",
+    "ellipsis": "infix=ellipse",
+    "equals": "infix=lik",
+    "equivalent-to": "infix=ekvivalent med",
+    "evaluates-to": "infix=evalueres til",
+    "given": "infix=gitt",
+    "greater-than": "infix=større enn",
+    "greater-than-or-equal-to": "infix=større enn eller lik",
+    "identically-equals": "infix=identisk lik",
+    "if-and-only-if": "infix=hvis og bare hvis",
+    "implies": "infix=impliserer",
+    "inner-product": "infix=indreprodukt",
+    "intersection": "infix=snitt",
+    "less-than": "infix=mindre enn",
+    "less-than-or-equal-to": "infix=mindre enn eller lik",
+    "list-separator": "infix=komma",
+    "maps-to": "infix=avbildes til",
+    "member-of": "infix=medlem av",
+    "minus-or-plus": "infix=minus eller pluss",
+    "not-subset": "infix=ikke delmengde av",
+    "not-superset": "infix=ikke overmengde av",
+    "not-equal-to": "infix=ikke lik",
+    "not-member-of": "infix=ikke medlem av",
+    "not-parallel-to": "infix=ikke parallell med",
+    "obtained-from": "infix=hentet fra",
+    "or": "infix=eller",
+    "outer-product": "infix=ytreprodukt",
+    "parallel-to": "infix=parallell med",
+    "perpendicular": "infix=vinkelrett på",
+    "plus": "infix=pluss || prefix=pluss", # Prefix not tested
+    "minus": "infix=minus || prefix=minus", # Prefix not tested
+    "plus-or-minus": "infix=pluss eller minus",
+    "precedes": "infix=foregår",
+    "proportional": "infix=proporsjonal med",
+    "range-separator": "infix=til",
+    "ratio": "function=forholdet : til",
+    "similar": "infix=identisk med",
+    "subset": "infix=delmengde av",
+    "subset-or-equal": "infix=delmengde av eller lik",
+    "succeeds": "infix=følger",
+    "such-that": "infix=slik at",
+    "superset": "infix=overmengde av",
+    "superset-or-equal": "infix=overmengde av eller lik",
+    "tilde": "infix=tilde",
+    "times": "infix=ganger",
+    "union": "infix=union",
+    "upwards-diagonal-ellipsis": "infix=oppadgående vertikal ellipse",
+    "vertical-ellipsis": "infix=vertikal ellipse",
+    "xor": "infix=ekskluderende eller",
+
+    ## Default fixity postfix
+    "factorial": "postfix=fakultet",
+    "percent": "postfix=prosent",
+
+    ## Default fixity nofix
+    "diameter":"nofix=diameter",
+    "distance":"nofix=avstand",
+    "probability":"nofix=P| sannsynlighet || function=sannsynlighet",
+    "radius":"nofix=r| radius",
+    "volume":"nofix=V| volum || function=volum",
+    "exponential-e":"nofix=e",
+    "imaginary-i":"nofix=i",
+    "differential-d":"nofix=d",
+    "golden-ratio":"nofix=det gylne snitt",
+
+    ## Other : Not tested, don't appear in https://w3c.github.io/mathml-docs/intent-core-concepts/
+    "modified-variable": "silent= ",
+    "say-super": "infix=hevet| hevet| øvre indeks",   # used with 'mo' for superscripts (e.g, "<")
+    "skip-super": "silent=",   # used with 'mo' for superscripts (e.g, "*")
+    # "large-op": "infix=over || other=from,to",
+    "lim-sup": "prefix=øvre grense når",
+    "lim-inf": "prefix=nedre grense når",
+    "logarithm-with-base": "prefix=log med grunntall| logaritmen med grunntall",
+    # "pochhammer": "infix=permutations of",  # arguments are in reverse order, so can't work here
+    "trace": "function= ; sporet; slutt spor",
+    "dimension": "function=; dimensjonen; slutt dimensjon",
+    "homomorphism": "function= ; homomorfi; slutt homomorfi",
+    "kernel": "function= ; nullrommet; slutt nullrommet",
+    
+    "chemistry-concentration": "function= ; konsentrasjon| konsentrasjonen av | konsentrasjonen av; slutt konsentrasjon",
   }
+
+- FunctionApplicationWordTil: {"domain", "codomain", "image", "curl", "divergence", "gradient", "greatest-common-divisor", "least-common-multiple", "cardinality", "variance", "standard-deviation", "norm", "kernel"
+
+  }
+
+
+  # The connector word to say for functional 'IntentMappings' (in English, "of")
+  # This is likely the word used for U+2061 in unicode.yaml, but for technical reasons needs to be defined here
+  # vector of length=1 because scalars not supported
+- FunctionApplicationWord: ["av"]
+  # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
+#- TerseFunctionNames: {
+    #"divergence", "del|gradient", "curl"
+ # }
 
 - NavigationParts: {
     "large-op": "base; nedre grense; øvre grense",
@@ -253,7 +514,7 @@
 
 - SIPrefixes: {
     "Q": "quetta", "R": "ronna", "Y": "yotta", "Z": "zetta", "E": "exa", "P": "peta", "T": "tera", "G": "giga", "M": "mega", "k": "kilo", "h": "hekto", "da": "deka",
-    "d": "desi", "c": "centi", "m": "milli", "µ": "mikro", "n": "nano", "p": "piko", "f": "femto", "a": "atto", "z": "zepto", "y": "yokto", "r": "ronto", "q": "quecto"
+    "d": "desi", "c": "centi", "m": "milli", "µ": "mikro", "μ": "mikro", "n": "nano", "p": "piko", "f": "femto", "a": "atto", "z": "zepto", "y": "yokto", "r": "ronto", "q": "quecto"
   }
 
 # Units that accept SI prefixes (symbol → spoken singular base word).

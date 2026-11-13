@@ -388,7 +388,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cos"]      # phrase('cos' is the abbreviation for cosine)
+      then: [T: "kos"]      # phrase('cos' is the abbreviation for cosine)
       else: [T: "cosinus"]      # phrase(find the 'cosine' in a right-angle triangle)
 
 - name: tan   # audit-ignore
@@ -448,7 +448,7 @@
   - bookmark: "@id"
   - test:
       if: "$Verbosity='Terse'"
-      then: [T: "cos hyperbolicus"]                  # phrase('cosh' is an abbreviation of hyperbolic cosine)
+      then: [T: "kos hyperbolicus"]                  # phrase('cosh' is an abbreviation of hyperbolic cosine)
       else: [T: "cosinus hyperbolicus"]      # phrase(the 'hyperbolic cosine' is a mathematical function) 
 
 - name: tanh
