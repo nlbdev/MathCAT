@@ -1576,3 +1576,33 @@ fn plural_compound_unit() -> Result<()> {
     test("nb", "ClearSpeak", expr, "2 watt timer")?;
     Ok(())
 }
+
+#[test]
+fn variable_unit() -> Result<()> {
+    let expr = r#"<math>
+    <mi>x</mi>
+<mi mathvariant="normal">s</mi>
+        <mo>/</mo>
+        <msup>
+            <mi mathvariant="normal">m</mi>
+            <mn>2</mn>
+        </msup>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "x, sekunder per meter i andre")?;
+    test("nb", "ClearSpeak", expr, "x, sekunder per meter i andre")?;
+    return Ok(());
+}
+
+#[test]
+fn variable_unit_2() -> Result<()> {
+    let expr = r#"<math>
+    <mi>x</mi>
+        <mrow intent=":unit">
+            <mi>W</mi>
+            <mi>h</mi>
+        </mrow>
+    </math>"#;
+    test("nb", "SimpleSpeak", expr, "x watt timer")?;
+    test("nb", "ClearSpeak", expr, "x watt timer")?;
+    Ok(())
+}
