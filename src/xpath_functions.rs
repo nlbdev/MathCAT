@@ -1688,12 +1688,20 @@ fn mn_beside<'a>(parent: Element<'a>, factor: Element<'a>, forward: bool) -> Opt
     return None;
 }
 
-/// Identifier coefficient next to a unit (`x m`, `x_i kg·m/s`), looking left only.
+/// Identifier coefficient next to a unit (`x m`, `x_i kg·m/s`) or currency.
+/// Units look left only. Currency prefers after the symbol (prefix `$x`), then before (`x €`).
 fn variable_coefficient(element: Element) -> Option<Element> {
     let mut factor = factor_element(element);
+    let currency = is_currency_leaf(element) || is_currency_leaf(factor);
     loop {
         let parent = parent_element(factor)?;
-        if let Some(ident) = identifier_beside(parent, factor, false) {
+        let ident = if currency {
+            identifier_beside(parent, factor, true)
+                .or_else(|| identifier_beside(parent, factor, false))
+        } else {
+            identifier_beside(parent, factor, false)
+        };
+        if let Some(ident) = ident {
             return Some(ident);
         }
         if !is_unit_expr(parent) {
@@ -1817,6 +1825,52 @@ fn following_unit(element: Element) -> Option<Element> {
         return scan_after(parent);
     }
     return None;
+}
+
+/// Unit or currency next to an amount: prefer after (`1 m`, `1 €`), then before (`$1`).
+fn adjacent_unit_or_currency(element: Element) -> Option<Element> {
+    if let Some(unit) = scan_beside_unit_or_currency(element, true) {
+        return Some(unit);
+    }
+    // Mixed number: the "1" sits inside mrow(1, invisible-plus, fraction); the unit follows that mrow.
+    let parent = parent_element(element)?;
+    let inside_mixed = unit_children(parent).iter().any(|child| name(*child) == "mo" && leaf_text(*child) == "\u{2064}");
+    if inside_mixed {
+        if let Some(unit) = scan_beside_unit_or_currency(parent, true) {
+            return Some(unit);
+        }
+    }
+    return scan_beside_unit_or_currency(element, false);
+
+    fn unit_or_currency_in(element: Element) -> Option<Element> {
+        if is_currency_leaf(element) {
+            return Some(element);
+        }
+        return unit_leaf_in(element);
+    }
+    
+    fn scan_beside_unit_or_currency(element: Element, forward: bool) -> Option<Element> {
+        let parent = parent_element(element)?;
+        let children = unit_children(parent);
+        let index = children.iter().position(|child| child == &element)?;
+        let step: isize = if forward { 1 } else { -1 };
+        let mut cursor = index as isize + step;
+        while cursor >= 0 && (cursor as usize) < children.len() {
+            let child = children[cursor as usize];
+            if is_times_op(child) {
+                cursor += step;
+                continue;
+            }
+            if is_div_op(child) {
+                break;
+            }
+            if let Some(unit) = unit_or_currency_in(child) {
+                return Some(unit);
+            }
+            break;
+        }
+        return None;
+    }
 }
 
 struct GetQuantity;
@@ -2358,7 +2412,8 @@ impl Function for UnitGender {
 }
 
 struct OneForUnit;
-/// OneForUnit(node) → spoken “1” before a following (or self) unit/currency, else `"1"`.
+/// OneForUnit(node) → spoken “1” for an adjacent (or self) unit/currency, else `"1"`.
+/// Amounts look after then before so prefix `$1` and postfix `1 €` both work.
 impl OneForUnit {
     fn word_for(element: Element) -> String {
         let unit = if name(element) == "unit" ||
@@ -2367,7 +2422,7 @@ impl OneForUnit {
         {
             unit_leaf_in(element).or(Some(element))
         } else {
-            following_unit(element)
+            adjacent_unit_or_currency(element)
         };
         let Some(unit) = unit else {
             return "1".to_string();
@@ -3064,6 +3119,52 @@ mod tests {
             assert_eq!(UnitNumber::category(m), "many");
             assert_eq!(UnitNumber::category(s), "one");
 
+            // Prefix currency `$x`: identifier is after the symbol (VariableBeforeUnitPlural).
+            let currency_var = r#"<math>
+                <mo>$</mo><mo>&#x2062;</mo><mi>x</mi>
+            </math>"#;
+            let package = parse_unit_mathml(currency_var)?;
+            let root = get_element(&package);
+            let dollar = find_leaf_by_text(root, "$").unwrap();
+            assert_eq!(UnitNumber::category(dollar), "many");
+
+            crate::interface::set_preference("Language", "hu")?;
+            crate::definitions::read_definitions_file(true)?;
+            let package = parse_unit_mathml(currency_var)?;
+            let root = get_element(&package);
+            let dollar = find_leaf_by_text(root, "$").unwrap();
+            // hu: VariableBeforeUnitPlural → CompoundUnitPlural none → singular
+            assert_eq!(UnitNumber::category(dollar), "one");
+
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
+
+            return Ok(());
+        });
+    }
+
+    /// OneForUnit on the amount finds prefix (`$1`) and postfix (`1 €`) currency.
+    #[test]
+    fn one_for_unit_finds_adjacent_currency() -> Result<()> {
+        return xpath_test(|| {
+            crate::interface::set_rules_dir(super::super::abs_rules_dir_path())?;
+            crate::interface::set_preference("Language", "es")?;
+            crate::definitions::read_definitions_file(true)?;
+
+            let prefix = r#"<math><mo>$</mo><mo>&#x2062;</mo><mn>1</mn></math>"#;
+            let package = parse_unit_mathml(prefix)?;
+            let root = get_element(&package);
+            let amount = find_leaf_by_text(root, "1").unwrap();
+            assert_eq!(OneForUnit::word_for(amount), "un");
+
+            let postfix = r#"<math><mn>1</mn><mo>&#x2062;</mo><mo>€</mo></math>"#;
+            let package = parse_unit_mathml(postfix)?;
+            let root = get_element(&package);
+            let amount = find_leaf_by_text(root, "1").unwrap();
+            assert_eq!(OneForUnit::word_for(amount), "un");
+
+            crate::interface::set_preference("Language", "en")?;
+            crate::definitions::read_definitions_file(true)?;
             return Ok(());
         });
     }
