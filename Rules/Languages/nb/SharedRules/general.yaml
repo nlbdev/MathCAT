@@ -85,14 +85,14 @@
 
 - name: real-part
   tag: real-part
-  match: "."
+  match: "count(*)=0"
   replace:
   - bookmark: "@id"
   - T: "den reelle delen"      # phrase('the real part' of a complex number does not include the imaginary part)
 
 - name: imaginary-part
   tag: imaginary-part
-  match: "."
+  match: "count(*)=0"
   replace:
   - bookmark: "@id"
   - T: "den imaginære delen"      # phrase('the imaginary part' is part of a complex number)

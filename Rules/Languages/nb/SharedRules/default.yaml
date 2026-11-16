@@ -745,10 +745,10 @@
       else:
       - test:
           if: "$Verbosity != 'Terse' and not(contains(@data-intent-property, ':literal:')) and
-               not(count(*)=2 and
-               (IsInDefinition(*[1], 'Speech', 'TrigFunctionNames') or
-                IsInDefinition(name(.), 'Speech', 'TerseFunctionNames')) and
-               IsNode(*[2], 'simple'))"
+               not((count(*)=2 and
+                    IsInDefinition(*[1], 'Speech', 'TrigFunctionNames') and
+                    IsNode(*[2], 'simple')) or
+                   IsInDefinition(name(.), 'Speech', 'TerseFunctionNames'))" # Norwegian: Would never use the word "of", regardless of the number of arguments.
           then:
           - test:
               if: "IsInDefinition(name(.), 'Speech', 'FunctionApplicationWordTil')"

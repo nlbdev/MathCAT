@@ -55,7 +55,7 @@
 
 - name: coordinate    # audit-ignore
   tag: coordinate
-  match: "."
+  match: "not(*[@arg])"
   replace:
   - T: "punktet"      # phrase(the 'point' at 1, 2)
   - test:

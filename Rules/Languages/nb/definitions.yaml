@@ -110,9 +110,9 @@
 
     "absolute-value": "function= ; absoluttverdien; slutt absoluttverdi",
     "complex-conjugate":"function=kompleks-konjugert",
-    "complex-arg":"function=argument", # Norwegian: Should probably be in the list FunctionApplicationWordTil
+    "complex-arg":"function=argumentet",
     "real-part": "function=den reelle delen",
-    "imaginary-part": "function=den imaginære delen",
+    "imaginary-part": "function=den komplekse delen",
 
     "polar-coordinate":"function=polarkoordinat",
     "spherical-coordinate":"function=sfærisk koordinat",
@@ -130,13 +130,13 @@
 
     "limit": "prefix=grenseverdien når",
     "tends-to":"infix=går mot",
-    #"tends-to-from-above":"infix=går mot ovenfra", # Norwegian: Works bad in Norwegian
-    #"tends-to-from-below":"infix=går mot nedenfra", # Norwegian: Works bad in Norwegian
+    "tends-to-from-above":"infix=går mot ovenfra", # Norwegian: Works bad in Norwegian
+    "tends-to-from-below":"infix=går mot nedenfra", # Norwegian: Works bad in Norwegian
 
     ### Sets
     "set": "function=mengden",
     "set-difference":"function=mengdedifferanse: og || infix=minus",
-    "complement":"function=komplement",
+    "complement":"function=komplementet",
     "empty-set":"nofix=tom mengde",
     "cardinality":"function=kardinaliteten", # NOTE: does not have a defined speech template in website
     "list":"function=liste",
@@ -310,7 +310,7 @@
     "not-equal-to": "infix=ikke lik",
     "not-member-of": "infix=ikke medlem av",
     "not-parallel-to": "infix=ikke parallell med",
-    "obtained-from": "infix=hentet fra",
+    "obtained-from": "infix=utledet fra",
     "or": "infix=eller",
     "outer-product": "infix=ytreprodukt",
     "parallel-to": "infix=parallell med",
@@ -322,7 +322,7 @@
     "proportional": "infix=proporsjonal med",
     "range-separator": "infix=til",
     "ratio": "function=forholdet : til",
-    "similar": "infix=identisk med",
+    "similar": "infix=tilnærmet lik",
     "subset": "infix=delmengde av",
     "subset-or-equal": "infix=delmengde av eller lik",
     "succeeds": "infix=følger",
@@ -345,7 +345,7 @@
     "distance":"nofix=avstand",
     "probability":"nofix=P| sannsynlighet || function=sannsynlighet",
     "radius":"nofix=r| radius",
-    "volume":"nofix=V| volum || function=volum",
+    "volume":"nofix=V| volum || function=volumet",
     "exponential-e":"nofix=e",
     "imaginary-i":"nofix=i",
     "differential-d":"nofix=d",
@@ -368,7 +368,7 @@
     "chemistry-concentration": "function= ; konsentrasjon| konsentrasjonen av | konsentrasjonen av; slutt konsentrasjon",
   }
 
-- FunctionApplicationWordTil: {"domain", "codomain", "image", "curl", "divergence", "gradient", "greatest-common-divisor", "least-common-multiple", "cardinality", "variance", "standard-deviation", "norm", "kernel"
+- FunctionApplicationWordTil: {"domain", "codomain", "image", "curl", "divergence", "gradient", "greatest-common-divisor", "least-common-multiple", "cardinality", "variance", "standard-deviation", "norm", "kernel", "complex-arg", "complement", "least-common-denominator"
 
   }
 
@@ -378,9 +378,9 @@
   # vector of length=1 because scalars not supported
 - FunctionApplicationWord: ["av"]
   # Names of functions that in terse mode don't say "of" (or it's equivalent in other languages)
-#- TerseFunctionNames: {
-    #"divergence", "del|gradient", "curl"
- # }
+- TerseFunctionNames: {
+    "coordinate", "ratio", "polar-coordinate", "spherical-coordinate", "cartesian-coordinate"
+  }
 
 - NavigationParts: {
     "large-op": "base; nedre grense; øvre grense",
