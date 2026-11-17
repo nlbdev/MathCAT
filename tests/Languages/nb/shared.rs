@@ -549,7 +549,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("nb", "SimpleSpeak", expr, "stor a høyrepil bunn stor b høyrepil")?;
+  test("nb", "SimpleSpeak", expr, "stor a høyrepil, er vinkelrett på, stor b høyrepil")?;
   return Ok(());
 
 }

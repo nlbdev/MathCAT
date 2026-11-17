@@ -991,8 +991,6 @@
  - "⊢": [T: "beviser"]                           #  0x22a2    (en: 'proves')
  - "⊣": [T: "beviser ikke"]                         #  0x22a3    (en: 'does not yield')
  - "⊤": [T: "topp"]                             #  0x22a4    (en: 'top')
- - "⊥":                                             #  0x22a5        # audit-ignore
-     - T: "bunn"                       #     (en: 'bottom', MathPlayer: 'up tack', google: 'botten')
  - "⊦": [T: "reduseres til"]                            #  0x22a6    (en: 'reduces to')
  - "⊧": [T: "modellerer"]                             #  0x22a7    (en: 'models', MathPlayer: 'models')
  - "⊨":                                             #  0x22a8
@@ -1577,11 +1575,15 @@
  #Miscellaneous mathematical symbols-A OK
  - "⟀": [T: "tredimensjonal vinkel"]               #  0x27c0    (en: 'three dimensional angle')
  - "⟁": [T: "hvit trekant med liten hvit trekant"]    #  0x27c1    (en: 'white triangle containing small white triangle')
- - "⟂":                                             #  0x27c2
-     - test: 
-         if: "$Verbosity!='Terse'"
-         then: [T: "er"]                            #     (en: 'is', google translation)
-     - T: "vinkelrett på"                             #     (en: 'perpendicular to')
+ - "⟂⊥":                                          # 0x27c2, 22A5 (22A5 wrongly used for perpendicular by most editors)
+     - test:
+        - if: "$SpeechStyle = 'LiteralSpeak' and text()='⊥'"   # 22A5 (up tack/bottom)
+          then: [T: "bunn"]
+        - else:
+          - test:
+              if: "$Verbosity!='Terse'"
+              then: [T: "er"]
+          - T: "vinkelrett på"
  - "⟃":                                             #  0x27c3
      - test: 
          if: "$Verbosity!='Terse'"

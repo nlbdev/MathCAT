@@ -390,6 +390,18 @@ fn turned() -> Result<()> {
   }
 
 #[test]
+fn up_tack_330() -> Result<()> {
+    // perpendicular and up tack look the same. I added a special LiteralSpeak rule for up tack not to say "perpendicular"
+    let perp = "<math><mi>a</mi><mo>⟂</mo><mi>b</mi></math>"; // 0x27c2
+    test("nb", "SimpleSpeak", perp, "a er vinkelrett på b")?;
+    test("nb", "LiteralSpeak", perp, "a er vinkelrett på b")?;
+    let up_tack = "<math><mi>a</mi><mo>⊥</mo><mi>b</mi></math>"; // 0x22a5
+    test("nb", "ClearSpeak", up_tack, "a er vinkelrett på b")?;
+    test("nb", "LiteralSpeak", up_tack, "a bunn b")?;
+    return Ok(());
+  }
+
+#[test]
 fn enclosed_numbers() -> Result<()> {
   let expr = "<math> <mi>①</mi><mo>,</mo><mi>⑨</mi></math>";
   test("nb", "SimpleSpeak", expr, "1 i sirkel komma, 9 i sirkel")?;
